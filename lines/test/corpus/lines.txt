@@ -45,7 +45,6 @@ Column names
 
 @columns {"two words", a{b{c}}, ..}
 @columns {..}
-@columns {}
 --------------------------------------------------------------------------------
 
 (stream
@@ -67,10 +66,7 @@ Column names
   (directive
     (directive_name)
     (columns
-      (rest_column)))
-  (directive
-    (directive_name)
-    (columns)))
+      (rest_column))))
 
 ================================================================================
 Comments and blank lines only

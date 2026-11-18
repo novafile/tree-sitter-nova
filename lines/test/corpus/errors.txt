@@ -55,3 +55,27 @@ c, d
   (row
     (word)
     (word)))
+
+================================================================================
+Error: empty column braces
+================================================================================
+
+@columns {}
+@columns {a{}}
+
+--------------------------------------------------------------------------------
+
+(stream
+  (directive
+    (directive_name)
+    (columns
+      (column
+        (MISSING key))))
+  (directive
+    (directive_name)
+    (columns
+      (nested_column
+        (key)
+        (columns
+          (column
+            (MISSING key)))))))

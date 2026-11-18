@@ -78,7 +78,7 @@ change.
 | --- | --- | --- |
 | §4.13 | A stream of lines; blank lines and `#` comments (whole-line or trailing) are ignored | `stream`, `comment` |
 | §4.13 | Directives `@nova`, `@schema`, `@key`, `@mode`, `@end` and `@x-…`, with the rest of the line as the argument | `directive`, `directive_name`, `argument` |
-| §4.13 | `@columns {…}`: names (identifiers or strings), nested columns `name{…}` and the rest column `..` (last only) | `columns`, `column`, `nested_column`, `rest_column` |
+| §4.13 | `@columns {…}`: names (identifiers or strings), nested columns `name{…}` and the rest column `..` (last only); every pair of braces holds at least one entry | `columns`, `column`, `nested_column`, `rest_column` |
 | §4.13 | Record lines in every mode: comma-separated flow-value cells, which may be empty (`80, , false`, a trailing comma is an empty last cell). A value-mode or positional line is a row of one cell | `row` (cells in the `cell` field) |
 
 The parser does not track which directives are in effect, so it checks

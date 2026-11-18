@@ -67,17 +67,17 @@ export default grammar({
     // `@x-…` directives are for extensions (§4.13).
     _extension_name: _ => token(prec(1, /@x-[A-Za-z0-9_-]*/)),
 
-    // {name, name{…}, …, ..}: `..` only as the last entry.
+    // {name, name{…}, …, ..}: at least one entry, `..` only as the last.
     columns: $ => seq(
       '{',
-      optional(choice(
+      choice(
         seq(
           $._named_column,
           repeat(seq(',', $._named_column)),
           optional(seq(',', $.rest_column)),
         ),
         $.rest_column,
-      )),
+      ),
       '}',
     ),
 
