@@ -98,6 +98,56 @@ enum Shape = circle(float @range(0..)) | none
       (identifier))))
 
 ================================================================================
+Enum variant ids
+================================================================================
+
+enum Phase:
+  pending @id(1)
+  running @id(2)
+  done(timestamp) @id(3)
+enum S = a @id(1) | b(u8 @range(1..)) @id(2)
+
+--------------------------------------------------------------------------------
+
+(schema
+  (enum_definition
+    (type_identifier)
+    (enum_variant
+      (identifier)
+      (attribute
+        (attribute_name)
+        (number)))
+    (enum_variant
+      (identifier)
+      (attribute
+        (attribute_name)
+        (number)))
+    (enum_variant
+      (identifier)
+      (primitive_type)
+      (attribute
+        (attribute_name)
+        (number))))
+  (enum_definition
+    (type_identifier)
+    (enum_variant
+      (identifier)
+      (attribute
+        (attribute_name)
+        (number)))
+    (enum_variant
+      (identifier)
+      (attributed_type
+        (primitive_type)
+        (attribute
+          (attribute_name)
+          (range
+            (number))))
+      (attribute
+        (attribute_name)
+        (number)))))
+
+================================================================================
 Records
 ================================================================================
 

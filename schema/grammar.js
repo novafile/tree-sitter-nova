@@ -144,6 +144,8 @@ export default grammar({
         field('payload', $._type_argument),
         ')',
       )),
+      // @id(n), like on fields (spec §6.1).
+      repeat(field('attribute', $.attribute)),
     ),
 
     // record Name [@open]: + one field per line

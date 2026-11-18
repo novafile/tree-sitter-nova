@@ -316,6 +316,16 @@
     "type": "enum_variant",
     "named": true,
     "fields": {
+      "attribute": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "attribute",
+            "named": true
+          }
+        ]
+      },
       "name": {
         "multiple": false,
         "required": true,
