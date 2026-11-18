@@ -8,9 +8,10 @@ precedence = "aggregate"
 SPDX-FileCopyrightText = "NOVA contributors"
 SPDX-License-Identifier = "Apache-2.0"
 
-# Corpus tests, highlight tests and the example NOVA documents they embed.
+# Corpus tests, highlight tests and the example NOVA documents they embed
+# (both grammars).
 [[annotations]]
-path = "test/**"
+path = ["test/**", "schema/test/**"]
 precedence = "override"
 SPDX-FileCopyrightText = "NOVA contributors"
 SPDX-License-Identifier = "CC0-1.0"

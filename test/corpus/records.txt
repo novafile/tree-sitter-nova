@@ -7,14 +7,15 @@ b: two
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (number))
-    (entry
-      (key)
-      (plain_scalar))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (number))
+      (entry
+        (key)
+        (plain_scalar)))))
 
 ================================================================================
 Nested records
@@ -28,23 +29,24 @@ e: 3
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (record
-        (entry
-          (key)
-          (record
-            (entry
-              (key)
-              (number))))
-        (entry
-          (key)
-          (number))))
-    (entry
-      (key)
-      (number))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (record
+          (entry
+            (key)
+            (record
+              (entry
+                (key)
+                (number))))
+          (entry
+            (key)
+            (number))))
+      (entry
+        (key)
+        (number)))))
 
 ================================================================================
 Quoted keys
@@ -55,20 +57,21 @@ Quoted keys
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (string
-        (string_content))
-      (number))
-    (entry
-      (string
-        (string_content))
-      (flow_record
-        (entry
-          (string
-            (string_content))
-          (number))))))
+(stream
+  (document
+    (record
+      (entry
+        (string
+          (string_content))
+        (number))
+      (entry
+        (string
+          (string_content))
+        (flow_record
+          (entry
+            (string
+              (string_content))
+            (number)))))))
 
 ================================================================================
 Keys with dashes and underscores
@@ -80,17 +83,18 @@ k9: 3
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (number))
-    (entry
-      (key)
-      (number))
-    (entry
-      (key)
-      (number))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (number))
+      (entry
+        (key)
+        (number))
+      (entry
+        (key)
+        (number)))))
 
 ================================================================================
 Comment after key before block
@@ -101,15 +105,16 @@ a:   # comment
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (comment)
-      (record
-        (entry
-          (key)
-          (number))))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (comment)
+        (record
+          (entry
+            (key)
+            (number)))))))
 
 ================================================================================
 No trailing newline
@@ -119,11 +124,12 @@ a: 1
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (number))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (number)))))
 
 ================================================================================
 CRLF line endings
@@ -135,17 +141,18 @@ b:
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (number))
-    (entry
-      (key)
-      (record
-        (entry
-          (key)
-          (plain_scalar))))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (number))
+      (entry
+        (key)
+        (record
+          (entry
+            (key)
+            (plain_scalar)))))))
 
 ================================================================================
 Empty document
@@ -155,7 +162,7 @@ Empty document
 
 --------------------------------------------------------------------------------
 
-(document)
+(stream)
 
 ================================================================================
 Comment-only document
@@ -167,6 +174,6 @@ Comment-only document
 
 --------------------------------------------------------------------------------
 
-(document
+(stream
   (comment)
   (comment))

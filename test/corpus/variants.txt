@@ -10,38 +10,39 @@ e: [!a, !b({c: 1})]
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (variant
-        (tag)))
-    (entry
-      (key)
-      (variant
-        (tag)
-        (string
-          (string_content))))
-    (entry
-      (key)
-      (variant
-        (tag)
-        (word)))
-    (entry
-      (key)
-      (variant
-        (tag)))
-    (entry
-      (key)
-      (flow_list
+(stream
+  (document
+    (record
+      (entry
+        (key)
         (variant
-          (tag))
+          (tag)))
+      (entry
+        (key)
         (variant
           (tag)
-          (flow_record
-            (entry
-              (key)
-              (number))))))))
+          (string
+            (string_content))))
+      (entry
+        (key)
+        (variant
+          (tag)
+          (word)))
+      (entry
+        (key)
+        (variant
+          (tag)))
+      (entry
+        (key)
+        (flow_list
+          (variant
+            (tag))
+          (variant
+            (tag)
+            (flow_record
+              (entry
+                (key)
+                (number)))))))))
 
 ================================================================================
 Block payload variant
@@ -54,24 +55,25 @@ next: 1
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (variant
-        (tag)
-        (record
-          (entry
-            (key)
-            (number))
-          (entry
-            (key)
-            (tuple
-              (number)
-              (number))))))
-    (entry
-      (key)
-      (number))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (variant
+          (tag)
+          (record
+            (entry
+              (key)
+              (number))
+            (entry
+              (key)
+              (tuple
+                (number)
+                (number))))))
+      (entry
+        (key)
+        (number)))))
 
 ================================================================================
 Block payload variant in list
@@ -85,21 +87,22 @@ Block payload variant in list
 
 --------------------------------------------------------------------------------
 
-(document
-  (list
-    (item
-      (variant
-        (tag)))
-    (item
-      (variant
-        (tag)
-        (record
-          (entry
-            (key)
-            (number)))))
-    (item
-      (variant
-        (tag)
-        (list
-          (item
-            (plain_scalar)))))))
+(stream
+  (document
+    (list
+      (item
+        (variant
+          (tag)))
+      (item
+        (variant
+          (tag)
+          (record
+            (entry
+              (key)
+              (number)))))
+      (item
+        (variant
+          (tag)
+          (list
+            (item
+              (plain_scalar))))))))

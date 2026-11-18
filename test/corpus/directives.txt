@@ -13,33 +13,34 @@ a: 1
 
 --------------------------------------------------------------------------------
 
-(document
-  (directive
-    (directive_name)
-    (argument))
-  (directive
-    (directive_name)
-    (argument))
-  (directive
-    (directive_name)
-    (argument))
-  (directive
-    (directive_name)
-    (argument))
-  (directive
-    (directive_name)
-    (argument))
-  (directive
-    (directive_name)
-    (argument))
-  (directive
-    (directive_name)
-    (argument)
-    (comment))
-  (record
-    (entry
-      (key)
-      (number))))
+(stream
+  (document
+    (directive
+      (directive_name)
+      (argument))
+    (directive
+      (directive_name)
+      (argument))
+    (directive
+      (directive_name)
+      (argument))
+    (directive
+      (directive_name)
+      (argument))
+    (directive
+      (directive_name)
+      (argument))
+    (directive
+      (directive_name)
+      (argument))
+    (directive
+      (directive_name)
+      (argument)
+      (comment))
+    (record
+      (entry
+        (key)
+        (number)))))
 
 ================================================================================
 Directives only
@@ -49,10 +50,11 @@ Directives only
 
 --------------------------------------------------------------------------------
 
-(document
-  (directive
-    (directive_name)
-    (argument)))
+(stream
+  (document
+    (directive
+      (directive_name)
+      (argument))))
 
 ================================================================================
 Query document
@@ -62,10 +64,11 @@ Query document
 
 --------------------------------------------------------------------------------
 
-(document
-  (directive
-    (directive_name)
-    (argument)))
+(stream
+  (document
+    (directive
+      (directive_name)
+      (argument))))
 
 ================================================================================
 Query response
@@ -79,25 +82,26 @@ Query response
 
 --------------------------------------------------------------------------------
 
-(document
-  (directive
-    (directive_name)
-    (argument))
-  (directive
-    (directive_name)
-    (argument))
-  (table
-    (table_header
-      (row_count)
-      (column)
-      (column))
-    (row
-      (cell
-        (word))
-      (cell
-        (number)))
-    (row
-      (cell
-        (word))
-      (cell
-        (number)))))
+(stream
+  (document
+    (directive
+      (directive_name)
+      (argument))
+    (directive
+      (directive_name)
+      (argument))
+    (table
+      (table_header
+        (row_count)
+        (column)
+        (column))
+      (row
+        (cell
+          (word))
+        (cell
+          (number)))
+      (row
+        (cell
+          (word))
+        (cell
+          (number))))))

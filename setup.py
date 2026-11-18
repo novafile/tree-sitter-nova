@@ -13,6 +13,9 @@ class Build(build):
         if path.isdir("queries"):
             dest = path.join(self.build_lib, "tree_sitter_nova", "queries")
             self.copy_tree("queries", dest)
+        if path.isdir("schema/queries"):
+            dest = path.join(self.build_lib, "tree_sitter_nova", "queries", "schema")
+            self.copy_tree("schema/queries", dest)
         super().run()
 
 
@@ -22,8 +25,6 @@ class BuildExt(build_ext):
             ext.extra_compile_args = ["-std=c11", "-fvisibility=hidden"]
         else:
             ext.extra_compile_args = ["/std:c11", "/utf-8"]
-        if path.exists("src/scanner.c"):
-            ext.sources.append("src/scanner.c")
         if ext.py_limited_api:
             ext.define_macros.append(("Py_LIMITED_API", "0x030A0000"))
         super().build_extension(ext)
@@ -41,8 +42,11 @@ class EggInfo(egg_info):
     def find_sources(self):
         super().find_sources()
         self.filelist.recursive_include("queries", "*.scm")
+        self.filelist.recursive_include("schema/queries", "*.scm")
         self.filelist.include("src/tree_sitter/*.h")
         self.filelist.include("src/*.c")
+        self.filelist.include("schema/src/tree_sitter/*.h")
+        self.filelist.include("schema/src/*.c")
 
 
 setup(
@@ -51,6 +55,7 @@ setup(
     package_data={
         "tree_sitter_nova": ["*.pyi", "py.typed"],
         "tree_sitter_nova.queries": ["*.scm"],
+        "tree_sitter_nova.queries.schema": ["*.scm"],
     },
     ext_package="tree_sitter_nova",
     ext_modules=[
@@ -59,6 +64,9 @@ setup(
             sources=[
                 "bindings/python/tree_sitter_nova/binding.c",
                 "src/parser.c",
+                "src/scanner.c",
+                "schema/src/parser.c",
+                "schema/src/scanner.c",
             ],
             define_macros=[
                 ("PY_SSIZE_T_CLEAN", None),

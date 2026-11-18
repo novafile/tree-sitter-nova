@@ -8,6 +8,7 @@ extern "C" {
 #endif
 
 const TSLanguage *tree_sitter_nova(void);
+const TSLanguage *tree_sitter_nova_schema(void);
 
 #ifdef __cplusplus
 }

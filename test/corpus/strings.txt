@@ -9,23 +9,24 @@ c: " padded "
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (string
-        (string_content)))
-    (entry
-      (key)
-      (string))
-    (entry
-      (key)
-      (string
-        (string_content)))
-    (entry
-      (string
-        (string_content))
-      (number))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (string
+          (string_content)))
+      (entry
+        (key)
+        (string))
+      (entry
+        (key)
+        (string
+          (string_content)))
+      (entry
+        (string
+          (string_content))
+        (number)))))
 
 ================================================================================
 Escape sequences
@@ -36,32 +37,33 @@ b: "\u00e9 \u{1F600} \$HOME"
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (string
-        (string_content)
-        (escape_sequence)
-        (string_content)
-        (escape_sequence)
-        (string_content)
-        (escape_sequence)
-        (string_content)
-        (escape_sequence)
-        (escape_sequence)
-        (escape_sequence)
-        (escape_sequence)
-        (escape_sequence)))
-    (entry
-      (key)
-      (string
-        (escape_sequence)
-        (string_content)
-        (escape_sequence)
-        (string_content)
-        (escape_sequence)
-        (string_content)))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (string
+          (string_content)
+          (escape_sequence)
+          (string_content)
+          (escape_sequence)
+          (string_content)
+          (escape_sequence)
+          (string_content)
+          (escape_sequence)
+          (escape_sequence)
+          (escape_sequence)
+          (escape_sequence)
+          (escape_sequence)))
+      (entry
+        (key)
+        (string
+          (escape_sequence)
+          (string_content)
+          (escape_sequence)
+          (string_content)
+          (escape_sequence)
+          (string_content))))))
 
 ================================================================================
 Hash inside quoted string
@@ -72,17 +74,18 @@ b: "#start"
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (string
-        (string_content))
-      (comment))
-    (entry
-      (key)
-      (string
-        (string_content)))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (string
+          (string_content))
+        (comment))
+      (entry
+        (key)
+        (string
+          (string_content))))))
 
 ================================================================================
 Dollar inside quoted string
@@ -94,20 +97,21 @@ c: "$$"
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (string
-        (string_content)
-        (string_content)))
-    (entry
-      (key)
-      (string
-        (string_content)
-        (string_content)
-        (string_content)))
-    (entry
-      (key)
-      (string
-        (string_content)))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (string
+          (string_content)
+          (string_content)))
+      (entry
+        (key)
+        (string
+          (string_content)
+          (string_content)
+          (string_content)))
+      (entry
+        (key)
+        (string
+          (string_content))))))

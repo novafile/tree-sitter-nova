@@ -35,3 +35,19 @@ empty: |
 #      ^ punctuation.special
 script: |
   echo hi
+dollar: $HOME
+# <- property
+#       ^ string
+interp: "${name}"
+#        ^ string
+#          ^ string
+---
+# <- punctuation.special
+@template
+# <- keyword.directive
+x: "${name}"
+#   ^ punctuation.special
+#     ^ variable
+y: $name
+#  ^ punctuation.special
+#   ^ variable

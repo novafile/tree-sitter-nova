@@ -12,7 +12,19 @@ repository = "https://github.com/novafile/tree-sitter-nova"
 version = "0.1.0"
 
 build = "bindings/rust/build.rs"
-include = [ "bindings/rust/*", "grammar.js", "queries/*", "src/*", "tree-sitter.json", "/LICENSE" ]
+include = [
+  "bindings/rust/*",
+  "common/*",
+  "grammar.js",
+  "queries/*",
+  "schema/grammar.js",
+  "schema/queries/*",
+  "schema/src/*",
+  "src/*",
+  "test/highlight/*",
+  "tree-sitter.json",
+  "/LICENSE",
+]
 
 [lib]
 path = "bindings/rust/lib.rs"

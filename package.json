@@ -21,12 +21,16 @@
   ],
   "files": [
     "grammar.js",
+    "common/*",
+    "schema/grammar.js",
     "tree-sitter.json",
     "binding.gyp",
     "prebuilds/**",
     "bindings/node/*",
     "queries/*",
+    "schema/queries/*",
     "src/**",
+    "schema/src/**",
     "*.wasm"
   ],
   "dependencies": {

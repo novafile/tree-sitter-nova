@@ -1,6 +1,10 @@
-"""NOVA (Notation for Objects, Values & Agents) grammar for tree-sitter"""
+"""NOVA (Notation for Objects, Values & Agents) grammar for tree-sitter
 
-from ._binding import language
+Two languages: ``language()`` for NOVA text (``.nova``) and
+``language_nova_schema()`` for the schema language (``.novs``).
+"""
+
+from ._binding import language, language_nova_schema
 
 
 def _get_query(name, file):
@@ -25,12 +29,19 @@ def __getattr__(name):
         return _get_query("LOCALS_QUERY", "queries/locals.scm")
     if name == "TAGS_QUERY":
         return _get_query("TAGS_QUERY", "queries/tags.scm")
+    if name == "NOVA_SCHEMA_HIGHLIGHTS_QUERY":
+        return _get_query("NOVA_SCHEMA_HIGHLIGHTS_QUERY", "queries/schema/highlights.scm")
+    if name == "NOVA_SCHEMA_LOCALS_QUERY":
+        return _get_query("NOVA_SCHEMA_LOCALS_QUERY", "queries/schema/locals.scm")
 
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
 __all__ = [
     "language",
+    "language_nova_schema",
+    "NOVA_SCHEMA_HIGHLIGHTS_QUERY",
+    "NOVA_SCHEMA_LOCALS_QUERY",
     "HIGHLIGHTS_QUERY",
     "INJECTIONS_QUERY",
     "LOCALS_QUERY",

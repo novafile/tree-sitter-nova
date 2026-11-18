@@ -9,18 +9,19 @@ Block list
 
 --------------------------------------------------------------------------------
 
-(document
-  (list
-    (item
-      (plain_scalar))
-    (item
-      (number))
-    (item
-      (string
-        (string_content)))
-    (item
-      (flow_list
-        (number)))))
+(stream
+  (document
+    (list
+      (item
+        (plain_scalar))
+      (item
+        (number))
+      (item
+        (string
+          (string_content)))
+      (item
+        (flow_list
+          (number))))))
 
 ================================================================================
 Records in a list
@@ -35,27 +36,28 @@ services:
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (list
-        (item
-          (record
-            (entry
-              (key)
-              (plain_scalar))
-            (entry
-              (key)
-              (number))))
-        (item
-          (record
-            (entry
-              (key)
-              (plain_scalar))
-            (entry
-              (key)
-              (number))))))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (list
+          (item
+            (record
+              (entry
+                (key)
+                (plain_scalar))
+              (entry
+                (key)
+                (number))))
+          (item
+            (record
+              (entry
+                (key)
+                (plain_scalar))
+              (entry
+                (key)
+                (number)))))))))
 
 ================================================================================
 Nested block list
@@ -68,16 +70,17 @@ Nested block list
 
 --------------------------------------------------------------------------------
 
-(document
-  (list
-    (item
-      (list
-        (item
-          (plain_scalar))
-        (item
-          (plain_scalar))))
-    (item
-      (plain_scalar))))
+(stream
+  (document
+    (list
+      (item
+        (list
+          (item
+            (plain_scalar))
+          (item
+            (plain_scalar))))
+      (item
+        (plain_scalar)))))
 
 ================================================================================
 Dash-line entry with nested block
@@ -90,24 +93,25 @@ Dash-line entry with nested block
 
 --------------------------------------------------------------------------------
 
-(document
-  (list
-    (item
-      (record
-        (entry
-          (key)
-          (record
-            (entry
-              (key)
-              (number))))
-        (entry
-          (key)
-          (number))))
-    (item
-      (record
-        (entry
-          (key)
-          (number))))))
+(stream
+  (document
+    (list
+      (item
+        (record
+          (entry
+            (key)
+            (record
+              (entry
+                (key)
+                (number))))
+          (entry
+            (key)
+            (number))))
+      (item
+        (record
+          (entry
+            (key)
+            (number)))))))
 
 ================================================================================
 List in a record in a list
@@ -120,17 +124,18 @@ List in a record in a list
 
 --------------------------------------------------------------------------------
 
-(document
-  (list
-    (item
-      (record
-        (entry
-          (key)
-          (list
-            (item
-              (number))
-            (item
-              (number))))
-        (entry
-          (key)
-          (plain_scalar))))))
+(stream
+  (document
+    (list
+      (item
+        (record
+          (entry
+            (key)
+            (list
+              (item
+                (number))
+              (item
+                (number))))
+          (entry
+            (key)
+            (plain_scalar)))))))

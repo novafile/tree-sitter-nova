@@ -1,0 +1,462 @@
+================================================================================
+Dash-line nesting
+================================================================================
+
+- a: 1
+  b:
+    c: 2
+  d:
+    - 3
+- key:
+    x: 1
+  y: 2
+- s: |
+    text
+  t[1]{a}:
+    1
+  v: !tag
+    p: 1
+- !tag
+  q: 1
+-
+  - nested
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (list
+      (item
+        (record
+          (entry
+            (key)
+            (number))
+          (entry
+            (key)
+            (record
+              (entry
+                (key)
+                (number))))
+          (entry
+            (key)
+            (list
+              (item
+                (number))))))
+      (item
+        (record
+          (entry
+            (key)
+            (record
+              (entry
+                (key)
+                (number))))
+          (entry
+            (key)
+            (number))))
+      (item
+        (record
+          (entry
+            (key)
+            (block_string
+              (block_string_indicator)
+              (string_content)))
+          (entry
+            (key)
+            (table
+              (table_header
+                (row_count)
+                (column))
+              (row
+                (cell
+                  (number)))))
+          (entry
+            (key)
+            (variant
+              (tag)
+              (record
+                (entry
+                  (key)
+                  (number)))))))
+      (item
+        (variant
+          (tag)
+          (record
+            (entry
+              (key)
+              (number)))))
+      (item
+        (list
+          (item
+            (plain_scalar)))))))
+
+================================================================================
+Comment lines do not count
+================================================================================
+
+a:
+      # deep comment
+  b: 1
+ # shallow comment
+  c: 2
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (comment)
+        (record
+          (entry
+            (key)
+            (number))
+          (comment)
+          (entry
+            (key)
+            (number)))))))
+
+================================================================================
+Error: block indented three spaces
+================================================================================
+
+a:
+   b: 1
+c: 2
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (ERROR
+          (indentation_error))
+        (record
+          (entry
+            (key)
+            (number))))
+      (entry
+        (key)
+        (number)))))
+
+================================================================================
+Error: block indented four spaces
+================================================================================
+
+a:
+    b: 1
+c: 2
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (ERROR
+          (indentation_error))
+        (record
+          (entry
+            (key)
+            (number))))
+      (entry
+        (key)
+        (number)))))
+
+================================================================================
+Error: line indented one space too far
+================================================================================
+
+a:
+  b: 1
+   c: 2
+  d: 3
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (record
+          (entry
+            (key)
+            (number))
+          (ERROR
+            (indentation_error))
+          (entry
+            (key)
+            (number))
+          (entry
+            (key)
+            (number)))))))
+
+================================================================================
+Error: dedent between levels
+================================================================================
+
+a:
+  b:
+    c: 1
+   d: 2
+e: 3
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (record
+          (entry
+            (key)
+            (record
+              (entry
+                (key)
+                (number))))
+          (ERROR
+            (indentation_error))
+          (entry
+            (key)
+            (number))))
+      (entry
+        (key)
+        (number)))))
+
+================================================================================
+Error: dash-line record field misaligned
+================================================================================
+
+- a: 1
+   b: 2
+- c: 3
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (list
+      (item
+        (record
+          (entry
+            (key)
+            (number))
+          (ERROR
+            (indentation_error))
+          (entry
+            (key)
+            (number))))
+      (item
+        (record
+          (entry
+            (key)
+            (number)))))))
+
+================================================================================
+Error: dash-line field block at two spaces
+================================================================================
+
+- key:
+  a: 1
+- c: 3
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (list
+      (item
+        (record
+          (entry
+            (key)
+            (ERROR
+              (indentation_error))
+            (record
+              (entry
+                (key)
+                (number))))))
+      (item
+        (record
+          (entry
+            (key)
+            (number)))))))
+
+================================================================================
+Error: list item indented too far
+================================================================================
+
+items:
+  - x
+   - y
+  - z
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (list
+          (item
+            (plain_scalar))
+          (ERROR
+            (indentation_error))
+          (item
+            (plain_scalar))
+          (item
+            (plain_scalar)))))))
+
+================================================================================
+Error: variant payload indented wrongly
+================================================================================
+
+a: !tag
+   x: 1
+b: 2
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (variant
+          (tag)
+          (ERROR
+            (indentation_error))
+          (record
+            (entry
+              (key)
+              (number)))))
+      (entry
+        (key)
+        (number)))))
+
+================================================================================
+Error: tab in indentation
+================================================================================
+
+a:
+	b: 1
+c: 2
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (ERROR
+          (indentation_error))
+        (record
+          (entry
+            (key)
+            (number))))
+      (entry
+        (key)
+        (number)))))
+
+================================================================================
+Error: indented first line
+================================================================================
+
+  a: 1
+b: 2
+
+--------------------------------------------------------------------------------
+
+(stream
+  (ERROR
+    (indentation_error))
+  (document
+    (record
+      (entry
+        (key)
+        (number))
+      (entry
+        (key)
+        (number)))))
+
+================================================================================
+Error: one bad line in a larger document
+================================================================================
+
+# A document with one wrongly indented line (`   replicas`, three spaces):
+# the ERROR stays on that line and the rest of the tree is unaffected.
+environment: production
+services:
+  - id: auth
+    image: ghcr.io/example/auth:v2
+     replicas: 3
+    ports: [8080]
+  - id: api
+    labels:
+      tier: edge
+    t[1]{a,b}:
+      1, 2
+owner: platform
+
+--------------------------------------------------------------------------------
+
+(stream
+  (comment)
+  (comment)
+  (document
+    (record
+      (entry
+        (key)
+        (plain_scalar))
+      (entry
+        (key)
+        (list
+          (item
+            (record
+              (entry
+                (key)
+                (plain_scalar))
+              (entry
+                (key)
+                (plain_scalar))
+              (ERROR
+                (indentation_error))
+              (entry
+                (key)
+                (number))
+              (entry
+                (key)
+                (flow_list
+                  (number)))))
+          (item
+            (record
+              (entry
+                (key)
+                (plain_scalar))
+              (entry
+                (key)
+                (record
+                  (entry
+                    (key)
+                    (plain_scalar))))
+              (entry
+                (key)
+                (table
+                  (table_header
+                    (row_count)
+                    (column)
+                    (column))
+                  (row
+                    (cell
+                      (number))
+                    (cell
+                      (number)))))))))
+      (entry
+        (key)
+        (plain_scalar)))))

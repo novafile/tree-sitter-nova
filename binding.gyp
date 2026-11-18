@@ -11,14 +11,11 @@
       "sources": [
         "bindings/node/binding.cc",
         "src/parser.c",
+        "src/scanner.c",
+        "schema/src/parser.c",
+        "schema/src/scanner.c",
       ],
-      "variables": {
-        "has_scanner": "<!(node -p \"fs.existsSync('src/scanner.c')\")"
-      },
       "conditions": [
-        ["has_scanner=='true'", {
-          "sources+": ["src/scanner.c"],
-        }],
         ["OS!='win'", {
           "cflags_c": [
             "-std=c11",

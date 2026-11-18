@@ -36,10 +36,23 @@ add_custom_command(OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/src/parser.c"
                    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
                    COMMENT "Generating parser.c")
 
-add_library(tree-sitter-nova src/parser.c)
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/scanner.c)
-  target_sources(tree-sitter-nova PRIVATE src/scanner.c)
-endif()
+add_custom_command(OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/schema/src/grammar.json"
+                          "${CMAKE_CURRENT_SOURCE_DIR}/schema/src/node-types.json"
+                   DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/schema/grammar.js"
+                   COMMAND "${TREE_SITTER_CLI}" generate grammar.js --no-parser
+                   WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/schema"
+                   COMMENT "Generating schema/src/grammar.json")
+
+add_custom_command(OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/schema/src/parser.c"
+                   DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/schema/src/grammar.json"
+                   COMMAND "${TREE_SITTER_CLI}" generate src/grammar.json
+                            --abi=${TREE_SITTER_ABI_VERSION}
+                   WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/schema"
+                   COMMENT "Generating schema/src/parser.c")
+
+# One library with both languages: tree_sitter_nova() and
+# tree_sitter_nova_schema().
+add_library(tree-sitter-nova src/parser.c src/scanner.c schema/src/parser.c schema/src/scanner.c)
 target_include_directories(tree-sitter-nova
                            PRIVATE src
                            INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/bindings/c>
@@ -70,7 +83,11 @@ install(TARGETS tree-sitter-nova
 file(GLOB QUERIES queries/*.scm)
 install(FILES ${QUERIES}
         DESTINATION "${CMAKE_INSTALL_DATADIR}/tree-sitter/queries/nova")
+file(GLOB SCHEMA_QUERIES schema/queries/*.scm)
+install(FILES ${SCHEMA_QUERIES}
+        DESTINATION "${CMAKE_INSTALL_DATADIR}/tree-sitter/queries/nova_schema")
 
 add_custom_target(ts-test "${TREE_SITTER_CLI}" test
+                  COMMAND "${TREE_SITTER_CLI}" test -p schema
                   WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
                   COMMENT "tree-sitter test")

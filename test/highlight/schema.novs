@@ -1,0 +1,42 @@
+@schema types@1.0.0
+# <- keyword.directive
+#       ^ module
+#             ^ string.special
+@root T
+#     ^ type
+type Port = u16 @range(1..65535)
+# <- keyword.type
+#    ^ type.definition
+#           ^ type.builtin
+#               ^ attribute
+#                      ^ number
+#                       ^ operator
+record T @open:
+# <- keyword.type
+#      ^ type.definition
+#        ^ attribute
+  id: string @key @id(1)
+# ^ property
+#     ^ type.builtin
+#            ^ attribute
+  tags?: list<string @len(1..64, utf8)> = [a, "b"]
+# ^ property
+#     ^ punctuation.special
+#        ^ type.builtin
+#            ^ punctuation.bracket
+#                                ^ constant.builtin
+#                                         ^ punctuation.bracket
+#                                          ^ string
+#                                             ^ string
+  port: Port? = !none  # comment
+#       ^ type
+#           ^ punctuation.special
+#               ^ constructor
+#                ^ constructor
+#                      ^ comment
+enum Status = active | failed(string)
+# <- keyword.type
+#    ^ type.definition
+#             ^ constructor
+#                    ^ punctuation.delimiter
+#                      ^ constructor

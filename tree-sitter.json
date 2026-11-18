@@ -6,12 +6,29 @@
       "camelcase": "Nova",
       "title": "NOVA",
       "scope": "source.nova",
-      "file-types": ["nova"],
+      "file-types": [
+        "nova"
+      ],
       "injection-regex": "^nova$",
       "class-name": "TreeSitterNova",
       "highlights": "queries/highlights.scm",
       "locals": "queries/locals.scm",
-      "injections": "queries/injections.scm"
+      "injections": "queries/injections.scm",
+      "path": "."
+    },
+    {
+      "name": "nova_schema",
+      "camelcase": "NovaSchema",
+      "title": "NOVA schema",
+      "scope": "source.novs",
+      "path": "schema",
+      "file-types": [
+        "novs"
+      ],
+      "injection-regex": "^(novs|nova_schema)$",
+      "class-name": "TreeSitterNovaSchema",
+      "highlights": "schema/queries/highlights.scm",
+      "locals": "schema/queries/locals.scm"
     }
   ],
   "metadata": {

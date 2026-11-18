@@ -1,0 +1,14 @@
+# A document with one wrongly indented line (`   replicas`, three spaces):
+# the ERROR stays on that line and the rest of the tree is unaffected.
+environment: production
+services:
+  - id: auth
+    image: ghcr.io/example/auth:v2
+     replicas: 3
+    ports: [8080]
+  - id: api
+    labels:
+      tier: edge
+    t[1]{a,b}:
+      1, 2
+owner: platform

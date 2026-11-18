@@ -1,31 +1,35 @@
 fn main() {
-    let src_dir = std::path::Path::new("src");
+    // Two grammars: `nova` (src/) and `nova_schema` (schema/src/). Each is
+    // compiled with its own include directory for the generated headers.
+    for (lib, src_dir) in [("tree-sitter-nova", "src"), ("tree-sitter-nova-schema", "schema/src")] {
+        let src_dir = std::path::Path::new(src_dir);
 
-    let mut c_config = cc::Build::new();
-    c_config.std("c11").include(src_dir);
+        let mut c_config = cc::Build::new();
+        c_config.std("c11").include(src_dir);
 
-    #[cfg(target_env = "msvc")]
-    c_config.flag("-utf-8");
+        #[cfg(target_env = "msvc")]
+        c_config.flag("-utf-8");
 
-    if std::env::var("TARGET").unwrap() == "wasm32-unknown-unknown" {
-        let Ok(wasm_headers) = std::env::var("DEP_TREE_SITTER_LANGUAGE_WASM_HEADERS") else {
-            panic!("Environment variable DEP_TREE_SITTER_LANGUAGE_WASM_HEADERS must be set by the language crate");
-        };
+        if std::env::var("TARGET").unwrap() == "wasm32-unknown-unknown" {
+            let Ok(wasm_headers) = std::env::var("DEP_TREE_SITTER_LANGUAGE_WASM_HEADERS") else {
+                panic!("Environment variable DEP_TREE_SITTER_LANGUAGE_WASM_HEADERS must be set by the language crate");
+            };
 
-        c_config.include(&wasm_headers);
+            c_config.include(&wasm_headers);
+        }
+
+        let parser_path = src_dir.join("parser.c");
+        c_config.file(&parser_path);
+        println!("cargo:rerun-if-changed={}", parser_path.to_str().unwrap());
+
+        let scanner_path = src_dir.join("scanner.c");
+        if scanner_path.exists() {
+            c_config.file(&scanner_path);
+            println!("cargo:rerun-if-changed={}", scanner_path.to_str().unwrap());
+        }
+
+        c_config.compile(lib);
     }
-
-    let parser_path = src_dir.join("parser.c");
-    c_config.file(&parser_path);
-    println!("cargo:rerun-if-changed={}", parser_path.to_str().unwrap());
-
-    let scanner_path = src_dir.join("scanner.c");
-    if scanner_path.exists() {
-        c_config.file(&scanner_path);
-        println!("cargo:rerun-if-changed={}", scanner_path.to_str().unwrap());
-    }
-
-    c_config.compile("tree-sitter-nova");
 
     println!("cargo:rustc-check-cfg=cfg(with_highlights_query)");
     if !"queries/highlights.scm".is_empty() && std::path::Path::new("queries/highlights.scm").exists() {

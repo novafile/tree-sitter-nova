@@ -1,11 +1,15 @@
-"""Write test/corpus/*.txt with empty expectations; `tree-sitter test -u` fills them."""
+"""Write test/corpus/*.txt and schema/test/corpus/*.txt with empty expectations.
+
+`tree-sitter test -u` and `tree-sitter test -p schema -u` fill them in.
+"""
 # SPDX-License-Identifier: Apache-2.0
-# Regenerates test/corpus from the NOVA examples; then run `tree-sitter test -u`.
+# Regenerates the corpora from the NOVA examples; then run the two
+# `tree-sitter test -u` commands above.
 import os
-import sys
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 NOVA = os.environ.get('NOVA_REPO', os.path.join(REPO, '..', 'nova'))  # novafile/nova checkout
+SPEC = os.environ.get('SPEC_REPO', os.path.join(REPO, '..', 'spec'))  # novafile/spec checkout
 S = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -97,6 +101,47 @@ C['tables'] = [
     ('Top-level table', '[2]{id,replicas}:\n  auth,3\n  api,5\n'),
     ('Table with comments', 'table[2]{a,b}:  # header\n  1, x   # first row\n  # between\n  2, y\n'),
     ('Flow list is not a table', '[2]\n'),
+    ('Table without rows', 't[0]{a,b}:\nx: 1\n'),
+    ('Table cells with commas and line breaks', 't[2]{a,b}:\n  [1, 2], {a: 1, b: "x,y"}\n  "x, y", (1,\n    2)  # c\nx: 1\n'),
+    ('Table in a list item', '- t[2]{a,b}:\n    1, 2\n    3, 4\n  after: x\n- u[0]{a}:\n  after: y\n'),
+    ('Table at end of input', 't[2]{a,b}:\n  1, 2\n  3, 4'),
+    # Row and cell counts (§4.9): each mismatch is one ERROR at the row.
+    ('Error: too few rows', 't[3]{a,b}:\n  1, 2\n  3, 4\nx: 1\n'),
+    ('Error: too few rows at end of input', 't[2]{a,b}:\n  1, 2'),
+    ('Error: too few rows in a top-level table', '[2]{a,b}:\n  1, 2\n'),
+    ('Error: too few rows in a list item', '- t[2]{a}:\n    1\n  y: 2\n'),
+    ('Error: no rows', 't[2]{a,b}:\nx: 1\n'),
+    ('Error: too many rows', 't[1]{a,b}:\n  1, 2\n  3, 4\nx: 1\n'),
+    ('Error: rows after [0]', 't[0]{a,b}:\n  1, 2\nx: 1\n'),
+    ('Error: too many cells', 't[2]{a,b}:\n  1, 2, 3\n  3, 4\nx: 1\n'),
+    ('Error: too few cells', 't[2]{a,b}:\n  1, 2\n  3\nx: 1\n'),
+    ('Error: row indented wrongly', 't[2]{a,b}:\n  1, 2\n   3, 4\nx: 1\n'),
+]
+
+C['indentation'] = [
+    ('Dash-line nesting', '- a: 1\n  b:\n    c: 2\n  d:\n    - 3\n- key:\n    x: 1\n  y: 2\n- s: |\n    text\n  t[1]{a}:\n    1\n  v: !tag\n    p: 1\n- !tag\n  q: 1\n-\n  - nested\n'),
+    ('Comment lines do not count', 'a:\n      # deep comment\n  b: 1\n # shallow comment\n  c: 2\n'),
+    # Wrong indentation (§4.3): an ERROR at the line, the line still parses.
+    ('Error: block indented three spaces', 'a:\n   b: 1\nc: 2\n'),
+    ('Error: block indented four spaces', 'a:\n    b: 1\nc: 2\n'),
+    ('Error: line indented one space too far', 'a:\n  b: 1\n   c: 2\n  d: 3\n'),
+    ('Error: dedent between levels', 'a:\n  b:\n    c: 1\n   d: 2\ne: 3\n'),
+    ('Error: dash-line record field misaligned', '- a: 1\n   b: 2\n- c: 3\n'),
+    ('Error: dash-line field block at two spaces', '- key:\n  a: 1\n- c: 3\n'),
+    ('Error: list item indented too far', 'items:\n  - x\n   - y\n  - z\n'),
+    ('Error: variant payload indented wrongly', 'a: !tag\n   x: 1\nb: 2\n'),
+    ('Error: tab in indentation', 'a:\n\tb: 1\nc: 2\n'),
+    ('Error: indented first line', '  a: 1\nb: 2\n'),
+    ('Error: one bad line in a larger document', read(f'{S}/indentation.nova')),
+]
+
+C['streams'] = [
+    ('Stream of documents', 'a: 1\n---\n- x\n---\n@template\nx: $y\n---\n[1, 2]\n'),
+    ('Leading, trailing and empty documents', '---\na: 1\n---\n---\n# comment only\n---\n'),
+    ('Separator after nested blocks', 'a:\n  b: |\n    text\n  t[1]{c}:\n    1\n---\nd: 2\n'),
+    ('Dashes that are not separators', 'a: ---\nb: "---"\nc: |\n  ---\nd: [---]\n'),
+    ('Error: separator with trailing text', 'a: 1\n--- x\nb: 2\n'),
+    ('Error: an error stays in its document', 'a: [1,\nb: 2\n---\nc: 3\n---\nd: "open\n---\ne: 4\n'),
 ]
 
 C['comments'] = [
@@ -120,6 +165,13 @@ C['templates'] = [
     ('If in a record', '@template\nlabels:\n  @if $owner != null:\n    owner: $owner\n  @if not ($a or $b) and (1, 2) == $t:\n    x: 1\n'),
     ('For loops', '@template\nservices:\n  @for name in $services:\n    - id: $name\nlabels:\n  @for i, name in [a, b]:\n    "k-${i}": $name\n'),
     ('Control lines at top level', '@template\n@if $x:\n  a: 1\n@else:\n  b: 2\nc: 3\n'),
+    # Template constructs are recognized only after @template (§9.2).
+    ('Template syntax in a data document', 'a: $x\nb: "${y}"\nc: |\n  ${z} $$\n'),
+    ('@template after @nova', '@nova 1.0\n@template 0.1\nx: $y\n'),
+    ('@template after another directive is not a template', '@schema s@1.0.0\n@template\n@let x = 1\nx: $y\n'),
+    ('Error: spread in a data document', 'a:\n  ...$x\nb: 1\n'),
+    ('Error: control line in a data document', 'a:\n  @if $x:\n    b: 1\nc: 2\n'),
+    ('Reference-like word in a data flow value', 'a: [$x]\nb: 1\n'),
 ]
 
 C['patches'] = [
@@ -142,17 +194,63 @@ C['examples'] = [
 ]
 
 
-def emit(name, cases):
+# Schema files (§6.1): the `nova_schema` grammar.
+SC = {}
+
+SC['schemas'] = [
+    ('examples/infrastructure.novs', read(f'{NOVA}/examples/infrastructure.novs')),
+    ('spec meta/nova-schema.novs', read(f'{SPEC}/meta/nova-schema.novs')),
+    ('spec conformance/schema/infrastructure', read(f'{SPEC}/conformance/schema/infrastructure/schema.novs')),
+    ('spec conformance/schema/numbers', read(f'{SPEC}/conformance/schema/numbers/schema.novs')),
+    ('spec conformance/schema/strings', read(f'{SPEC}/conformance/schema/strings/schema.novs')),
+]
+
+SC['definitions'] = [
+    ('Directives', '@nova 1.0\n@schema nova-schema@0.1.0\n@root Schema\n@schema pre@2.1.0-rc.1+build.5\n'),
+    ('Type aliases', 'type Port = u16 @range(1..65535)\ntype Id = string\n'),
+    ('Enums', 'enum Status:\n  active\n  draining  # comment\n\n  failed(string)\nenum Kind = any | null | bool | named\nenum Shape = circle(float @range(0..)) | none\n'),
+    ('Records', 'record Empty:\nrecord Bag @open:\n  known?: int\n# between\n\nrecord Service:\n  id: string @key @id(1)\n  tags?: set<string> @id(6) @deprecated\n'),
+    ('Field names that are keywords', 'record Def:\n  type: Type\n  record?: RecordDef\n  enum?: list<VariantDef>\n  key: bool = false\n'),
+]
+
+SC['types'] = [
+    ('Built-in and named types', 'record R:\n  a: any\n  b: null\n  c: i64\n  d: timestamp\n  e: Service\n'),
+    ('Generic types', 'record R:\n  a: list<int>\n  b: set<string>\n  c: map<string, list<Service>>\n'),
+    ('Tuples', 'record R:\n  a: (string, u8)\n  b: (int,)\n  c: ()\n'),
+    ('Arrays and nullable types', 'record R:\n  a: Service[]\n  b: int?\n  c: int[]?\n  d: int?[]\n  e: list<int?>?\n'),
+    ('Attributes on type arguments', 'type Ports = list<u16 @range(1..1024)>\ntype M = map<string @len(1..8), int>\nrecord R:\n  g: list<string @len(1..1, graphemes)>\n  t: (int @range(0..), string)\n'),
+]
+
+SC['attributes'] = [
+    ('Ranges and lengths', 'record R:\n  f: float @range(0..0.1)\n  q?: decimal @range(1/3..)\n  n: int @range(-5..5)\n  b: string @len(..4, utf8)\n  s?: string @len(..4)\n  l: list<int> @len(1..)\n'),
+    ('Defaults', 'record R:\n  a: bool = true\n  b: Status = !active\n  c: list<string> = [a, "b c"]\n  d: map<int, string> = @map{1 => one}\n  e: timestamp = @timestamp("2026-11-17T16:00:00Z")\n  f: (int, int) = (1, 2)\n  g: string = "a#b"  # comment\n  h: Rec = {x: 1, "y z": [2]}\n'),
+]
+
+SC['errors'] = [
+    ('Error: field indented three spaces', 'record R:\n   a: int\n  b: int\nrecord S:\n  c: int\n'),
+    ('Error: field indented four spaces', 'record R:\n  a: int\n    b: int\n  c: int\n'),
+    ('Error: field indented one space', 'record R:\n  a: int\n b: int\nrecord S:\n  c: int\n'),
+    ('Error: indented definition', 'type A = int\n  type B = int\nrecord S:\n  c: int\n'),
+    ('Error: tab in indentation', 'record R:\n\ta: int\n  b: int\n'),
+    ('Error: enum variant indented wrongly', 'enum E:\n  a\n   b\n  c\n'),
+    ('Error: unknown directive', '@x-ext foo\nrecord R:\n  a: int\n'),
+    ('Error: unclosed attribute', 'record R:\n  a: int @id(1\n  c: int\n'),
+]
+
+
+def emit(name, cases, directory='test/corpus'):
     out = []
     for title, src in cases:
         out.append('=' * 80 + '\n' + title + '\n' + '=' * 80 + '\n\n' + src)
         if not src.endswith('\n'):
             out.append('\n')
         out.append('\n' + '-' * 80 + '\n\n\n')
-    with open(f'{REPO}/test/corpus/{name}.txt', 'w', newline='') as f:
+    with open(f'{REPO}/{directory}/{name}.txt', 'w', newline='') as f:
         f.write(''.join(out).rstrip('\n') + '\n')
 
 
 for name, cases in C.items():
     emit(name, cases)
-print(sum(len(v) for v in C.values()), 'cases')
+for name, cases in SC.items():
+    emit(name, cases, 'schema/test/corpus')
+print(sum(len(v) for v in C.values()), 'nova cases,', sum(len(v) for v in SC.values()), 'nova_schema cases')

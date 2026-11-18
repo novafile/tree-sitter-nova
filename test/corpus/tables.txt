@@ -8,40 +8,41 @@ services[2]{id,image,port,replicas,enabled}:
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (table
-        (table_header
-          (row_count)
-          (column)
-          (column)
-          (column)
-          (column)
-          (column))
-        (row
-          (cell
-            (word))
-          (cell
-            (word))
-          (cell
-            (number))
-          (cell
-            (number))
-          (cell
-            (boolean)))
-        (row
-          (cell
-            (word))
-          (cell
-            (word))
-          (cell
-            (number))
-          (cell
-            (number))
-          (cell
-            (boolean)))))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (table
+          (table_header
+            (row_count)
+            (column)
+            (column)
+            (column)
+            (column)
+            (column))
+          (row
+            (cell
+              (word))
+            (cell
+              (word))
+            (cell
+              (number))
+            (cell
+              (number))
+            (cell
+              (boolean)))
+          (row
+            (cell
+              (word))
+            (cell
+              (word))
+            (cell
+              (number))
+            (cell
+              (number))
+            (cell
+              (boolean))))))))
 
 ================================================================================
 Table with empty cells
@@ -54,22 +55,23 @@ t[3]{a,b}:
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (table
-        (table_header
-          (row_count)
-          (column)
-          (column))
-        (row
-          (cell
-            (number)))
-        (row
-          (cell
-            (null)))
-        (row)))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (table
+          (table_header
+            (row_count)
+            (column)
+            (column))
+          (row
+            (cell
+              (number)))
+          (row
+            (cell
+              (null)))
+          (row))))))
 
 ================================================================================
 Table with quoted columns and cells
@@ -80,25 +82,26 @@ Table with quoted columns and cells
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (string
-        (string_content))
-      (table
-        (table_header
-          (row_count)
-          (string
-            (string_content))
-          (column))
-        (row
-          (cell
+(stream
+  (document
+    (record
+      (entry
+        (string
+          (string_content))
+        (table
+          (table_header
+            (row_count)
             (string
-              (string_content)))
-          (cell
-            (flow_list
-              (number)
-              (number))))))))
+              (string_content))
+            (column))
+          (row
+            (cell
+              (string
+                (string_content)))
+            (cell
+              (flow_list
+                (number)
+                (number)))))))))
 
 ================================================================================
 Top-level table
@@ -110,22 +113,23 @@ Top-level table
 
 --------------------------------------------------------------------------------
 
-(document
-  (table
-    (table_header
-      (row_count)
-      (column)
-      (column))
-    (row
-      (cell
-        (word))
-      (cell
-        (number)))
-    (row
-      (cell
-        (word))
-      (cell
-        (number)))))
+(stream
+  (document
+    (table
+      (table_header
+        (row_count)
+        (column)
+        (column))
+      (row
+        (cell
+          (word))
+        (cell
+          (number)))
+      (row
+        (cell
+          (word))
+        (cell
+          (number))))))
 
 ================================================================================
 Table with comments
@@ -138,28 +142,29 @@ table[2]{a,b}:  # header
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (table
-        (table_header
-          (row_count)
-          (column)
-          (column))
-        (comment)
-        (row
-          (cell
-            (number))
-          (cell
-            (word))
-          (comment))
-        (comment)
-        (row
-          (cell
-            (number))
-          (cell
-            (word)))))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (table
+          (table_header
+            (row_count)
+            (column)
+            (column))
+          (comment)
+          (row
+            (cell
+              (number))
+            (cell
+              (word))
+            (comment))
+          (comment)
+          (row
+            (cell
+              (number))
+            (cell
+              (word))))))))
 
 ================================================================================
 Flow list is not a table
@@ -169,6 +174,482 @@ Flow list is not a table
 
 --------------------------------------------------------------------------------
 
-(document
-  (flow_list
-    (number)))
+(stream
+  (document
+    (flow_list
+      (number))))
+
+================================================================================
+Table without rows
+================================================================================
+
+t[0]{a,b}:
+x: 1
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (table
+          (table_header
+            (row_count)
+            (column)
+            (column))))
+      (entry
+        (key)
+        (number)))))
+
+================================================================================
+Table cells with commas and line breaks
+================================================================================
+
+t[2]{a,b}:
+  [1, 2], {a: 1, b: "x,y"}
+  "x, y", (1,
+    2)  # c
+x: 1
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (table
+          (table_header
+            (row_count)
+            (column)
+            (column))
+          (row
+            (cell
+              (flow_list
+                (number)
+                (number)))
+            (cell
+              (flow_record
+                (entry
+                  (key)
+                  (number))
+                (entry
+                  (key)
+                  (string
+                    (string_content))))))
+          (row
+            (cell
+              (string
+                (string_content)))
+            (cell
+              (tuple
+                (number)
+                (number)))
+            (comment))))
+      (entry
+        (key)
+        (number)))))
+
+================================================================================
+Table in a list item
+================================================================================
+
+- t[2]{a,b}:
+    1, 2
+    3, 4
+  after: x
+- u[0]{a}:
+  after: y
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (list
+      (item
+        (record
+          (entry
+            (key)
+            (table
+              (table_header
+                (row_count)
+                (column)
+                (column))
+              (row
+                (cell
+                  (number))
+                (cell
+                  (number)))
+              (row
+                (cell
+                  (number))
+                (cell
+                  (number)))))
+          (entry
+            (key)
+            (plain_scalar))))
+      (item
+        (record
+          (entry
+            (key)
+            (table
+              (table_header
+                (row_count)
+                (column))))
+          (entry
+            (key)
+            (plain_scalar)))))))
+
+================================================================================
+Table at end of input
+================================================================================
+
+t[2]{a,b}:
+  1, 2
+  3, 4
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (table
+          (table_header
+            (row_count)
+            (column)
+            (column))
+          (row
+            (cell
+              (number))
+            (cell
+              (number)))
+          (row
+            (cell
+              (number))
+            (cell
+              (number))))))))
+
+================================================================================
+Error: too few rows
+================================================================================
+
+t[3]{a,b}:
+  1, 2
+  3, 4
+x: 1
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (table
+          (table_header
+            (row_count)
+            (column)
+            (column))
+          (row
+            (cell
+              (number))
+            (cell
+              (number)))
+          (ERROR
+            (table_row_error))
+          (row
+            (cell
+              (number))
+            (cell
+              (number)))))
+      (entry
+        (key)
+        (number)))))
+
+================================================================================
+Error: too few rows at end of input
+================================================================================
+
+t[2]{a,b}:
+  1, 2
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (table
+          (table_header
+            (row_count)
+            (column)
+            (column))
+          (ERROR
+            (table_row_error))
+          (row
+            (cell
+              (number))
+            (cell
+              (number))))))))
+
+================================================================================
+Error: too few rows in a top-level table
+================================================================================
+
+[2]{a,b}:
+  1, 2
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (table
+      (table_header
+        (row_count)
+        (column)
+        (column))
+      (ERROR
+        (table_row_error))
+      (row
+        (cell
+          (number))
+        (cell
+          (number))))))
+
+================================================================================
+Error: too few rows in a list item
+================================================================================
+
+- t[2]{a}:
+    1
+  y: 2
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (list
+      (item
+        (record
+          (entry
+            (key)
+            (table
+              (table_header
+                (row_count)
+                (column))
+              (ERROR
+                (table_row_error))
+              (row
+                (cell
+                  (number)))))
+          (entry
+            (key)
+            (number)))))))
+
+================================================================================
+Error: no rows
+================================================================================
+
+t[2]{a,b}:
+x: 1
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (table
+          (table_header
+            (row_count)
+            (column)
+            (column))))
+      (ERROR
+        (table_row_error))
+      (entry
+        (key)
+        (number)))))
+
+================================================================================
+Error: too many rows
+================================================================================
+
+t[1]{a,b}:
+  1, 2
+  3, 4
+x: 1
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (table
+          (table_header
+            (row_count)
+            (column)
+            (column))
+          (row
+            (cell
+              (number))
+            (cell
+              (number)))
+          (ERROR
+            (table_row_error))
+          (row
+            (cell
+              (number))
+            (cell
+              (number)))))
+      (entry
+        (key)
+        (number)))))
+
+================================================================================
+Error: rows after [0]
+================================================================================
+
+t[0]{a,b}:
+  1, 2
+x: 1
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (table
+          (table_header
+            (row_count)
+            (column)
+            (column))
+          (ERROR
+            (table_row_error))
+          (row
+            (cell
+              (number))
+            (cell
+              (number)))))
+      (entry
+        (key)
+        (number)))))
+
+================================================================================
+Error: too many cells
+================================================================================
+
+t[2]{a,b}:
+  1, 2, 3
+  3, 4
+x: 1
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (table
+          (table_header
+            (row_count)
+            (column)
+            (column))
+          (ERROR
+            (table_row_error))
+          (row
+            (cell
+              (number))
+            (cell
+              (number))
+            (cell
+              (number)))
+          (row
+            (cell
+              (number))
+            (cell
+              (number)))))
+      (entry
+        (key)
+        (number)))))
+
+================================================================================
+Error: too few cells
+================================================================================
+
+t[2]{a,b}:
+  1, 2
+  3
+x: 1
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (table
+          (table_header
+            (row_count)
+            (column)
+            (column))
+          (row
+            (cell
+              (number))
+            (cell
+              (number)))
+          (ERROR
+            (table_row_error))
+          (row
+            (cell
+              (number)))))
+      (entry
+        (key)
+        (number)))))
+
+================================================================================
+Error: row indented wrongly
+================================================================================
+
+t[2]{a,b}:
+  1, 2
+   3, 4
+x: 1
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (table
+          (table_header
+            (row_count)
+            (column)
+            (column))
+          (row
+            (cell
+              (number))
+            (cell
+              (number)))
+          (ERROR
+            (table_row_error))
+          (row
+            (cell
+              (number))
+            (cell
+              (number)))))
+      (entry
+        (key)
+        (number)))))

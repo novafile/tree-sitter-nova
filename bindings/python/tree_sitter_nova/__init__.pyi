@@ -13,5 +13,14 @@ LOCALS_QUERY: Final[str] | None
 TAGS_QUERY: Final[str] | None
 """The symbol tagging query for this grammar."""
 
+NOVA_SCHEMA_HIGHLIGHTS_QUERY: Final[str] | None
+"""The syntax highlighting query for the schema grammar."""
+
+NOVA_SCHEMA_LOCALS_QUERY: Final[str] | None
+"""The local variable query for the schema grammar."""
+
 def language() -> CapsuleType:
-    """The tree-sitter language function for this grammar."""
+    """The tree-sitter language function for NOVA text (.nova)."""
+
+def language_nova_schema() -> CapsuleType:
+    """The tree-sitter language function for the NOVA schema language (.novs)."""

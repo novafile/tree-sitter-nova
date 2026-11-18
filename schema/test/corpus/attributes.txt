@@ -1,0 +1,144 @@
+================================================================================
+Ranges and lengths
+================================================================================
+
+record R:
+  f: float @range(0..0.1)
+  q?: decimal @range(1/3..)
+  n: int @range(-5..5)
+  b: string @len(..4, utf8)
+  s?: string @len(..4)
+  l: list<int> @len(1..)
+
+--------------------------------------------------------------------------------
+
+(schema
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (primitive_type)
+      (attribute
+        (attribute_name)
+        (range
+          (number)
+          (number))))
+    (field
+      (identifier)
+      (optional_marker)
+      (primitive_type)
+      (attribute
+        (attribute_name)
+        (range
+          (number))))
+    (field
+      (identifier)
+      (primitive_type)
+      (attribute
+        (attribute_name)
+        (range
+          (number)
+          (number))))
+    (field
+      (identifier)
+      (primitive_type)
+      (attribute
+        (attribute_name)
+        (range
+          (number))
+        (unit)))
+    (field
+      (identifier)
+      (optional_marker)
+      (primitive_type)
+      (attribute
+        (attribute_name)
+        (range
+          (number))))
+    (field
+      (identifier)
+      (list_type
+        (primitive_type))
+      (attribute
+        (attribute_name)
+        (range
+          (number))))))
+
+================================================================================
+Defaults
+================================================================================
+
+record R:
+  a: bool = true
+  b: Status = !active
+  c: list<string> = [a, "b c"]
+  d: map<int, string> = @map{1 => one}
+  e: timestamp = @timestamp("2026-11-17T16:00:00Z")
+  f: (int, int) = (1, 2)
+  g: string = "a#b"  # comment
+  h: Rec = {x: 1, "y z": [2]}
+
+--------------------------------------------------------------------------------
+
+(schema
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (primitive_type)
+      (boolean))
+    (field
+      (identifier)
+      (type_identifier)
+      (variant
+        (tag)))
+    (field
+      (identifier)
+      (list_type
+        (primitive_type))
+      (flow_list
+        (word)
+        (string
+          (string_content))))
+    (field
+      (identifier)
+      (map_type
+        (primitive_type)
+        (primitive_type))
+      (map
+        (map_entry
+          (number)
+          (word))))
+    (field
+      (identifier)
+      (primitive_type)
+      (typed_literal
+        (literal_type)
+        (string
+          (string_content))))
+    (field
+      (identifier)
+      (tuple_type
+        (primitive_type)
+        (primitive_type))
+      (tuple
+        (number)
+        (number)))
+    (field
+      (identifier)
+      (primitive_type)
+      (string
+        (string_content))
+      (comment))
+    (field
+      (identifier)
+      (type_identifier)
+      (flow_record
+        (entry
+          (key)
+          (number))
+        (entry
+          (string
+            (string_content))
+          (flow_list
+            (number)))))))

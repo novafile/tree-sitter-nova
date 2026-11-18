@@ -13,56 +13,57 @@ inf: @float("-inf")
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (typed_literal
-        (literal_type)
-        (string
-          (string_content))))
-    (entry
-      (key)
-      (typed_literal
-        (literal_type)
-        (string
-          (string_content))))
-    (entry
-      (key)
-      (typed_literal
-        (literal_type)
-        (string
-          (string_content))))
-    (entry
-      (key)
-      (typed_literal
-        (literal_type)
-        (string
-          (string_content))))
-    (entry
-      (key)
-      (typed_literal
-        (literal_type)
-        (string
-          (string_content))))
-    (entry
-      (key)
-      (typed_literal
-        (literal_type)
-        (string
-          (string_content))))
-    (entry
-      (key)
-      (typed_literal
-        (literal_type)
-        (string
-          (string_content))))
-    (entry
-      (key)
-      (typed_literal
-        (literal_type)
-        (string
-          (string_content))))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (typed_literal
+          (literal_type)
+          (string
+            (string_content))))
+      (entry
+        (key)
+        (typed_literal
+          (literal_type)
+          (string
+            (string_content))))
+      (entry
+        (key)
+        (typed_literal
+          (literal_type)
+          (string
+            (string_content))))
+      (entry
+        (key)
+        (typed_literal
+          (literal_type)
+          (string
+            (string_content))))
+      (entry
+        (key)
+        (typed_literal
+          (literal_type)
+          (string
+            (string_content))))
+      (entry
+        (key)
+        (typed_literal
+          (literal_type)
+          (string
+            (string_content))))
+      (entry
+        (key)
+        (typed_literal
+          (literal_type)
+          (string
+            (string_content))))
+      (entry
+        (key)
+        (typed_literal
+          (literal_type)
+          (string
+            (string_content)))))))
 
 ================================================================================
 Typed literal as document body
@@ -72,11 +73,12 @@ Typed literal as document body
 
 --------------------------------------------------------------------------------
 
-(document
-  (typed_literal
-    (literal_type)
-    (string
-      (string_content))))
+(stream
+  (document
+    (typed_literal
+      (literal_type)
+      (string
+        (string_content)))))
 
 ================================================================================
 Typed literals in flow
@@ -86,16 +88,17 @@ a: [@decimal("1"), @float("inf")]
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (flow_list
-        (typed_literal
-          (literal_type)
-          (string
-            (string_content)))
-        (typed_literal
-          (literal_type)
-          (string
-            (string_content)))))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (flow_list
+          (typed_literal
+            (literal_type)
+            (string
+              (string_content)))
+          (typed_literal
+            (literal_type)
+            (string
+              (string_content))))))))

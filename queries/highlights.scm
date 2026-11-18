@@ -2,6 +2,8 @@
 
 (comment) @comment
 
+(document_separator) @punctuation.special
+
 ; Directives -----------------------------------------------------------
 
 (directive_name) @keyword.directive

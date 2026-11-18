@@ -9,10 +9,21 @@ const binding = typeof process.versions.bun === "string" && Bun.isStandaloneExec
   ? require(`../../prebuilds/${process.platform}-${process.arch}/tree-sitter-nova.node`)
   : (await import("node-gyp-build")).default(root);
 
+// The second grammar: the NOVA schema language (`.novs`). Like the default
+// export, it is a language object for `Parser.setLanguage`.
+const schema = { language: binding.schemaLanguage };
+delete binding.schemaLanguage;
+binding.schema = schema;
+
 try {
   // Bun only embeds static paths, and `import()` rejects absolute Windows paths like `root`.
   const nodeTypes = await import("../../src/node-types.json", { with: { type: "json" } });
   binding.nodeTypeInfo = nodeTypes.default;
+} catch { }
+
+try {
+  const nodeTypes = await import("../../schema/src/node-types.json", { with: { type: "json" } });
+  schema.nodeTypeInfo = nodeTypes.default;
 } catch { }
 
 if (typeof process.versions.bun === "string" && Bun.isStandaloneExecutable) {
@@ -30,27 +41,36 @@ if (typeof process.versions.bun === "string" && Bun.isStandaloneExecutable) {
   try {
     binding.TAGS_QUERY = (await import("../../queries/tags.scm", { with: { type: "text" } })).default;
   } catch { }
+  try {
+    schema.HIGHLIGHTS_QUERY = (await import("../../schema/queries/highlights.scm", { with: { type: "text" } })).default;
+  } catch { }
+  try {
+    schema.LOCALS_QUERY = (await import("../../schema/queries/locals.scm", { with: { type: "text" } })).default;
+  } catch { }
 } else {
   const queries = [
-    ["HIGHLIGHTS_QUERY", `${root}/queries/highlights.scm`],
-    ["INJECTIONS_QUERY", `${root}/queries/injections.scm`],
-    ["LOCALS_QUERY", `${root}/queries/locals.scm`],
-    ["TAGS_QUERY", `${root}/queries/tags.scm`],
+    [binding, "HIGHLIGHTS_QUERY", `${root}/queries/highlights.scm`],
+    [binding, "INJECTIONS_QUERY", `${root}/queries/injections.scm`],
+    [binding, "LOCALS_QUERY", `${root}/queries/locals.scm`],
+    [binding, "TAGS_QUERY", `${root}/queries/tags.scm`],
+    [schema, "HIGHLIGHTS_QUERY", `${root}/schema/queries/highlights.scm`],
+    [schema, "LOCALS_QUERY", `${root}/schema/queries/locals.scm`],
   ];
 
-  for (const [prop, path] of queries) {
-    Object.defineProperty(binding, prop, {
+  for (const [target, prop, path] of queries) {
+    Object.defineProperty(target, prop, {
       configurable: true,
       enumerable: true,
       get() {
-        delete binding[prop];
+        delete target[prop];
         try {
-          binding[prop] = readFileSync(path, "utf8");
+          target[prop] = readFileSync(path, "utf8");
         } catch { }
-        return binding[prop];
+        return target[prop];
       }
     });
   }
 }
 
+export { schema };
 export default binding;

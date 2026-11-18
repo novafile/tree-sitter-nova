@@ -10,16 +10,17 @@ next: 1
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (block_string
-        (block_string_indicator)
-        (string_content)))
-    (entry
-      (key)
-      (number))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (block_string
+          (block_string_indicator)
+          (string_content)))
+      (entry
+        (key)
+        (number)))))
 
 ================================================================================
 Strip block string
@@ -31,13 +32,14 @@ notes: |-
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (block_string
-        (block_string_indicator)
-        (string_content)))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (block_string
+          (block_string_indicator)
+          (string_content))))))
 
 ================================================================================
 Block string with comment after indicator
@@ -48,14 +50,15 @@ a: |   # keep: one final newline
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (block_string
-        (block_string_indicator)
-        (comment)
-        (string_content)))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (block_string
+          (block_string_indicator)
+          (comment)
+          (string_content))))))
 
 ================================================================================
 Block string with blank lines
@@ -71,16 +74,17 @@ b: 2
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (block_string
-        (block_string_indicator)
-        (string_content)))
-    (entry
-      (key)
-      (number))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (block_string
+          (block_string_indicator)
+          (string_content)))
+      (entry
+        (key)
+        (number)))))
 
 ================================================================================
 Empty block string
@@ -91,15 +95,16 @@ b: 1
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (block_string
-        (block_string_indicator)))
-    (entry
-      (key)
-      (number))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (block_string
+          (block_string_indicator)))
+      (entry
+        (key)
+        (number)))))
 
 ================================================================================
 Block string at end of input
@@ -110,13 +115,14 @@ a: |
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (block_string
-        (block_string_indicator)
-        (string_content)))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (block_string
+          (block_string_indicator)
+          (string_content))))))
 
 ================================================================================
 Nested block string
@@ -130,19 +136,20 @@ outer:
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (record
-        (entry
-          (key)
-          (block_string
-            (block_string_indicator)
-            (string_content)))
-        (entry
-          (key)
-          (plain_scalar))))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (record
+          (entry
+            (key)
+            (block_string
+              (block_string_indicator)
+              (string_content)))
+          (entry
+            (key)
+            (plain_scalar)))))))
 
 ================================================================================
 Block string in list item
@@ -155,17 +162,18 @@ items:
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (list
-        (item
-          (block_string
-            (block_string_indicator)
-            (string_content)))
-        (item
-          (plain_scalar))))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (list
+          (item
+            (block_string
+              (block_string_indicator)
+              (string_content)))
+          (item
+            (plain_scalar)))))))
 
 ================================================================================
 Block string on dash line
@@ -182,31 +190,32 @@ items:
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (list
-        (item
-          (record
-            (entry
-              (key)
-              (plain_scalar))
-            (entry
-              (key)
-              (block_string
-                (block_string_indicator)
-                (string_content)))))
-        (item
-          (record
-            (entry
-              (key)
-              (block_string
-                (block_string_indicator)
-                (string_content)))
-            (entry
-              (key)
-              (number))))))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (list
+          (item
+            (record
+              (entry
+                (key)
+                (plain_scalar))
+              (entry
+                (key)
+                (block_string
+                  (block_string_indicator)
+                  (string_content)))))
+          (item
+            (record
+              (entry
+                (key)
+                (block_string
+                  (block_string_indicator)
+                  (string_content)))
+              (entry
+                (key)
+                (number)))))))))
 
 ================================================================================
 Block string ended by less-indented dash-line field
@@ -217,14 +226,15 @@ Block string ended by less-indented dash-line field
 
 --------------------------------------------------------------------------------
 
-(document
-  (list
-    (item
-      (record
-        (entry
-          (key)
-          (block_string
-            (block_string_indicator)))
-        (entry
-          (key)
-          (number))))))
+(stream
+  (document
+    (list
+      (item
+        (record
+          (entry
+            (key)
+            (block_string
+              (block_string_indicator)))
+          (entry
+            (key)
+            (number)))))))

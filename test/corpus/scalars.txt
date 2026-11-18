@@ -9,20 +9,21 @@ dash: -foo
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (plain_scalar))
-    (entry
-      (key)
-      (plain_scalar))
-    (entry
-      (key)
-      (plain_scalar))
-    (entry
-      (key)
-      (plain_scalar))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (plain_scalar))
+      (entry
+        (key)
+        (plain_scalar))
+      (entry
+        (key)
+        (plain_scalar))
+      (entry
+        (key)
+        (plain_scalar)))))
 
 ================================================================================
 Plain scalar with trailing comment
@@ -33,15 +34,16 @@ b: x#y
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (plain_scalar)
-      (comment))
-    (entry
-      (key)
-      (plain_scalar))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (plain_scalar)
+        (comment))
+      (entry
+        (key)
+        (plain_scalar)))))
 
 ================================================================================
 Integers
@@ -55,23 +57,24 @@ e: 170141183460469231731687303715884105727
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (number))
-    (entry
-      (key)
-      (number))
-    (entry
-      (key)
-      (number))
-    (entry
-      (key)
-      (number))
-    (entry
-      (key)
-      (number))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (number))
+      (entry
+        (key)
+        (number))
+      (entry
+        (key)
+        (number))
+      (entry
+        (key)
+        (number))
+      (entry
+        (key)
+        (number)))))
 
 ================================================================================
 Floats
@@ -85,23 +88,24 @@ e: 1.0
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (number))
-    (entry
-      (key)
-      (number))
-    (entry
-      (key)
-      (number))
-    (entry
-      (key)
-      (number))
-    (entry
-      (key)
-      (number))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (number))
+      (entry
+        (key)
+        (number))
+      (entry
+        (key)
+        (number))
+      (entry
+        (key)
+        (number))
+      (entry
+        (key)
+        (number)))))
 
 ================================================================================
 Rationals
@@ -113,17 +117,18 @@ c: 2/4
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (number))
-    (entry
-      (key)
-      (number))
-    (entry
-      (key)
-      (number))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (number))
+      (entry
+        (key)
+        (number))
+      (entry
+        (key)
+        (number)))))
 
 ================================================================================
 Number-like strings
@@ -140,32 +145,33 @@ h: 5 apples
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (plain_scalar))
-    (entry
-      (key)
-      (plain_scalar))
-    (entry
-      (key)
-      (plain_scalar))
-    (entry
-      (key)
-      (plain_scalar))
-    (entry
-      (key)
-      (plain_scalar))
-    (entry
-      (key)
-      (plain_scalar))
-    (entry
-      (key)
-      (plain_scalar))
-    (entry
-      (key)
-      (plain_scalar))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (plain_scalar))
+      (entry
+        (key)
+        (plain_scalar))
+      (entry
+        (key)
+        (plain_scalar))
+      (entry
+        (key)
+        (plain_scalar))
+      (entry
+        (key)
+        (plain_scalar))
+      (entry
+        (key)
+        (plain_scalar))
+      (entry
+        (key)
+        (plain_scalar))
+      (entry
+        (key)
+        (plain_scalar)))))
 
 ================================================================================
 Keywords
@@ -180,23 +186,24 @@ f: yes
 
 --------------------------------------------------------------------------------
 
-(document
-  (record
-    (entry
-      (key)
-      (boolean))
-    (entry
-      (key)
-      (boolean))
-    (entry
-      (key)
-      (null))
-    (entry
-      (key)
-      (plain_scalar))
-    (entry
-      (key)
-      (plain_scalar))
-    (entry
-      (key)
-      (plain_scalar))))
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (boolean))
+      (entry
+        (key)
+        (boolean))
+      (entry
+        (key)
+        (null))
+      (entry
+        (key)
+        (plain_scalar))
+      (entry
+        (key)
+        (plain_scalar))
+      (entry
+        (key)
+        (plain_scalar)))))

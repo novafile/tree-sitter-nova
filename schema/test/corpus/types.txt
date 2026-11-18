@@ -1,0 +1,186 @@
+================================================================================
+Built-in and named types
+================================================================================
+
+record R:
+  a: any
+  b: null
+  c: i64
+  d: timestamp
+  e: Service
+
+--------------------------------------------------------------------------------
+
+(schema
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (primitive_type))
+    (field
+      (identifier)
+      (primitive_type))
+    (field
+      (identifier)
+      (primitive_type))
+    (field
+      (identifier)
+      (primitive_type))
+    (field
+      (identifier)
+      (type_identifier))))
+
+================================================================================
+Generic types
+================================================================================
+
+record R:
+  a: list<int>
+  b: set<string>
+  c: map<string, list<Service>>
+
+--------------------------------------------------------------------------------
+
+(schema
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (list_type
+        (primitive_type)))
+    (field
+      (identifier)
+      (set_type
+        (primitive_type)))
+    (field
+      (identifier)
+      (map_type
+        (primitive_type)
+        (list_type
+          (type_identifier))))))
+
+================================================================================
+Tuples
+================================================================================
+
+record R:
+  a: (string, u8)
+  b: (int,)
+  c: ()
+
+--------------------------------------------------------------------------------
+
+(schema
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (tuple_type
+        (primitive_type)
+        (primitive_type)))
+    (field
+      (identifier)
+      (tuple_type
+        (primitive_type)))
+    (field
+      (identifier)
+      (tuple_type))))
+
+================================================================================
+Arrays and nullable types
+================================================================================
+
+record R:
+  a: Service[]
+  b: int?
+  c: int[]?
+  d: int?[]
+  e: list<int?>?
+
+--------------------------------------------------------------------------------
+
+(schema
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (array_type
+        (type_identifier)))
+    (field
+      (identifier)
+      (nullable_type
+        (primitive_type)))
+    (field
+      (identifier)
+      (nullable_type
+        (array_type
+          (primitive_type))))
+    (field
+      (identifier)
+      (array_type
+        (nullable_type
+          (primitive_type))))
+    (field
+      (identifier)
+      (nullable_type
+        (list_type
+          (nullable_type
+            (primitive_type)))))))
+
+================================================================================
+Attributes on type arguments
+================================================================================
+
+type Ports = list<u16 @range(1..1024)>
+type M = map<string @len(1..8), int>
+record R:
+  g: list<string @len(1..1, graphemes)>
+  t: (int @range(0..), string)
+
+--------------------------------------------------------------------------------
+
+(schema
+  (type_definition
+    (type_identifier)
+    (list_type
+      (attributed_type
+        (primitive_type)
+        (attribute
+          (attribute_name)
+          (range
+            (number)
+            (number))))))
+  (type_definition
+    (type_identifier)
+    (map_type
+      (attributed_type
+        (primitive_type)
+        (attribute
+          (attribute_name)
+          (range
+            (number)
+            (number))))
+      (primitive_type)))
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (list_type
+        (attributed_type
+          (primitive_type)
+          (attribute
+            (attribute_name)
+            (range
+              (number)
+              (number))
+            (unit)))))
+    (field
+      (identifier)
+      (tuple_type
+        (attributed_type
+          (primitive_type)
+          (attribute
+            (attribute_name)
+            (range
+              (number))))
+        (primitive_type)))))

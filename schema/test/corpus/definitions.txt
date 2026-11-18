@@ -1,0 +1,178 @@
+================================================================================
+Directives
+================================================================================
+
+@nova 1.0
+@schema nova-schema@0.1.0
+@root Schema
+@schema pre@2.1.0-rc.1+build.5
+
+--------------------------------------------------------------------------------
+
+(schema
+  (directive
+    (directive_name)
+    (version))
+  (directive
+    (directive_name)
+    (schema_ref
+      (identifier)
+      (version)))
+  (directive
+    (directive_name)
+    (type_identifier))
+  (directive
+    (directive_name)
+    (schema_ref
+      (identifier)
+      (version))))
+
+================================================================================
+Type aliases
+================================================================================
+
+type Port = u16 @range(1..65535)
+type Id = string
+
+--------------------------------------------------------------------------------
+
+(schema
+  (type_definition
+    (type_identifier)
+    (primitive_type)
+    (attribute
+      (attribute_name)
+      (range
+        (number)
+        (number))))
+  (type_definition
+    (type_identifier)
+    (primitive_type)))
+
+================================================================================
+Enums
+================================================================================
+
+enum Status:
+  active
+  draining  # comment
+
+  failed(string)
+enum Kind = any | null | bool | named
+enum Shape = circle(float @range(0..)) | none
+
+--------------------------------------------------------------------------------
+
+(schema
+  (enum_definition
+    (type_identifier)
+    (enum_variant
+      (identifier))
+    (enum_variant
+      (identifier))
+    (comment)
+    (enum_variant
+      (identifier)
+      (primitive_type)))
+  (enum_definition
+    (type_identifier)
+    (enum_variant
+      (identifier))
+    (enum_variant
+      (identifier))
+    (enum_variant
+      (identifier))
+    (enum_variant
+      (identifier)))
+  (enum_definition
+    (type_identifier)
+    (enum_variant
+      (identifier)
+      (attributed_type
+        (primitive_type)
+        (attribute
+          (attribute_name)
+          (range
+            (number)))))
+    (enum_variant
+      (identifier))))
+
+================================================================================
+Records
+================================================================================
+
+record Empty:
+record Bag @open:
+  known?: int
+# between
+
+record Service:
+  id: string @key @id(1)
+  tags?: set<string> @id(6) @deprecated
+
+--------------------------------------------------------------------------------
+
+(schema
+  (record_definition
+    (type_identifier))
+  (record_definition
+    (type_identifier)
+    (attribute
+      (attribute_name))
+    (field
+      (identifier)
+      (optional_marker)
+      (primitive_type)))
+  (comment)
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (primitive_type)
+      (attribute
+        (attribute_name))
+      (attribute
+        (attribute_name)
+        (number)))
+    (field
+      (identifier)
+      (optional_marker)
+      (set_type
+        (primitive_type))
+      (attribute
+        (attribute_name)
+        (number))
+      (attribute
+        (attribute_name)))))
+
+================================================================================
+Field names that are keywords
+================================================================================
+
+record Def:
+  type: Type
+  record?: RecordDef
+  enum?: list<VariantDef>
+  key: bool = false
+
+--------------------------------------------------------------------------------
+
+(schema
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (type_identifier))
+    (field
+      (identifier)
+      (optional_marker)
+      (type_identifier))
+    (field
+      (identifier)
+      (optional_marker)
+      (list_type
+        (type_identifier)))
+    (field
+      (identifier)
+      (primitive_type)
+      (boolean))))

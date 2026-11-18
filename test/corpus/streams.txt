@@ -1,0 +1,201 @@
+================================================================================
+Stream of documents
+================================================================================
+
+a: 1
+---
+- x
+---
+@template
+x: $y
+---
+[1, 2]
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (number))))
+  (document_separator)
+  (document
+    (list
+      (item
+        (plain_scalar))))
+  (document_separator)
+  (document
+    (directive
+      (directive_name))
+    (record
+      (entry
+        (key)
+        (template_ref
+          (path
+            (field))))))
+  (document_separator)
+  (document
+    (flow_list
+      (number)
+      (number))))
+
+================================================================================
+Leading, trailing and empty documents
+================================================================================
+
+---
+a: 1
+---
+---
+# comment only
+---
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document_separator)
+  (document
+    (record
+      (entry
+        (key)
+        (number))))
+  (document_separator)
+  (document_separator)
+  (comment)
+  (document_separator))
+
+================================================================================
+Separator after nested blocks
+================================================================================
+
+a:
+  b: |
+    text
+  t[1]{c}:
+    1
+---
+d: 2
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (record
+          (entry
+            (key)
+            (block_string
+              (block_string_indicator)
+              (string_content)))
+          (entry
+            (key)
+            (table
+              (table_header
+                (row_count)
+                (column))
+              (row
+                (cell
+                  (number)))))))))
+  (document_separator)
+  (document
+    (record
+      (entry
+        (key)
+        (number)))))
+
+================================================================================
+Dashes that are not separators
+================================================================================
+
+a: ---
+b: "---"
+c: |
+  ---
+d: [---]
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (plain_scalar))
+      (entry
+        (key)
+        (string
+          (string_content)))
+      (entry
+        (key)
+        (block_string
+          (block_string_indicator)
+          (string_content)))
+      (entry
+        (key)
+        (flow_list
+          (word))))))
+
+================================================================================
+Error: separator with trailing text
+================================================================================
+
+a: 1
+--- x
+b: 2
+
+--------------------------------------------------------------------------------
+
+(stream
+  (ERROR
+    (entry
+      (key)
+      (number))
+    (word)
+    (field)
+    (field))
+  (document
+    (number)))
+
+================================================================================
+Error: an error stays in its document
+================================================================================
+
+a: [1,
+b: 2
+---
+c: 3
+---
+d: "open
+---
+e: 4
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (ERROR
+          (number)
+          (word))
+        (number))))
+  (document_separator)
+  (document
+    (record
+      (entry
+        (key)
+        (number))))
+  (document_separator)
+  (ERROR
+    (key)
+    (string_content))
+  (document_separator)
+  (document
+    (record
+      (entry
+        (key)
+        (number)))))

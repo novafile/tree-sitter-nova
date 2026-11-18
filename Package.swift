@@ -4,9 +4,12 @@ import Foundation
 import PackageDescription
 
 let dir = Context.packageDirectory
-var sources = ["src/parser.c"]
-if FileManager.default.fileExists(atPath: "\(dir)/src/scanner.c") {
-    sources.append("src/scanner.c")
+// Both languages: NOVA text (src/) and the schema language (schema/src/).
+var sources = ["src/parser.c", "schema/src/parser.c"]
+for scanner in ["src/scanner.c", "schema/src/scanner.c"] {
+    if FileManager.default.fileExists(atPath: "\(dir)/\(scanner)") {
+        sources.append(scanner)
+    }
 }
 
 let package = Package(
@@ -24,7 +27,8 @@ let package = Package(
             path: ".",
             sources: sources,
             resources: [
-                .copy("queries")
+                .copy("queries"),
+                .copy("schema/queries"),
             ],
             publicHeadersPath: "bindings/swift",
             cSettings: [.headerSearchPath("src")]

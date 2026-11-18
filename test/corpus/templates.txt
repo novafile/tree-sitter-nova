@@ -19,68 +19,69 @@ x: 1
 
 --------------------------------------------------------------------------------
 
-(document
-  (directive
-    (directive_name)
-    (argument))
-  (directive
-    (directive_name)
-    (identifier)
-    (param_type))
-  (directive
-    (directive_name)
-    (identifier)
-    (optional_marker)
-    (param_type))
-  (directive
-    (directive_name)
-    (identifier)
-    (param_type)
-    (number)
-    (comment))
-  (directive
-    (directive_name)
-    (identifier)
-    (param_type)
-    (flow_list
-      (word)
-      (word)))
-  (directive
-    (directive_name)
-    (string
-      (string_content))
-    (identifier))
-  (directive
-    (directive_name)
-    (identifier)
-    (string
-      (string_content)))
-  (directive
-    (directive_name)
-    (identifier)
+(stream
+  (document
+    (directive
+      (directive_name)
+      (argument))
+    (directive
+      (directive_name)
+      (identifier)
+      (param_type))
+    (directive
+      (directive_name)
+      (identifier)
+      (optional_marker)
+      (param_type))
+    (directive
+      (directive_name)
+      (identifier)
+      (param_type)
+      (number)
+      (comment))
+    (directive
+      (directive_name)
+      (identifier)
+      (param_type)
+      (flow_list
+        (word)
+        (word)))
+    (directive
+      (directive_name)
+      (string
+        (string_content))
+      (identifier))
+    (directive
+      (directive_name)
+      (identifier)
+      (string
+        (string_content)))
+    (directive
+      (directive_name)
+      (identifier)
+      (record
+        (entry
+          (key)
+          (boolean))
+        (entry
+          (key)
+          (template_ref
+            (path
+              (field))))))
+    (directive
+      (directive_name)
+      (identifier)
+      (block_string
+        (block_string_indicator)
+        (string_content)
+        (interpolation
+          (path
+            (field)))
+        (string_content)))
     (record
       (entry
         (key)
-        (boolean))
-      (entry
-        (key)
-        (template_ref
-          (path
-            (field))))))
-  (directive
-    (directive_name)
-    (identifier)
-    (block_string
-      (block_string_indicator)
-      (string_content)
-      (interpolation
-        (path
-          (field)))
-      (string_content)))
-  (record
-    (entry
-      (key)
-      (number))))
+        (number)))))
 
 ================================================================================
 References
@@ -95,50 +96,51 @@ e: $m["key"].x
 
 --------------------------------------------------------------------------------
 
-(document
-  (directive
-    (directive_name))
-  (record
-    (entry
-      (key)
-      (template_ref
-        (path
-          (field))))
-    (entry
-      (key)
-      (template_ref
-        (path
-          (field)
-          (field))))
-    (entry
-      (key)
-      (template_ref
-        (path
-          (field)
-          (field)
-          (selector
-            (number)))))
-    (entry
-      (key)
-      (flow_list
+(stream
+  (document
+    (directive
+      (directive_name))
+    (record
+      (entry
+        (key)
         (template_ref
           (path
-            (field)))
-        (flow_record
-          (entry
-            (key)
-            (template_ref
-              (path
-                (field)))))))
-    (entry
-      (key)
-      (template_ref
-        (path
-          (field)
-          (selector
-            (string
-              (string_content)))
-          (field))))))
+            (field))))
+      (entry
+        (key)
+        (template_ref
+          (path
+            (field)
+            (field))))
+      (entry
+        (key)
+        (template_ref
+          (path
+            (field)
+            (field)
+            (selector
+              (number)))))
+      (entry
+        (key)
+        (flow_list
+          (template_ref
+            (path
+              (field)))
+          (flow_record
+            (entry
+              (key)
+              (template_ref
+                (path
+                  (field)))))))
+      (entry
+        (key)
+        (template_ref
+          (path
+            (field)
+            (selector
+              (string
+                (string_content)))
+            (field)))))))
 
 ================================================================================
 Interpolation
@@ -154,53 +156,54 @@ bs: |
 
 --------------------------------------------------------------------------------
 
-(document
-  (directive
-    (directive_name))
-  (record
-    (entry
-      (key)
-      (string
-        (interpolation
-          (path
-            (field)
-            (field)))
-        (string_content)
-        (interpolation
-          (path
-            (field)))
-        (string_content)))
-    (entry
-      (string
-        (string_content)
-        (interpolation
+(stream
+  (document
+    (directive
+      (directive_name))
+    (record
+      (entry
+        (key)
+        (string
+          (interpolation
+            (path
+              (field)
+              (field)))
+          (string_content)
+          (interpolation
+            (path
+              (field)))
+          (string_content)))
+      (entry
+        (string
+          (string_content)
+          (interpolation
+            (path
+              (field))))
+        (template_ref
           (path
             (field))))
-      (template_ref
-        (path
-          (field))))
-    (entry
-      (key)
-      (string
-        (string_content)
-        (string_content)
-        (escape_sequence)
-        (string_content)))
-    (entry
-      (key)
-      (block_string
-        (block_string_indicator)
-        (interpolation
-          (path
-            (field)))
-        (string_content)
-        (interpolation
-          (path
-            (field)
-            (field)
-            (selector
-              (number))))
-        (string_content)))))
+      (entry
+        (key)
+        (string
+          (string_content)
+          (string_content)
+          (escape_sequence)
+          (string_content)))
+      (entry
+        (key)
+        (block_string
+          (block_string_indicator)
+          (interpolation
+            (path
+              (field)))
+          (string_content)
+          (interpolation
+            (path
+              (field)
+              (field)
+              (selector
+                (number))))
+          (string_content))))))
 
 ================================================================================
 Spreads
@@ -221,61 +224,62 @@ frec: {...$r, a: 1}
 
 --------------------------------------------------------------------------------
 
-(document
-  (directive
-    (directive_name))
-  (record
-    (entry
-      (key)
-      (record
-        (spread
-          (template_ref
-            (path
-              (field))))
-        (entry
-          (key)
-          (plain_scalar))))
-    (entry
-      (key)
-      (list
-        (spread
-          (template_ref
-            (path
-              (field))))
-        (item
-          (plain_scalar))))
-    (entry
-      (key)
-      (list
-        (item
-          (record
-            (spread
-              (template_ref
-                (path
-                  (field))))
-            (entry
-              (key)
-              (template_ref
-                (path
-                  (field))))))))
-    (entry
-      (key)
-      (flow_list
-        (spread
-          (template_ref
-            (path
-              (field))))
-        (number)))
-    (entry
-      (key)
-      (flow_record
-        (spread
-          (template_ref
-            (path
-              (field))))
-        (entry
-          (key)
-          (number))))))
+(stream
+  (document
+    (directive
+      (directive_name))
+    (record
+      (entry
+        (key)
+        (record
+          (spread
+            (template_ref
+              (path
+                (field))))
+          (entry
+            (key)
+            (plain_scalar))))
+      (entry
+        (key)
+        (list
+          (spread
+            (template_ref
+              (path
+                (field))))
+          (item
+            (plain_scalar))))
+      (entry
+        (key)
+        (list
+          (item
+            (record
+              (spread
+                (template_ref
+                  (path
+                    (field))))
+              (entry
+                (key)
+                (template_ref
+                  (path
+                    (field))))))))
+      (entry
+        (key)
+        (flow_list
+          (spread
+            (template_ref
+              (path
+                (field))))
+          (number)))
+      (entry
+        (key)
+        (flow_record
+          (spread
+            (template_ref
+              (path
+                (field))))
+          (entry
+            (key)
+            (number)))))))
 
 ================================================================================
 If and else in a list
@@ -292,37 +296,25 @@ items:
 
 --------------------------------------------------------------------------------
 
-(document
-  (directive
-    (directive_name))
-  (record
-    (entry
-      (key)
-      (list
-        (if_block
-          (condition
-            (binary_condition
-              (template_ref
-                (path
-                  (field)))
-              (comparison
-                (template_ref
-                  (path
-                    (field)))
-                (word))))
-          (list
-            (item
-              (record
-                (entry
-                  (key)
-                  (plain_scalar)))))
-          (else_block
+(stream
+  (document
+    (directive
+      (directive_name))
+    (record
+      (entry
+        (key)
+        (list
+          (if_block
             (condition
-              (comparison
+              (binary_condition
                 (template_ref
                   (path
                     (field)))
-                (word)))
+                (comparison
+                  (template_ref
+                    (path
+                      (field)))
+                  (word))))
             (list
               (item
                 (record
@@ -330,12 +322,25 @@ items:
                     (key)
                     (plain_scalar)))))
             (else_block
+              (condition
+                (comparison
+                  (template_ref
+                    (path
+                      (field)))
+                  (word)))
               (list
                 (item
                   (record
                     (entry
                       (key)
-                      (plain_scalar))))))))))))
+                      (plain_scalar)))))
+              (else_block
+                (list
+                  (item
+                    (record
+                      (entry
+                        (key)
+                        (plain_scalar)))))))))))))
 
 ================================================================================
 If in a record
@@ -350,49 +355,50 @@ labels:
 
 --------------------------------------------------------------------------------
 
-(document
-  (directive
-    (directive_name))
-  (record
-    (entry
-      (key)
-      (record
-        (if_block
-          (condition
-            (comparison
-              (template_ref
-                (path
-                  (field)))
-              (null)))
-          (record
-            (entry
-              (key)
-              (template_ref
-                (path
-                  (field))))))
-        (if_block
-          (condition
-            (binary_condition
-              (not_condition
-                (parenthesized_condition
-                  (binary_condition
-                    (template_ref
-                      (path
-                        (field)))
-                    (template_ref
-                      (path
-                        (field))))))
+(stream
+  (document
+    (directive
+      (directive_name))
+    (record
+      (entry
+        (key)
+        (record
+          (if_block
+            (condition
               (comparison
-                (tuple
-                  (number)
-                  (number))
+                (template_ref
+                  (path
+                    (field)))
+                (null)))
+            (record
+              (entry
+                (key)
                 (template_ref
                   (path
                     (field))))))
-          (record
-            (entry
-              (key)
-              (number))))))))
+          (if_block
+            (condition
+              (binary_condition
+                (not_condition
+                  (parenthesized_condition
+                    (binary_condition
+                      (template_ref
+                        (path
+                          (field)))
+                      (template_ref
+                        (path
+                          (field))))))
+                (comparison
+                  (tuple
+                    (number)
+                    (number))
+                  (template_ref
+                    (path
+                      (field))))))
+            (record
+              (entry
+                (key)
+                (number)))))))))
 
 ================================================================================
 For loops
@@ -408,45 +414,46 @@ labels:
 
 --------------------------------------------------------------------------------
 
-(document
-  (directive
-    (directive_name))
-  (record
-    (entry
-      (key)
-      (list
-        (for_block
-          (identifier)
-          (template_ref
-            (path
-              (field)))
-          (list
-            (item
-              (record
-                (entry
-                  (key)
-                  (template_ref
+(stream
+  (document
+    (directive
+      (directive_name))
+    (record
+      (entry
+        (key)
+        (list
+          (for_block
+            (identifier)
+            (template_ref
+              (path
+                (field)))
+            (list
+              (item
+                (record
+                  (entry
+                    (key)
+                    (template_ref
+                      (path
+                        (field))))))))))
+      (entry
+        (key)
+        (record
+          (for_block
+            (identifier)
+            (identifier)
+            (flow_list
+              (word)
+              (word))
+            (record
+              (entry
+                (string
+                  (string_content)
+                  (interpolation
                     (path
-                      (field))))))))))
-    (entry
-      (key)
-      (record
-        (for_block
-          (identifier)
-          (identifier)
-          (flow_list
-            (word)
-            (word))
-          (record
-            (entry
-              (string
-                (string_content)
-                (interpolation
+                      (field))))
+                (template_ref
                   (path
-                    (field))))
-              (template_ref
-                (path
-                  (field))))))))))
+                    (field)))))))))))
 
 ================================================================================
 Control lines at top level
@@ -461,24 +468,172 @@ c: 3
 
 --------------------------------------------------------------------------------
 
-(document
-  (directive
-    (directive_name))
-  (record
-    (if_block
-      (condition
-        (template_ref
-          (path
-            (field))))
-      (record
-        (entry
-          (key)
-          (number)))
-      (else_block
+(stream
+  (document
+    (directive
+      (directive_name))
+    (record
+      (if_block
+        (condition
+          (template_ref
+            (path
+              (field))))
         (record
           (entry
             (key)
-            (number)))))
-    (entry
-      (key)
-      (number))))
+            (number)))
+        (else_block
+          (record
+            (entry
+              (key)
+              (number)))))
+      (entry
+        (key)
+        (number)))))
+
+================================================================================
+Template syntax in a data document
+================================================================================
+
+a: $x
+b: "${y}"
+c: |
+  ${z} $$
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (plain_scalar))
+      (entry
+        (key)
+        (string
+          (string_content)
+          (string_content)))
+      (entry
+        (key)
+        (block_string
+          (block_string_indicator)
+          (string_content))))))
+
+================================================================================
+@template after @nova
+================================================================================
+
+@nova 1.0
+@template 0.1
+x: $y
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (directive
+      (directive_name)
+      (argument))
+    (directive
+      (directive_name)
+      (argument))
+    (record
+      (entry
+        (key)
+        (template_ref
+          (path
+            (field)))))))
+
+================================================================================
+@template after another directive is not a template
+================================================================================
+
+@schema s@1.0.0
+@template
+@let x = 1
+x: $y
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (directive
+      (directive_name)
+      (argument))
+    (directive
+      (directive_name))
+    (directive
+      (directive_name)
+      (argument))
+    (record
+      (entry
+        (key)
+        (plain_scalar)))))
+
+================================================================================
+Error: spread in a data document
+================================================================================
+
+a:
+  ...$x
+b: 1
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (ERROR
+          (field)
+          (field))
+        (number)))))
+
+================================================================================
+Error: control line in a data document
+================================================================================
+
+a:
+  @if $x:
+    b: 1
+c: 2
+
+--------------------------------------------------------------------------------
+
+(stream
+  (ERROR
+    (key))
+  (document
+    (directive
+      (directive_name)
+      (argument))
+    (ERROR
+      (indentation_error))
+    (record
+      (entry
+        (key)
+        (number))
+      (entry
+        (key)
+        (number)))))
+
+================================================================================
+Reference-like word in a data flow value
+================================================================================
+
+a: [$x]
+b: 1
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (flow_list
+          (word)))
+      (entry
+        (key)
+        (number)))))

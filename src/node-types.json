@@ -701,11 +701,10 @@
   {
     "type": "document",
     "named": true,
-    "root": true,
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
           "type": "boolean",
@@ -1242,7 +1241,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "for_block",
@@ -1600,10 +1599,6 @@
             "named": true
           },
           {
-            "type": "template_ref",
-            "named": true
-          },
-          {
             "type": "tuple",
             "named": true
           },
@@ -1655,10 +1650,6 @@
           },
           {
             "type": "string",
-            "named": true
-          },
-          {
-            "type": "template_ref",
             "named": true
           },
           {
@@ -1748,10 +1739,6 @@
             "named": true
           },
           {
-            "type": "template_ref",
-            "named": true
-          },
-          {
             "type": "tuple",
             "named": true
           },
@@ -1819,7 +1806,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "entry",
@@ -1903,10 +1890,6 @@
           },
           {
             "type": "string",
-            "named": true
-          },
-          {
-            "type": "template_ref",
             "named": true
           },
           {
@@ -2071,6 +2054,26 @@
     }
   },
   {
+    "type": "stream",
+    "named": true,
+    "root": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "document",
+          "named": true
+        },
+        {
+          "type": "document_separator",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "string",
     "named": true,
     "fields": {},
@@ -2115,7 +2118,7 @@
     },
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "row",
@@ -2472,6 +2475,10 @@
   },
   {
     "type": "directive_name",
+    "named": true
+  },
+  {
+    "type": "document_separator",
     "named": true
   },
   {

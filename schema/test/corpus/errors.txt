@@ -1,0 +1,196 @@
+================================================================================
+Error: field indented three spaces
+================================================================================
+
+record R:
+   a: int
+  b: int
+record S:
+  c: int
+
+--------------------------------------------------------------------------------
+
+(schema
+  (record_definition
+    (type_identifier)
+    (ERROR
+      (indentation_error))
+    (field
+      (identifier)
+      (primitive_type))
+    (field
+      (identifier)
+      (primitive_type)))
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (primitive_type))))
+
+================================================================================
+Error: field indented four spaces
+================================================================================
+
+record R:
+  a: int
+    b: int
+  c: int
+
+--------------------------------------------------------------------------------
+
+(schema
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (primitive_type)
+      (ERROR
+        (indentation_error)))
+    (field
+      (identifier)
+      (primitive_type))
+    (field
+      (identifier)
+      (primitive_type))))
+
+================================================================================
+Error: field indented one space
+================================================================================
+
+record R:
+  a: int
+ b: int
+record S:
+  c: int
+
+--------------------------------------------------------------------------------
+
+(schema
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (primitive_type))
+    (ERROR
+      (indentation_error)))
+  (ERROR
+    (identifier))
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (primitive_type))))
+
+================================================================================
+Error: indented definition
+================================================================================
+
+type A = int
+  type B = int
+record S:
+  c: int
+
+--------------------------------------------------------------------------------
+
+(schema
+  (type_definition
+    (type_identifier)
+    (primitive_type)
+    (ERROR
+      (indentation_error)))
+  (type_definition
+    (type_identifier)
+    (primitive_type))
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (primitive_type))))
+
+================================================================================
+Error: tab in indentation
+================================================================================
+
+record R:
+	a: int
+  b: int
+
+--------------------------------------------------------------------------------
+
+(schema
+  (record_definition
+    (type_identifier)
+    (ERROR
+      (indentation_error))
+    (field
+      (identifier)
+      (primitive_type))
+    (field
+      (identifier)
+      (primitive_type))))
+
+================================================================================
+Error: enum variant indented wrongly
+================================================================================
+
+enum E:
+  a
+   b
+  c
+
+--------------------------------------------------------------------------------
+
+(schema
+  (enum_definition
+    (type_identifier)
+    (enum_variant
+      (identifier))
+    (ERROR
+      (indentation_error))
+    (enum_variant
+      (identifier))
+    (enum_variant
+      (identifier))))
+
+================================================================================
+Error: unknown directive
+================================================================================
+
+@x-ext foo
+record R:
+  a: int
+
+--------------------------------------------------------------------------------
+
+(schema
+  (ERROR
+    (UNEXPECTED 'x')
+    (identifier)
+    (identifier))
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (primitive_type))))
+
+================================================================================
+Error: unclosed attribute
+================================================================================
+
+record R:
+  a: int @id(1
+  c: int
+
+--------------------------------------------------------------------------------
+
+(schema
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (ERROR
+        (primitive_type)
+        (attribute_name)
+        (number)
+        (identifier))
+      (primitive_type))))
