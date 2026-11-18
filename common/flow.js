@@ -81,10 +81,9 @@ export function flowRules(m) {
   return named(m, {
     _flow_value: $ => choice(
       $.word,
-      // `$` is reserved in data documents (§9.2), but `[$x]` is read as a
-      // word there (as `$x` after `key: ` is a plain scalar); validators
-      // report it.
-      ...(m.tpl ? [] : [alias($._dollar_word, $.word)]),
+      // `$` may not begin a token in a data document (§9.2): `[$x]` and
+      // `key: $x` are syntax errors there, so a data document can never be
+      // misread as a template.
       r($, '_scalar_literal'),
       r($, '_compound_flow_value'),
     ),
@@ -183,7 +182,6 @@ export const lexicalRules = {
 
   null: _ => 'null',
 
-  _dollar_word: _ => token(seq('$', repeat(WORD_CHAR))),
 
   // A bare token in flow context (§4.7).
   word: _ => token(choice(

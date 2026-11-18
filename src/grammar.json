@@ -1041,15 +1041,6 @@
           "name": "word"
         },
         {
-          "type": "ALIAS",
-          "content": {
-            "type": "SYMBOL",
-            "name": "_dollar_word"
-          },
-          "named": true,
-          "value": "word"
-        },
-        {
           "type": "SYMBOL",
           "name": "_scalar_literal"
         },
@@ -5167,25 +5158,6 @@
       "type": "STRING",
       "value": "null"
     },
-    "_dollar_word": {
-      "type": "TOKEN",
-      "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "STRING",
-            "value": "$"
-          },
-          {
-            "type": "REPEAT",
-            "content": {
-              "type": "PATTERN",
-              "value": "[^\\s,\\[\\]{}()\":]|:[^\\s,\\[\\]{}()\":]"
-            }
-          }
-        ]
-      }
-    },
     "word": {
       "type": "TOKEN",
       "content": {
@@ -5495,6 +5467,10 @@
     {
       "type": "SYMBOL",
       "name": "table_row_error"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "reserved_character"
     },
     {
       "type": "SYMBOL",

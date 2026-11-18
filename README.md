@@ -44,7 +44,7 @@ than a regex approximation.
 | §7.1 | Paths with fields, selectors (`[0]`, `[id=api]`, `["k"]`, `[*]`, filters), projections | `path`, `field`, `selector`, `wildcard`, `filter`, `projection` |
 | §7.3 | Query documents (`@get …`) and responses | `directive` |
 | §7.4 | Patch documents: `path: old -> new`, `= p: v`, `+ p: v`, `- p[: old]`, `? p[: v]` | `patch_op` |
-| §9.2 | Template documents: the first directive (after an optional `@nova`) is `@template`. Only there are the template constructs below recognized; in a data document `"${x}"` is a plain string, `$x` a plain scalar and `@param`/`@let`/`@import` ordinary directives. | `document` |
+| §9.2 | Template documents: the first directive (after an optional `@nova`) is `@template`. Only there are the template constructs below recognized; in a data document `"${x}"` is a plain string, a token starting with `$` is an error, and `@param`/`@let`/`@import` are ordinary directives. | `document` |
 | §9.2 | `@template`, `@param name[?]: type [= default]`, `@import "…" as x`, `@let x = v` / `@let x:` + block | `directive` with `parameter`/`type`/`default`, `source`/`alias`, `binding`/`value` fields |
 | §9.3 | References `$a.b[0]`, interpolation `${…}` in quoted and block strings, `...` spreads (lines and flow elements) | `template_ref`, `interpolation`, `spread` |
 | §9.3 | `@if` / `@else if` / `@else` / `@for [i,] x in …:` in records and lists | `if_block`, `else_block`, `for_block`, `condition`, `comparison`, `binary_condition`, `not_condition`, `parenthesized_condition` |
@@ -104,9 +104,10 @@ worse. Validators (`nvf check`, `nvf-lsp`) report these; the tree does not:
   unclosed bracket is not a separator either.
 - `(x)` is a syntax error, but `a: b: c` style plain scalars and plain
   scalars ending in `:` are accepted.
-- In a data document, `$x` after `key: ` is a plain scalar and `[$x]` a word
-  (NOVA rejects a token starting with `$` outside templates); `...` spreads
-  and `@if`/`@for` lines are errors there. A `@template` directive that is
+- In a data document a token may not start with `$` (§9.2): `key: $x` and
+  `- $x` are reported as a `reserved_character` inside an ERROR, and `[$x]`
+  is a syntax error; `...` spreads and `@if`/`@for` lines are errors too.
+  `x$y`, `"${x}"` and block strings stay plain text. A `@template` directive that is
   not the first one (after `@nova`) makes an ordinary data document with an
   unknown directive; unknown directives are not rejected.
 - Error positions: a table that declares rows but ends right after its

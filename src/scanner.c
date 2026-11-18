@@ -85,6 +85,7 @@ enum TokenType {
   DOCUMENT_SEPARATOR,
   INDENTATION_ERROR,
   TABLE_ROW_ERROR,
+  RESERVED_CHARACTER,
   ERROR_SENTINEL,
 };
 
@@ -142,8 +143,8 @@ static inline bool is_ident_start(int32_t c) {
 
 static inline bool is_ident_char(int32_t c) { return is_ident_start(c) || is_digit(c) || c == '-'; }
 
-/* Characters that may not begin a plain scalar (§4.4). `$` is reserved in
-   template documents only; in a data document `$x` is ordinary text. */
+/* Characters that may not begin a plain scalar (§4.4). `$` begins a
+   reference in templates and is reserved in data documents (§9.2). */
 static bool is_reserved_start(int32_t c, bool template) {
   switch (c) {
     case '!': case '"': case '#': case '%': case '&': case '\'':
@@ -151,8 +152,8 @@ static bool is_reserved_start(int32_t c, bool template) {
     case '@': case '[': case '\\': case ']': case '^': case '`': case '{':
     case '|': case '}': case '~': case '(': case ')':
       return true;
-    case '$':
-      return template;
+    case '$': /* reserved in data documents too (§9.2) */
+      return true;
     default:
       return false;
   }
@@ -461,6 +462,14 @@ static bool scan_content(Scanner *scanner, TSLexer *lexer, const bool *valid_sym
   }
 
   if (!want_key && !want_plain) return false;
+  /* `$x` in a data document (§9.2): report the token itself, so the error
+     stays on this value instead of swallowing the surrounding record. */
+  if (c == '$' && valid_symbols[PLAIN_SCALAR]) {
+    while (!is_eol(lexer) && !is_inline_space(lexer->lookahead)) advance(lexer);
+    lexer->mark_end(lexer);
+    lexer->result_symbol = RESERVED_CHARACTER;
+    return true;
+  }
   if (is_reserved_start(c, template)) return false;
 
   enum KeyState ks = (want_key && is_ident_start(c)) ? KS_IDENT : KS_DEAD;
@@ -469,6 +478,7 @@ static bool scan_content(Scanner *scanner, TSLexer *lexer, const bool *valid_sym
   char buf[CLASSIFY_BUFFER];
   size_t len = 0;         /* characters stored in buf */
   size_t content_len = 0; /* length up to the last non-space character */
+  bool has_content = false; /* any non-space character consumed (incl. non-ASCII) */
   bool classifiable = true;
   bool prev_space = false;
   /* A non-space character was consumed but not marked (a key was still possible). */
@@ -562,6 +572,7 @@ static bool scan_content(Scanner *scanner, TSLexer *lexer, const bool *valid_sym
       prev_space = true;
     } else {
       prev_space = false;
+      has_content = true;
       content_len = len;
       /* While a key is still possible the token must stay zero-width. */
       if (ks == KS_DEAD) {
@@ -574,12 +585,12 @@ static bool scan_content(Scanner *scanner, TSLexer *lexer, const bool *valid_sym
   }
 
   if (!want_plain) return false;
-  if (content_len == 0) return false;
+  if (!has_content) return false;
   if (unmarked) lexer->mark_end(lexer);
 
   /* Spellings that are not plain scalars (§4.4). */
   if (len >= 3 && buf[0] == '.' && buf[1] == '.' && buf[2] == '.') return false;
-  if (buf[0] == '-' && (content_len == 1 || buf[1] == ' ' || buf[1] == '\t')) return false;
+  if (len >= 1 && buf[0] == '-' && (content_len == 1 || buf[1] == ' ' || buf[1] == '\t')) return false;
 
   /* Exact numbers and keywords are lexed by the internal lexer. */
   if (classifiable && (is_number(buf, content_len) || is_keyword(buf, content_len))) return false;

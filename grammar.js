@@ -60,6 +60,8 @@ export default grammar({
     // tree has an ERROR there (see src/scanner.c).
     $.indentation_error,
     $.table_row_error,
+    // `$` at the start of a plain value in a data document (§9.2).
+    $.reserved_character,
     $._error_sentinel,
   ],
 

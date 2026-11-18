@@ -207,3 +207,31 @@ f: yes
       (entry
         (key)
         (plain_scalar)))))
+
+================================================================================
+Plain scalars starting with non-ASCII characters
+================================================================================
+
+x: значение
+"ключ": 値
+y: 😀 smile
+z: über
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (plain_scalar))
+      (entry
+        (string
+          (string_content))
+        (plain_scalar))
+      (entry
+        (key)
+        (plain_scalar))
+      (entry
+        (key)
+        (plain_scalar)))))
