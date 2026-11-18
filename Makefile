@@ -1,6 +1,6 @@
 LANGUAGE_NAME := tree-sitter-nova
 HOMEPAGE_URL := https://github.com/novafile/tree-sitter-nova
-VERSION := 0.1.0
+VERSION := 0.2.0
 DESCRIPTION := NOVA (Notation for Objects, Values & Agents) grammar for tree-sitter
 
 # repository: the NOVA text grammar (src/) and the schema grammar (schema/src/)

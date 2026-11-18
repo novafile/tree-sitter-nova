@@ -1,6 +1,6 @@
 {
   "name": "@novafile/tree-sitter-nova",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "NOVA (Notation for Objects, Values & Agents) grammar for tree-sitter",
   "type": "module",
   "repository": {
