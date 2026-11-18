@@ -29,9 +29,12 @@ jobs:
       - name: Enable corepack
         shell: bash
         run: |
-          npm install -g corepack
+          # --force: the Windows image already has a global yarn.cmd.
+          npm install -g --force corepack
+          mkdir -p "$RUNNER_TEMP/corepack"
           corepack enable --install-directory "$RUNNER_TEMP/corepack"
           echo "$RUNNER_TEMP/corepack" >> "$GITHUB_PATH"
+          PATH="$RUNNER_TEMP/corepack:$PATH" yarn --version
 
       - name: Install dependencies
         run: yarn install --immutable
@@ -85,9 +88,12 @@ jobs:
       - name: Enable corepack
         shell: bash
         run: |
-          npm install -g corepack
+          # --force: the Windows image already has a global yarn.cmd.
+          npm install -g --force corepack
+          mkdir -p "$RUNNER_TEMP/corepack"
           corepack enable --install-directory "$RUNNER_TEMP/corepack"
           echo "$RUNNER_TEMP/corepack" >> "$GITHUB_PATH"
+          PATH="$RUNNER_TEMP/corepack:$PATH" yarn --version
 
       - uses: dtolnay/rust-toolchain@stable
 
