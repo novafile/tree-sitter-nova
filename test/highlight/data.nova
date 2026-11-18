@@ -1,0 +1,37 @@
+# a comment
+# <- comment
+@schema infrastructure@1.0.0
+# <- keyword.directive
+#       ^ string.special
+environment: production
+# <- property
+#          ^ punctuation.delimiter
+#            ^ string
+port: 8080
+#     ^ number
+enabled: true
+#        ^ boolean
+owner: null
+#      ^ constant.builtin
+tags: [public, edge]
+#     ^ punctuation.bracket
+#      ^ string
+when: @timestamp("2026-11-17T16:00:00Z")
+#     ^ type.builtin
+#                 ^ string
+state: !failed("disk")
+#      ^ constructor
+#       ^ constructor
+quoted: "a\tb"
+#         ^ string.escape
+services[1]{id,port}:
+# <- property
+#        ^ number
+#           ^ property
+  auth, 8080
+# ^ string
+#       ^ number
+empty: |
+#      ^ punctuation.special
+script: |
+  echo hi

@@ -1,0 +1,103 @@
+================================================================================
+Data directives
+================================================================================
+
+@nova 1.0
+@schema infrastructure@1.2.0#8c21a0f3d5e6b7c8
+@revision sha256:91cf16db
+@scope services[id=api]
+@envelope result
+@compat json
+@x-custom some value  # comment
+a: 1
+
+--------------------------------------------------------------------------------
+
+(document
+  (directive
+    (directive_name)
+    (argument))
+  (directive
+    (directive_name)
+    (argument))
+  (directive
+    (directive_name)
+    (argument))
+  (directive
+    (directive_name)
+    (argument))
+  (directive
+    (directive_name)
+    (argument))
+  (directive
+    (directive_name)
+    (argument))
+  (directive
+    (directive_name)
+    (argument)
+    (comment))
+  (record
+    (entry
+      (key)
+      (number))))
+
+================================================================================
+Directives only
+================================================================================
+
+@nova 1.0
+
+--------------------------------------------------------------------------------
+
+(document
+  (directive
+    (directive_name)
+    (argument)))
+
+================================================================================
+Query document
+================================================================================
+
+@get services[*].{id,replicas}
+
+--------------------------------------------------------------------------------
+
+(document
+  (directive
+    (directive_name)
+    (argument)))
+
+================================================================================
+Query response
+================================================================================
+
+@revision sha256:91cf16db
+@scope services[id=api]
+[2]{id,replicas}:
+  auth,3
+  api,5
+
+--------------------------------------------------------------------------------
+
+(document
+  (directive
+    (directive_name)
+    (argument))
+  (directive
+    (directive_name)
+    (argument))
+  (table
+    (table_header
+      (row_count)
+      (column)
+      (column))
+    (row
+      (cell
+        (word))
+      (cell
+        (number)))
+    (row
+      (cell
+        (word))
+      (cell
+        (number)))))

@@ -1,0 +1,230 @@
+================================================================================
+Keep block string
+================================================================================
+
+script: |
+  echo "hello"
+    indented line
+  # not a comment
+next: 1
+
+--------------------------------------------------------------------------------
+
+(document
+  (record
+    (entry
+      (key)
+      (block_string
+        (block_string_indicator)
+        (string_content)))
+    (entry
+      (key)
+      (number))))
+
+================================================================================
+Strip block string
+================================================================================
+
+notes: |-
+  first
+  second
+
+--------------------------------------------------------------------------------
+
+(document
+  (record
+    (entry
+      (key)
+      (block_string
+        (block_string_indicator)
+        (string_content)))))
+
+================================================================================
+Block string with comment after indicator
+================================================================================
+
+a: |   # keep: one final newline
+  text
+
+--------------------------------------------------------------------------------
+
+(document
+  (record
+    (entry
+      (key)
+      (block_string
+        (block_string_indicator)
+        (comment)
+        (string_content)))))
+
+================================================================================
+Block string with blank lines
+================================================================================
+
+a: |
+  one
+
+  two
+
+
+b: 2
+
+--------------------------------------------------------------------------------
+
+(document
+  (record
+    (entry
+      (key)
+      (block_string
+        (block_string_indicator)
+        (string_content)))
+    (entry
+      (key)
+      (number))))
+
+================================================================================
+Empty block string
+================================================================================
+
+a: |
+b: 1
+
+--------------------------------------------------------------------------------
+
+(document
+  (record
+    (entry
+      (key)
+      (block_string
+        (block_string_indicator)))
+    (entry
+      (key)
+      (number))))
+
+================================================================================
+Block string at end of input
+================================================================================
+
+a: |
+  last line
+
+--------------------------------------------------------------------------------
+
+(document
+  (record
+    (entry
+      (key)
+      (block_string
+        (block_string_indicator)
+        (string_content)))))
+
+================================================================================
+Nested block string
+================================================================================
+
+outer:
+  inner: |
+    deep
+      deeper
+  sibling: x
+
+--------------------------------------------------------------------------------
+
+(document
+  (record
+    (entry
+      (key)
+      (record
+        (entry
+          (key)
+          (block_string
+            (block_string_indicator)
+            (string_content)))
+        (entry
+          (key)
+          (plain_scalar))))))
+
+================================================================================
+Block string in list item
+================================================================================
+
+items:
+  - |
+    block in list
+  - after
+
+--------------------------------------------------------------------------------
+
+(document
+  (record
+    (entry
+      (key)
+      (list
+        (item
+          (block_string
+            (block_string_indicator)
+            (string_content)))
+        (item
+          (plain_scalar))))))
+
+================================================================================
+Block string on dash line
+================================================================================
+
+items:
+  - id: a
+    script: |
+      run it
+      twice
+  - script: |
+      dash line
+    other: 1
+
+--------------------------------------------------------------------------------
+
+(document
+  (record
+    (entry
+      (key)
+      (list
+        (item
+          (record
+            (entry
+              (key)
+              (plain_scalar))
+            (entry
+              (key)
+              (block_string
+                (block_string_indicator)
+                (string_content)))))
+        (item
+          (record
+            (entry
+              (key)
+              (block_string
+                (block_string_indicator)
+                (string_content)))
+            (entry
+              (key)
+              (number))))))))
+
+================================================================================
+Block string ended by less-indented dash-line field
+================================================================================
+
+- script: |
+  other: 1
+
+--------------------------------------------------------------------------------
+
+(document
+  (list
+    (item
+      (record
+        (entry
+          (key)
+          (block_string
+            (block_string_indicator)))
+        (entry
+          (key)
+          (number))))))

@@ -1,0 +1,24 @@
+@template
+# <- keyword.directive
+@param replicas: u16 = 2
+#      ^ variable.parameter
+#                ^ type
+@import "base.nova" as base
+#                   ^ keyword.import
+#                      ^ module
+items:
+  @for name in $services:
+# ^ keyword.repeat
+#           ^ keyword.repeat
+#              ^ punctuation.special
+#               ^ variable
+    - ...$defaults
+#     ^ operator
+      image: "${base.registry}/x"
+#             ^ punctuation.special
+#               ^ variable
+  @if $a and $b == x:
+# ^ keyword.conditional
+#        ^ keyword.operator
+#               ^ operator
+    - id: 1

@@ -1,0 +1,16 @@
+version = 1
+SPDX-PackageName = "tree-sitter-nova"
+SPDX-PackageDownloadLocation = "https://github.com/novafile/tree-sitter-nova"
+
+[[annotations]]
+path = "**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "NOVA contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+# Corpus tests, highlight tests and the example NOVA documents they embed.
+[[annotations]]
+path = "test/**"
+precedence = "override"
+SPDX-FileCopyrightText = "NOVA contributors"
+SPDX-License-Identifier = "CC0-1.0"

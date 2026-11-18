@@ -1,0 +1,110 @@
+================================================================================
+Patch operations
+================================================================================
+
+@patch infrastructure@1.0.0 sha256:91cf16db2f4a
+@scope services[id=api]
+replicas: 5 -> 8
++ tags: canary
+? enabled: true
+= image: "ghcr.io/example/api:v6"
+- legacy
+- old: {a: 1}
+? present
+
+--------------------------------------------------------------------------------
+
+(document
+  (directive
+    (directive_name)
+    (argument))
+  (directive
+    (directive_name)
+    (argument))
+  (patch_op
+    (path
+      (field))
+    (number)
+    (number))
+  (patch_op
+    (path
+      (field))
+    (word))
+  (patch_op
+    (path
+      (field))
+    (boolean))
+  (patch_op
+    (path
+      (field))
+    (string
+      (string_content)))
+  (patch_op
+    (path
+      (field)))
+  (patch_op
+    (path
+      (field))
+    (flow_record
+      (entry
+        (key)
+        (number))))
+  (patch_op
+    (path
+      (field))))
+
+================================================================================
+Patch with base and multi-line value
+================================================================================
+
+@nova 1.0
+@patch infrastructure@1.0.0
+@base sha256:abc
+
+# comment
+services[0].ports[-1]: [1,
+  2] -> 3
+m["k"].x: a -> b
+[0].a: 1 -> 2
+
+--------------------------------------------------------------------------------
+
+(document
+  (directive
+    (directive_name)
+    (argument))
+  (directive
+    (directive_name)
+    (argument))
+  (directive
+    (directive_name)
+    (argument))
+  (comment)
+  (patch_op
+    (path
+      (field)
+      (selector
+        (number))
+      (field)
+      (selector
+        (number)))
+    (flow_list
+      (number)
+      (number))
+    (number))
+  (patch_op
+    (path
+      (field)
+      (selector
+        (string
+          (string_content)))
+      (field))
+    (word)
+    (word))
+  (patch_op
+    (path
+      (selector
+        (number))
+      (field))
+    (number)
+    (number)))

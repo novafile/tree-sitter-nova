@@ -1,0 +1,101 @@
+================================================================================
+Typed literals
+================================================================================
+
+ts: @timestamp("2026-11-17T16:00:00Z")
+dur: @duration("1h30m")
+iso: @duration("PT1H30M")
+dec: @decimal("12.50")
+rat: @rational("22/7")
+bytes: @bytes("AP8H")
+nan: @float("nan")
+inf: @float("-inf")
+
+--------------------------------------------------------------------------------
+
+(document
+  (record
+    (entry
+      (key)
+      (typed_literal
+        (literal_type)
+        (string
+          (string_content))))
+    (entry
+      (key)
+      (typed_literal
+        (literal_type)
+        (string
+          (string_content))))
+    (entry
+      (key)
+      (typed_literal
+        (literal_type)
+        (string
+          (string_content))))
+    (entry
+      (key)
+      (typed_literal
+        (literal_type)
+        (string
+          (string_content))))
+    (entry
+      (key)
+      (typed_literal
+        (literal_type)
+        (string
+          (string_content))))
+    (entry
+      (key)
+      (typed_literal
+        (literal_type)
+        (string
+          (string_content))))
+    (entry
+      (key)
+      (typed_literal
+        (literal_type)
+        (string
+          (string_content))))
+    (entry
+      (key)
+      (typed_literal
+        (literal_type)
+        (string
+          (string_content))))))
+
+================================================================================
+Typed literal as document body
+================================================================================
+
+@timestamp("2026-11-17T16:00:00Z")
+
+--------------------------------------------------------------------------------
+
+(document
+  (typed_literal
+    (literal_type)
+    (string
+      (string_content))))
+
+================================================================================
+Typed literals in flow
+================================================================================
+
+a: [@decimal("1"), @float("inf")]
+
+--------------------------------------------------------------------------------
+
+(document
+  (record
+    (entry
+      (key)
+      (flow_list
+        (typed_literal
+          (literal_type)
+          (string
+            (string_content)))
+        (typed_literal
+          (literal_type)
+          (string
+            (string_content)))))))

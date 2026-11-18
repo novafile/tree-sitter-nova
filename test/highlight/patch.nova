@@ -1,0 +1,9 @@
+@patch infrastructure@1.0.0
+# <- keyword.directive
+services[id=api].replicas: 5 -> 8
+# <- property
+#        ^ property
+#                ^ property
+#                            ^ operator
++ tags: canary
+# <- operator

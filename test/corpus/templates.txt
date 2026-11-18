@@ -1,0 +1,484 @@
+================================================================================
+Template header
+================================================================================
+
+@template 0.1
+@param env: string
+@param owner?: string
+@param replicas: u16 @range(1..50) = 2   # comment
+@param tags: list<string> = [a, b]
+@import "base.nova" as base
+@let registry = "ghcr.io/example"
+@let defaults:
+  enabled: true
+  replicas: $replicas
+@let banner: |
+  Hello ${name}!
+
+x: 1
+
+--------------------------------------------------------------------------------
+
+(document
+  (directive
+    (directive_name)
+    (argument))
+  (directive
+    (directive_name)
+    (identifier)
+    (param_type))
+  (directive
+    (directive_name)
+    (identifier)
+    (optional_marker)
+    (param_type))
+  (directive
+    (directive_name)
+    (identifier)
+    (param_type)
+    (number)
+    (comment))
+  (directive
+    (directive_name)
+    (identifier)
+    (param_type)
+    (flow_list
+      (word)
+      (word)))
+  (directive
+    (directive_name)
+    (string
+      (string_content))
+    (identifier))
+  (directive
+    (directive_name)
+    (identifier)
+    (string
+      (string_content)))
+  (directive
+    (directive_name)
+    (identifier)
+    (record
+      (entry
+        (key)
+        (boolean))
+      (entry
+        (key)
+        (template_ref
+          (path
+            (field))))))
+  (directive
+    (directive_name)
+    (identifier)
+    (block_string
+      (block_string_indicator)
+      (string_content)
+      (interpolation
+        (path
+          (field)))
+      (string_content)))
+  (record
+    (entry
+      (key)
+      (number))))
+
+================================================================================
+References
+================================================================================
+
+@template
+a: $env
+b: $base.region
+c: $svc.ports[0]
+d: [$a, {k: $b}]
+e: $m["key"].x
+
+--------------------------------------------------------------------------------
+
+(document
+  (directive
+    (directive_name))
+  (record
+    (entry
+      (key)
+      (template_ref
+        (path
+          (field))))
+    (entry
+      (key)
+      (template_ref
+        (path
+          (field)
+          (field))))
+    (entry
+      (key)
+      (template_ref
+        (path
+          (field)
+          (field)
+          (selector
+            (number)))))
+    (entry
+      (key)
+      (flow_list
+        (template_ref
+          (path
+            (field)))
+        (flow_record
+          (entry
+            (key)
+            (template_ref
+              (path
+                (field)))))))
+    (entry
+      (key)
+      (template_ref
+        (path
+          (field)
+          (selector
+            (string
+              (string_content)))
+          (field))))))
+
+================================================================================
+Interpolation
+================================================================================
+
+@template
+image: "${base.registry}/${name}:v2"
+"app-${name}": $name
+lit: "$${not} \$x"
+bs: |
+  ${a} and ${b.c[0]}
+  cost $$5 $${lit}
+
+--------------------------------------------------------------------------------
+
+(document
+  (directive
+    (directive_name))
+  (record
+    (entry
+      (key)
+      (string
+        (interpolation
+          (path
+            (field)
+            (field)))
+        (string_content)
+        (interpolation
+          (path
+            (field)))
+        (string_content)))
+    (entry
+      (string
+        (string_content)
+        (interpolation
+          (path
+            (field))))
+      (template_ref
+        (path
+          (field))))
+    (entry
+      (key)
+      (string
+        (string_content)
+        (string_content)
+        (escape_sequence)
+        (string_content)))
+    (entry
+      (key)
+      (block_string
+        (block_string_indicator)
+        (interpolation
+          (path
+            (field)))
+        (string_content)
+        (interpolation
+          (path
+            (field)
+            (field)
+            (selector
+              (number))))
+        (string_content)))))
+
+================================================================================
+Spreads
+================================================================================
+
+@template
+rec:
+  ...$defaults
+  id: auth
+list:
+  ...$xs
+  - extra
+items:
+  - ...$defaults
+    id: $name
+flow: [...$xs, 1]
+frec: {...$r, a: 1}
+
+--------------------------------------------------------------------------------
+
+(document
+  (directive
+    (directive_name))
+  (record
+    (entry
+      (key)
+      (record
+        (spread
+          (template_ref
+            (path
+              (field))))
+        (entry
+          (key)
+          (plain_scalar))))
+    (entry
+      (key)
+      (list
+        (spread
+          (template_ref
+            (path
+              (field))))
+        (item
+          (plain_scalar))))
+    (entry
+      (key)
+      (list
+        (item
+          (record
+            (spread
+              (template_ref
+                (path
+                  (field))))
+            (entry
+              (key)
+              (template_ref
+                (path
+                  (field))))))))
+    (entry
+      (key)
+      (flow_list
+        (spread
+          (template_ref
+            (path
+              (field))))
+        (number)))
+    (entry
+      (key)
+      (flow_record
+        (spread
+          (template_ref
+            (path
+              (field))))
+        (entry
+          (key)
+          (number))))))
+
+================================================================================
+If and else in a list
+================================================================================
+
+@template
+items:
+  @if $metrics and $env == production:
+    - id: metrics
+  @else if $env == staging:
+    - id: metrics-lite
+  @else:
+    - id: noop
+
+--------------------------------------------------------------------------------
+
+(document
+  (directive
+    (directive_name))
+  (record
+    (entry
+      (key)
+      (list
+        (if_block
+          (condition
+            (binary_condition
+              (template_ref
+                (path
+                  (field)))
+              (comparison
+                (template_ref
+                  (path
+                    (field)))
+                (word))))
+          (list
+            (item
+              (record
+                (entry
+                  (key)
+                  (plain_scalar)))))
+          (else_block
+            (condition
+              (comparison
+                (template_ref
+                  (path
+                    (field)))
+                (word)))
+            (list
+              (item
+                (record
+                  (entry
+                    (key)
+                    (plain_scalar)))))
+            (else_block
+              (list
+                (item
+                  (record
+                    (entry
+                      (key)
+                      (plain_scalar))))))))))))
+
+================================================================================
+If in a record
+================================================================================
+
+@template
+labels:
+  @if $owner != null:
+    owner: $owner
+  @if not ($a or $b) and (1, 2) == $t:
+    x: 1
+
+--------------------------------------------------------------------------------
+
+(document
+  (directive
+    (directive_name))
+  (record
+    (entry
+      (key)
+      (record
+        (if_block
+          (condition
+            (comparison
+              (template_ref
+                (path
+                  (field)))
+              (null)))
+          (record
+            (entry
+              (key)
+              (template_ref
+                (path
+                  (field))))))
+        (if_block
+          (condition
+            (binary_condition
+              (not_condition
+                (parenthesized_condition
+                  (binary_condition
+                    (template_ref
+                      (path
+                        (field)))
+                    (template_ref
+                      (path
+                        (field))))))
+              (comparison
+                (tuple
+                  (number)
+                  (number))
+                (template_ref
+                  (path
+                    (field))))))
+          (record
+            (entry
+              (key)
+              (number))))))))
+
+================================================================================
+For loops
+================================================================================
+
+@template
+services:
+  @for name in $services:
+    - id: $name
+labels:
+  @for i, name in [a, b]:
+    "k-${i}": $name
+
+--------------------------------------------------------------------------------
+
+(document
+  (directive
+    (directive_name))
+  (record
+    (entry
+      (key)
+      (list
+        (for_block
+          (identifier)
+          (template_ref
+            (path
+              (field)))
+          (list
+            (item
+              (record
+                (entry
+                  (key)
+                  (template_ref
+                    (path
+                      (field))))))))))
+    (entry
+      (key)
+      (record
+        (for_block
+          (identifier)
+          (identifier)
+          (flow_list
+            (word)
+            (word))
+          (record
+            (entry
+              (string
+                (string_content)
+                (interpolation
+                  (path
+                    (field))))
+              (template_ref
+                (path
+                  (field))))))))))
+
+================================================================================
+Control lines at top level
+================================================================================
+
+@template
+@if $x:
+  a: 1
+@else:
+  b: 2
+c: 3
+
+--------------------------------------------------------------------------------
+
+(document
+  (directive
+    (directive_name))
+  (record
+    (if_block
+      (condition
+        (template_ref
+          (path
+            (field))))
+      (record
+        (entry
+          (key)
+          (number)))
+      (else_block
+        (record
+          (entry
+            (key)
+            (number)))))
+    (entry
+      (key)
+      (number))))

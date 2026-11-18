@@ -1,0 +1,728 @@
+================================================================================
+examples/base.nova
+================================================================================
+
+# SPDX-License-Identifier: CC0-1.0
+# Shared settings imported by service.tpl.nova
+registry: ghcr.io/example
+region: eu-central-1
+deployed_at: 2026-11-17T16:00:00Z
+
+--------------------------------------------------------------------------------
+
+(document
+  (comment)
+  (comment)
+  (record
+    (entry
+      (key)
+      (plain_scalar))
+    (entry
+      (key)
+      (plain_scalar))
+    (entry
+      (key)
+      (plain_scalar))))
+
+================================================================================
+examples/infrastructure.nova
+================================================================================
+
+# SPDX-License-Identifier: CC0-1.0
+# NOVA human syntax
+@schema infrastructure@1.0.0
+
+environment: production
+region: eu-central-1
+deployed_at: 2026-11-17T16:00:00Z   # a string until the schema resolves it
+
+services:
+  - id: auth
+    image: ghcr.io/example/auth:v2
+    port: 8080
+    replicas: 3
+    enabled: true
+
+  - id: api
+    image: ghcr.io/example/api:v5
+    port: 3000
+    replicas: 5
+    enabled: true
+    tags: [public, edge]
+
+--------------------------------------------------------------------------------
+
+(document
+  (comment)
+  (comment)
+  (directive
+    (directive_name)
+    (argument))
+  (record
+    (entry
+      (key)
+      (plain_scalar))
+    (entry
+      (key)
+      (plain_scalar))
+    (entry
+      (key)
+      (plain_scalar)
+      (comment))
+    (entry
+      (key)
+      (list
+        (item
+          (record
+            (entry
+              (key)
+              (plain_scalar))
+            (entry
+              (key)
+              (plain_scalar))
+            (entry
+              (key)
+              (number))
+            (entry
+              (key)
+              (number))
+            (entry
+              (key)
+              (boolean))))
+        (item
+          (record
+            (entry
+              (key)
+              (plain_scalar))
+            (entry
+              (key)
+              (plain_scalar))
+            (entry
+              (key)
+              (number))
+            (entry
+              (key)
+              (number))
+            (entry
+              (key)
+              (boolean))
+            (entry
+              (key)
+              (flow_list
+                (word)
+                (word)))))))))
+
+================================================================================
+examples/service.tpl.nova
+================================================================================
+
+# SPDX-License-Identifier: CC0-1.0
+@template
+@param env: string
+@param services: list<string>
+@param replicas: u16 @range(1..50) = 2
+@param metrics: bool = false
+@import "base.nova" as base
+@let defaults:
+  enabled: true
+  replicas: $replicas
+
+environment: $env
+region: $base.region
+deployed_at: $base.deployed_at
+services:
+  @for name in $services:
+    - ...$defaults
+      id: $name
+      image: "${base.registry}/${name}:v2"
+      port: 8080
+  @if $metrics and $env == production:
+    - id: metrics
+      image: "${base.registry}/metrics:v1"
+      port: 9090
+      replicas: 1
+
+--------------------------------------------------------------------------------
+
+(document
+  (comment)
+  (directive
+    (directive_name))
+  (directive
+    (directive_name)
+    (identifier)
+    (param_type))
+  (directive
+    (directive_name)
+    (identifier)
+    (param_type))
+  (directive
+    (directive_name)
+    (identifier)
+    (param_type)
+    (number))
+  (directive
+    (directive_name)
+    (identifier)
+    (param_type)
+    (boolean))
+  (directive
+    (directive_name)
+    (string
+      (string_content))
+    (identifier))
+  (directive
+    (directive_name)
+    (identifier)
+    (record
+      (entry
+        (key)
+        (boolean))
+      (entry
+        (key)
+        (template_ref
+          (path
+            (field))))))
+  (record
+    (entry
+      (key)
+      (template_ref
+        (path
+          (field))))
+    (entry
+      (key)
+      (template_ref
+        (path
+          (field)
+          (field))))
+    (entry
+      (key)
+      (template_ref
+        (path
+          (field)
+          (field))))
+    (entry
+      (key)
+      (list
+        (for_block
+          (identifier)
+          (template_ref
+            (path
+              (field)))
+          (list
+            (item
+              (record
+                (spread
+                  (template_ref
+                    (path
+                      (field))))
+                (entry
+                  (key)
+                  (template_ref
+                    (path
+                      (field))))
+                (entry
+                  (key)
+                  (string
+                    (interpolation
+                      (path
+                        (field)
+                        (field)))
+                    (string_content)
+                    (interpolation
+                      (path
+                        (field)))
+                    (string_content)))
+                (entry
+                  (key)
+                  (number))))))
+        (if_block
+          (condition
+            (binary_condition
+              (template_ref
+                (path
+                  (field)))
+              (comparison
+                (template_ref
+                  (path
+                    (field)))
+                (word))))
+          (list
+            (item
+              (record
+                (entry
+                  (key)
+                  (plain_scalar))
+                (entry
+                  (key)
+                  (string
+                    (interpolation
+                      (path
+                        (field)
+                        (field)))
+                    (string_content)))
+                (entry
+                  (key)
+                  (number))
+                (entry
+                  (key)
+                  (number))))))))))
+
+================================================================================
+examples/scale-api.patch
+================================================================================
+
+# SPDX-License-Identifier: CC0-1.0
+# Scale the API service; conditional on the current value.
+@patch infrastructure@1.0.0
+services[id=api].replicas: 5 -> 8
++ services: {id: metrics, image: "ghcr.io/example/metrics:v1", port: 9090, replicas: 2}
+
+--------------------------------------------------------------------------------
+
+(document
+  (comment)
+  (comment)
+  (directive
+    (directive_name)
+    (argument))
+  (patch_op
+    (path
+      (field)
+      (selector
+        (field)
+        (word))
+      (field))
+    (number)
+    (number))
+  (patch_op
+    (path
+      (field))
+    (flow_record
+      (entry
+        (key)
+        (word))
+      (entry
+        (key)
+        (string
+          (string_content)))
+      (entry
+        (key)
+        (number))
+      (entry
+        (key)
+        (number)))))
+
+================================================================================
+novafile-text tests/commented.nova
+================================================================================
+
+# Production infrastructure
+# owned by platform team
+@schema infrastructure@1.0.0
+
+environment: production   # do not change without approval
+region:    eu-central-1
+price: @decimal("12.50")
+ratio: 2/4
+
+# The services we run
+services:
+  # auth is critical
+  - id: auth
+    port: 8080   # legacy port
+    replicas: 3
+
+  - id: api      # public API
+    tags: [public,  # exposed
+           edge]
+    replicas: 5
+table[2]{a,b}:
+  1, x   # first row
+  # before second
+  2, y
+# trailing comment at end
+
+--------------------------------------------------------------------------------
+
+(document
+  (comment)
+  (comment)
+  (directive
+    (directive_name)
+    (argument))
+  (record
+    (entry
+      (key)
+      (plain_scalar)
+      (comment))
+    (entry
+      (key)
+      (plain_scalar))
+    (entry
+      (key)
+      (typed_literal
+        (literal_type)
+        (string
+          (string_content))))
+    (entry
+      (key)
+      (number))
+    (comment)
+    (entry
+      (key)
+      (comment)
+      (list
+        (item
+          (record
+            (entry
+              (key)
+              (plain_scalar))
+            (entry
+              (key)
+              (number)
+              (comment))
+            (entry
+              (key)
+              (number))))
+        (item
+          (record
+            (entry
+              (key)
+              (plain_scalar)
+              (comment))
+            (entry
+              (key)
+              (flow_list
+                (word)
+                (comment)
+                (word)))
+            (entry
+              (key)
+              (number))))))
+    (entry
+      (key)
+      (table
+        (table_header
+          (row_count)
+          (column)
+          (column))
+        (row
+          (cell
+            (number))
+          (cell
+            (word))
+          (comment))
+        (comment)
+        (row
+          (cell
+            (number))
+          (cell
+            (word))))))
+  (comment))
+
+================================================================================
+Reference writer output (human profile)
+================================================================================
+
+null: null
+t: true
+big: 170141183460469231731687303715884105727
+neg: -42
+f: 1.5
+f2: 1e300
+f3: -0.0
+nan: @float("nan")
+inf: @float("-inf")
+dec: @decimal("12.5")
+ts: @timestamp("2026-11-17T16:00:00.5Z")
+dur: @duration("1h30m")
+bytes: @bytes("AP8H")
+s_num: "123"
+ratio: -22/7
+s_ratio: "1/2"
+s_date: 11/17/2026
+s_true: "true"
+s_space: " padded "
+s_colon: "a: b"
+s_hash: "x #y"
+s_dash: "- item"
+s_empty: ""
+s_dollar: "$HOME"
+s_unicode: grüße 🚀
+s_ctrl: "bell\u0007"
+multi: |
+  line one
+    line two
+multi_strip: |-
+  a
+  b
+multi_blank: |
+  a
+
+  b
+multi_trailing: "a\n\n"
+url: https://example.com/x?y=1
+list: [1, two, null]
+nested:
+  - [1]
+  - []
+tuple1: (1,)
+tuple0: ()
+set: @set[b, a]
+map: @map{1 => one, (1, 2) => pair}
+unit: !active
+var: !failed
+  code: 3
+var_s: !named(x)
+empty_rec: {}
+empty_list: []
+"odd key!": 1
+deep:
+  a:
+    b:
+      - c: 1
+        d:
+          - e: f
+rows:
+  - a: 1
+    b: x, y
+  - a: 2
+
+--------------------------------------------------------------------------------
+
+(document
+  (record
+    (entry
+      (key)
+      (null))
+    (entry
+      (key)
+      (boolean))
+    (entry
+      (key)
+      (number))
+    (entry
+      (key)
+      (number))
+    (entry
+      (key)
+      (number))
+    (entry
+      (key)
+      (number))
+    (entry
+      (key)
+      (number))
+    (entry
+      (key)
+      (typed_literal
+        (literal_type)
+        (string
+          (string_content))))
+    (entry
+      (key)
+      (typed_literal
+        (literal_type)
+        (string
+          (string_content))))
+    (entry
+      (key)
+      (typed_literal
+        (literal_type)
+        (string
+          (string_content))))
+    (entry
+      (key)
+      (typed_literal
+        (literal_type)
+        (string
+          (string_content))))
+    (entry
+      (key)
+      (typed_literal
+        (literal_type)
+        (string
+          (string_content))))
+    (entry
+      (key)
+      (typed_literal
+        (literal_type)
+        (string
+          (string_content))))
+    (entry
+      (key)
+      (string
+        (string_content)))
+    (entry
+      (key)
+      (number))
+    (entry
+      (key)
+      (string
+        (string_content)))
+    (entry
+      (key)
+      (plain_scalar))
+    (entry
+      (key)
+      (string
+        (string_content)))
+    (entry
+      (key)
+      (string
+        (string_content)))
+    (entry
+      (key)
+      (string
+        (string_content)))
+    (entry
+      (key)
+      (string
+        (string_content)))
+    (entry
+      (key)
+      (string
+        (string_content)))
+    (entry
+      (key)
+      (string))
+    (entry
+      (key)
+      (string
+        (string_content)
+        (string_content)))
+    (entry
+      (key)
+      (plain_scalar))
+    (entry
+      (key)
+      (string
+        (string_content)
+        (escape_sequence)))
+    (entry
+      (key)
+      (block_string
+        (block_string_indicator)
+        (string_content)))
+    (entry
+      (key)
+      (block_string
+        (block_string_indicator)
+        (string_content)))
+    (entry
+      (key)
+      (block_string
+        (block_string_indicator)
+        (string_content)))
+    (entry
+      (key)
+      (string
+        (string_content)
+        (escape_sequence)
+        (escape_sequence)))
+    (entry
+      (key)
+      (plain_scalar))
+    (entry
+      (key)
+      (flow_list
+        (number)
+        (word)
+        (null)))
+    (entry
+      (key)
+      (list
+        (item
+          (flow_list
+            (number)))
+        (item
+          (flow_list))))
+    (entry
+      (key)
+      (tuple
+        (number)))
+    (entry
+      (key)
+      (tuple))
+    (entry
+      (key)
+      (set
+        (word)
+        (word)))
+    (entry
+      (key)
+      (map
+        (map_entry
+          (number)
+          (word))
+        (map_entry
+          (tuple
+            (number)
+            (number))
+          (word))))
+    (entry
+      (key)
+      (variant
+        (tag)))
+    (entry
+      (key)
+      (variant
+        (tag)
+        (record
+          (entry
+            (key)
+            (number)))))
+    (entry
+      (key)
+      (variant
+        (tag)
+        (word)))
+    (entry
+      (key)
+      (flow_record))
+    (entry
+      (key)
+      (flow_list))
+    (entry
+      (string
+        (string_content))
+      (number))
+    (entry
+      (key)
+      (record
+        (entry
+          (key)
+          (record
+            (entry
+              (key)
+              (list
+                (item
+                  (record
+                    (entry
+                      (key)
+                      (number))
+                    (entry
+                      (key)
+                      (list
+                        (item
+                          (record
+                            (entry
+                              (key)
+                              (plain_scalar))))))))))))))
+    (entry
+      (key)
+      (list
+        (item
+          (record
+            (entry
+              (key)
+              (number))
+            (entry
+              (key)
+              (plain_scalar))))
+        (item
+          (record
+            (entry
+              (key)
+              (number))))))))

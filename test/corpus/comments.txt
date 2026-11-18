@@ -1,0 +1,80 @@
+================================================================================
+Comments everywhere
+================================================================================
+
+# header
+@schema s@1.0.0  # trailing
+
+# before body
+a: 1 # after value
+b:
+  # inside block
+  c: 2
+  # at end of inner block
+# back at top
+d: [1, # in flow
+  2]
+# trailing
+
+--------------------------------------------------------------------------------
+
+(document
+  (comment)
+  (directive
+    (directive_name)
+    (argument)
+    (comment))
+  (comment)
+  (record
+    (entry
+      (key)
+      (number)
+      (comment))
+    (entry
+      (key)
+      (comment)
+      (record
+        (entry
+          (key)
+          (number)))
+      (comment))
+    (comment)
+    (entry
+      (key)
+      (flow_list
+        (number)
+        (comment)
+        (number))))
+  (comment))
+
+================================================================================
+Deep comment before dedent
+================================================================================
+
+a:
+  b:
+    c: 1
+    # deep
+  # mid
+# top
+d: 2
+
+--------------------------------------------------------------------------------
+
+(document
+  (record
+    (entry
+      (key)
+      (record
+        (entry
+          (key)
+          (record
+            (entry
+              (key)
+              (number)))
+          (comment)))
+      (comment))
+    (comment)
+    (entry
+      (key)
+      (number))))

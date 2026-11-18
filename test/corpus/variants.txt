@@ -1,0 +1,105 @@
+================================================================================
+Unit and payload variants
+================================================================================
+
+a: !active
+b: !failed("disk full")
+c: !named(x)
+d: !_
+e: [!a, !b({c: 1})]
+
+--------------------------------------------------------------------------------
+
+(document
+  (record
+    (entry
+      (key)
+      (variant
+        (tag)))
+    (entry
+      (key)
+      (variant
+        (tag)
+        (string
+          (string_content))))
+    (entry
+      (key)
+      (variant
+        (tag)
+        (word)))
+    (entry
+      (key)
+      (variant
+        (tag)))
+    (entry
+      (key)
+      (flow_list
+        (variant
+          (tag))
+        (variant
+          (tag)
+          (flow_record
+            (entry
+              (key)
+              (number))))))))
+
+================================================================================
+Block payload variant
+================================================================================
+
+shape: !circle
+  radius: 2
+  center: (0, 0)
+next: 1
+
+--------------------------------------------------------------------------------
+
+(document
+  (record
+    (entry
+      (key)
+      (variant
+        (tag)
+        (record
+          (entry
+            (key)
+            (number))
+          (entry
+            (key)
+            (tuple
+              (number)
+              (number))))))
+    (entry
+      (key)
+      (number))))
+
+================================================================================
+Block payload variant in list
+================================================================================
+
+- !tag
+- !tag
+  a: 1
+- !list
+  - x
+
+--------------------------------------------------------------------------------
+
+(document
+  (list
+    (item
+      (variant
+        (tag)))
+    (item
+      (variant
+        (tag)
+        (record
+          (entry
+            (key)
+            (number)))))
+    (item
+      (variant
+        (tag)
+        (list
+          (item
+            (plain_scalar)))))))

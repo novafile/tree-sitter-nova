@@ -1,0 +1,174 @@
+================================================================================
+Table
+================================================================================
+
+services[2]{id,image,port,replicas,enabled}:
+  auth, ghcr.io/example/auth:v2, 8080, 3, true
+  api,  ghcr.io/example/api:v5,  3000, 5, true
+
+--------------------------------------------------------------------------------
+
+(document
+  (record
+    (entry
+      (key)
+      (table
+        (table_header
+          (row_count)
+          (column)
+          (column)
+          (column)
+          (column)
+          (column))
+        (row
+          (cell
+            (word))
+          (cell
+            (word))
+          (cell
+            (number))
+          (cell
+            (number))
+          (cell
+            (boolean)))
+        (row
+          (cell
+            (word))
+          (cell
+            (word))
+          (cell
+            (number))
+          (cell
+            (number))
+          (cell
+            (boolean)))))))
+
+================================================================================
+Table with empty cells
+================================================================================
+
+t[3]{a,b}:
+  1,
+  ,null
+  ,
+
+--------------------------------------------------------------------------------
+
+(document
+  (record
+    (entry
+      (key)
+      (table
+        (table_header
+          (row_count)
+          (column)
+          (column))
+        (row
+          (cell
+            (number)))
+        (row
+          (cell
+            (null)))
+        (row)))))
+
+================================================================================
+Table with quoted columns and cells
+================================================================================
+
+"a table"[1]{"col a",b}:
+  "x, y", [1, 2]
+
+--------------------------------------------------------------------------------
+
+(document
+  (record
+    (entry
+      (string
+        (string_content))
+      (table
+        (table_header
+          (row_count)
+          (string
+            (string_content))
+          (column))
+        (row
+          (cell
+            (string
+              (string_content)))
+          (cell
+            (flow_list
+              (number)
+              (number))))))))
+
+================================================================================
+Top-level table
+================================================================================
+
+[2]{id,replicas}:
+  auth,3
+  api,5
+
+--------------------------------------------------------------------------------
+
+(document
+  (table
+    (table_header
+      (row_count)
+      (column)
+      (column))
+    (row
+      (cell
+        (word))
+      (cell
+        (number)))
+    (row
+      (cell
+        (word))
+      (cell
+        (number)))))
+
+================================================================================
+Table with comments
+================================================================================
+
+table[2]{a,b}:  # header
+  1, x   # first row
+  # between
+  2, y
+
+--------------------------------------------------------------------------------
+
+(document
+  (record
+    (entry
+      (key)
+      (table
+        (table_header
+          (row_count)
+          (column)
+          (column))
+        (comment)
+        (row
+          (cell
+            (number))
+          (cell
+            (word))
+          (comment))
+        (comment)
+        (row
+          (cell
+            (number))
+          (cell
+            (word)))))))
+
+================================================================================
+Flow list is not a table
+================================================================================
+
+[2]
+
+--------------------------------------------------------------------------------
+
+(document
+  (flow_list
+    (number)))
