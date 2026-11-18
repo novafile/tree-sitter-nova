@@ -72,10 +72,11 @@ export default grammar({
         field('schema', $.schema_ref),
         $._newline,
       ),
-      // @root Type
+      // @root T attributes*: any type, e.g. `@root Event[] @len(1..)`
       seq(
         field('name', alias('@root', $.directive_name)),
-        field('type', alias($.identifier, $.type_identifier)),
+        field('type', $._type),
+        repeat(field('attribute', $.attribute)),
         $._newline,
       ),
       // @nova MAJOR.MINOR

@@ -72,13 +72,19 @@
               "type": "FIELD",
               "name": "type",
               "content": {
-                "type": "ALIAS",
+                "type": "SYMBOL",
+                "name": "_type"
+              }
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "FIELD",
+                "name": "attribute",
                 "content": {
                   "type": "SYMBOL",
-                  "name": "identifier"
-                },
-                "named": true,
-                "value": "type_identifier"
+                  "name": "attribute"
+                }
               }
             },
             {

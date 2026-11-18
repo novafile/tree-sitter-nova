@@ -226,3 +226,26 @@ record Def:
       (identifier)
       (primitive_type)
       (boolean))))
+
+================================================================================
+Root type expressions
+================================================================================
+
+@root Event[] @len(1..)
+@root list<Event>
+
+--------------------------------------------------------------------------------
+
+(schema
+  (directive
+    (directive_name)
+    (array_type
+      (type_identifier))
+    (attribute
+      (attribute_name)
+      (range
+        (number))))
+  (directive
+    (directive_name)
+    (list_type
+      (type_identifier))))

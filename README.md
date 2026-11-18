@@ -59,7 +59,7 @@ Queries: `queries/highlights.scm`, `folds.scm`, `indents.scm`, `locals.scm`
 
 | Spec | Construct | Nodes |
 | --- | --- | --- |
-| §6.1 | `@schema name@MAJOR.MINOR.PATCH` (SemVer with pre-release/build), `@root Type`, `@nova MAJOR.MINOR` | `directive`, `directive_name`, `schema_ref`, `version` |
+| §6.1 | `@schema name@MAJOR.MINOR.PATCH` (SemVer with pre-release/build), `@root T attrs` (any type, e.g. `@root Event[] @len(1..)`), `@nova MAJOR.MINOR` | `directive`, `directive_name`, `schema_ref`, `version` |
 | §6.1 | `type Name = T attrs`, `enum Name = a \| b(T)` and `enum Name:` + variant lines, `record Name [@open]:` + field lines (exactly two spaces deeper; a record may be empty) | `type_definition`, `enum_definition`, `enum_variant`, `record_definition` |
 | §6.1 | Fields `name[?]: type attrs* [= default]`; the default is a NOVA flow value | `field`, `optional_marker` |
 | §6.1 | Types: built-ins, names, `list<T>`, `set<T>`, `map<K, V>`, tuples `(A, B)` `(A,)` `()`, `T[]`, `T?` (also combined: `int[]?`) | `primitive_type`, `type_identifier`, `list_type`, `set_type`, `map_type`, `tuple_type`, `array_type`, `nullable_type` |

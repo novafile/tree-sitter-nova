@@ -170,6 +170,16 @@
     "type": "directive",
     "named": true,
     "fields": {
+      "attribute": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "attribute",
+            "named": true
+          }
+        ]
+      },
       "name": {
         "multiple": false,
         "required": true,
@@ -194,6 +204,34 @@
         "multiple": false,
         "required": false,
         "types": [
+          {
+            "type": "array_type",
+            "named": true
+          },
+          {
+            "type": "list_type",
+            "named": true
+          },
+          {
+            "type": "map_type",
+            "named": true
+          },
+          {
+            "type": "nullable_type",
+            "named": true
+          },
+          {
+            "type": "primitive_type",
+            "named": true
+          },
+          {
+            "type": "set_type",
+            "named": true
+          },
+          {
+            "type": "tuple_type",
+            "named": true
+          },
           {
             "type": "type_identifier",
             "named": true
