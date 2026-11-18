@@ -111,7 +111,14 @@ jobs:
           name: release-files
           path: dist/
 
+      # Skips a version that is already on npm: the first version had to be
+      # published by hand, because npm sets up trust only for existing packages.
       - name: Publish
         run: |
+          spec="$(node -p 'const p = require("./package.json"); `${p.name}@${p.version}`')"
+          if npm view "$spec" version >/dev/null 2>&1; then
+            echo "$spec is already on npm; skipping."
+            exit 0
+          fi
           cp dist/*.wasm .
           npm publish --access public
