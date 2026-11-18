@@ -44,7 +44,7 @@ type LanguageObject = {
  * The tree-sitter language object for the NOVA schema language (`.novs`).
  *
  * @example
- * import { schema } from "tree-sitter-nova";
+ * import { schema } from "@novafile/tree-sitter-nova";
  *
  * const parser = new Parser();
  * parser.setLanguage(schema);
@@ -60,7 +60,7 @@ export declare const schema: LanguageObject;
  *
  * @example
  * import Parser from "tree-sitter";
- * import Nova from "tree-sitter-nova";
+ * import Nova from "@novafile/tree-sitter-nova";
  *
  * const parser = new Parser();
  * parser.setLanguage(Nova);

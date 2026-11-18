@@ -14,6 +14,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@novafile/tree-sitter-nova@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@novafile/tree-sitter-nova@workspace:."
+  dependencies:
+    node-addon-api: "npm:^8.5.0"
+    node-gyp-build: "npm:^4.8.4"
+    prebuildify: "npm:^6.0.1"
+    tree-sitter: "npm:^0.25.0"
+    tree-sitter-cli: "npm:^0.27.2"
+  peerDependencies:
+    tree-sitter: ^0.25.0
+  dependenciesMeta:
+    tree-sitter:
+      built: true
+    tree-sitter-cli:
+      built: true
+  peerDependenciesMeta:
+    tree-sitter:
+      optional: true
+  languageName: unknown
+  linkType: soft
+
 "abbrev@npm:^5.0.0":
   version: 5.0.0
   resolution: "abbrev@npm:5.0.0"
@@ -380,28 +402,6 @@ __metadata:
   checksum: 10c0/7ef1bc2b43635db96cbc1b0287f0808ca5e7e1f2fb662388990094669f2193d1e7d3c2205a8731508b4f74731a44a25c11cbfd00dca6c58f5c3d47504e21a42c
   languageName: node
   linkType: hard
-
-"tree-sitter-nova@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "tree-sitter-nova@workspace:."
-  dependencies:
-    node-addon-api: "npm:^8.5.0"
-    node-gyp-build: "npm:^4.8.4"
-    prebuildify: "npm:^6.0.1"
-    tree-sitter: "npm:^0.25.0"
-    tree-sitter-cli: "npm:^0.27.2"
-  peerDependencies:
-    tree-sitter: ^0.25.0
-  dependenciesMeta:
-    tree-sitter:
-      built: true
-    tree-sitter-cli:
-      built: true
-  peerDependenciesMeta:
-    tree-sitter:
-      optional: true
-  languageName: unknown
-  linkType: soft
 
 "tree-sitter@npm:^0.25.0":
   version: 0.25.1

@@ -1,0 +1,117 @@
+name: Release
+
+# A v* tag builds the release files, attests their provenance, publishes a
+# GitHub Release and then the npm package (@novafile/tree-sitter-nova, via
+# trusted publishing). A manual run (workflow_dispatch) only builds the files
+# and uploads them as a workflow artifact, to test the build.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Build and release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # create the release
+      id-token: write # sign the attestations
+      attestations: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+
+      # Same as in ci.yml: Node 25+ no longer bundles corepack.
+      - name: Enable corepack
+        run: |
+          npm install -g corepack
+          mkdir -p "$RUNNER_TEMP/corepack"
+          corepack enable --install-directory "$RUNNER_TEMP/corepack"
+          echo "$RUNNER_TEMP/corepack" >> "$GITHUB_PATH"
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Determine the version
+        id: version
+        run: |
+          version=$(node -p 'require("./package.json").version')
+          if [[ "$GITHUB_REF_TYPE" == tag && "$GITHUB_REF_NAME" != "v$version" ]]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match package.json version $version"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      # The CLI downloads its own wasi-sdk and wasm-opt.
+      - name: Build the WASM parsers
+        run: |
+          mkdir dist
+          yarn tree-sitter build --wasm -o dist/tree-sitter-nova.wasm
+          (cd schema && yarn tree-sitter build --wasm -o ../dist/tree-sitter-nova_schema.wasm)
+
+      # The committed sources, including the generated parsers, so packagers
+      # can build without the tree-sitter CLI.
+      - name: Build the source archive
+        run: |
+          name=tree-sitter-nova-${{ steps.version.outputs.version }}
+          git archive --format=tar.gz --prefix="$name/" -o "dist/$name.tar.gz" HEAD
+          (cd dist && sha256sum * > SHA256SUMS)
+          cat dist/SHA256SUMS
+
+      - name: Upload the files
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-files
+          path: dist/
+
+      - name: Attest build provenance
+        if: github.ref_type == 'tag'
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: |
+            dist/*.wasm
+            dist/*.tar.gz
+
+      - name: Create the GitHub Release
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --title "$GITHUB_REF_NAME" \
+            --generate-notes \
+            --verify-tag
+
+  npm:
+    name: Publish to npm
+    needs: release
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # trusted publishing; npm adds provenance itself
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          registry-url: https://registry.npmjs.org
+
+      # The package ships the WASM parsers next to the sources ("*.wasm" in
+      # package.json files). Consumers build the native addon on install.
+      - uses: actions/download-artifact@v8
+        with:
+          name: release-files
+          path: dist/
+
+      - name: Publish
+        run: |
+          cp dist/*.wasm .
+          npm publish --access public
