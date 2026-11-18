@@ -21,11 +21,17 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
-          cache: npm
+          node-version: 26
+
+      # Node 25+ no longer bundles corepack; it provides the Yarn version
+      # pinned in package.json (packageManager).
+      - name: Enable corepack
+        run: |
+          npm install -g corepack
+          corepack enable
 
       - name: Install dependencies
-        run: npm ci --ignore-scripts
+        run: yarn install --immutable
 
       # Two grammars: `nova` (grammar.js, src/) and `nova_schema`
       # (schema/grammar.js, schema/src/); both use common/flow.js.
@@ -33,21 +39,21 @@ jobs:
         if: runner.os == 'Linux'
         shell: bash
         run: |
-          npx tree-sitter generate
-          (cd schema && npx tree-sitter generate)
+          yarn tree-sitter generate
+          (cd schema && yarn tree-sitter generate)
           git diff --exit-code -- src/ schema/src/
 
       # The highlight tests of both grammars live in test/highlight; the
       # file type (.nova / .novs) selects the grammar.
       - name: Corpus and highlight tests (nova)
-        run: npx tree-sitter test
+        run: yarn tree-sitter test
 
       - name: Corpus tests (nova_schema)
-        run: npx tree-sitter test -p schema
+        run: yarn tree-sitter test -p schema
 
       - name: Parse sample files without errors
         shell: bash
-        run: npx tree-sitter parse --quiet --stat test/highlight/*.nova test/highlight/*.novs
+        run: yarn tree-sitter parse --quiet --stat test/highlight/*.nova test/highlight/*.novs
 
       # Random edits must reparse incrementally to the same tree, which
       # checks the scanners' state serialization. `tree-sitter fuzz` exits
@@ -56,8 +62,8 @@ jobs:
         if: runner.os == 'Linux'
         shell: bash
         run: |
-          npx tree-sitter fuzz --iterations 20 --edits 5 | tee fuzz.log
-          (cd schema && npx tree-sitter fuzz --iterations 20 --edits 5) | tee -a fuzz.log
+          yarn tree-sitter fuzz --iterations 20 --edits 5 | tee fuzz.log
+          (cd schema && yarn tree-sitter fuzz --iterations 20 --edits 5) | tee -a fuzz.log
           ! grep -E 'Incorrect parse|failed fuzzing' fuzz.log
 
   bindings:
@@ -68,8 +74,14 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
-          cache: npm
+          node-version: 26
+
+      # Node 25+ no longer bundles corepack; it provides the Yarn version
+      # pinned in package.json (packageManager).
+      - name: Enable corepack
+        run: |
+          npm install -g corepack
+          corepack enable
 
       - uses: dtolnay/rust-toolchain@stable
 
@@ -86,8 +98,8 @@ jobs:
 
       - name: Node
         run: |
-          npm ci
-          npm test
+          yarn install --immutable
+          yarn test
 
       - name: Python
         run: |

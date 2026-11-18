@@ -247,14 +247,14 @@ and the query files from `queries/` in `languages/nova/` and from
 ## Development
 
 ```sh
-npm install                          # installs tree-sitter-cli
-npx tree-sitter generate             # regenerate src/ after editing grammar.js or common/
-(cd schema && npx tree-sitter generate)   # regenerate schema/src/
-npx tree-sitter test                 # nova corpus (test/corpus) and all highlight tests (test/highlight)
-npx tree-sitter test -p schema       # nova_schema corpus (schema/test/corpus)
-npx tree-sitter parse file.nova file.novs
-npx tree-sitter fuzz                 # incremental reparsing (also: cd schema && npx tree-sitter fuzz)
-cargo test                           # Rust binding (npm test, go test ./bindings/go/, … for the others)
+yarn install                         # installs tree-sitter-cli (Yarn via corepack)
+yarn tree-sitter generate            # regenerate src/ after editing grammar.js or common/
+(cd schema && yarn tree-sitter generate)   # regenerate schema/src/
+yarn tree-sitter test                # nova corpus (test/corpus) and all highlight tests (test/highlight)
+yarn tree-sitter test -p schema      # nova_schema corpus (schema/test/corpus)
+yarn tree-sitter parse file.nova file.novs
+yarn tree-sitter fuzz                # incremental reparsing (also: cd schema && yarn tree-sitter fuzz)
+cargo test                           # Rust binding (yarn test, go test ./bindings/go/, … for the others)
 ```
 
 `scripts/gen_corpus.py` rewrites both corpora from the examples and inline

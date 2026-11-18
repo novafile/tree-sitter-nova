@@ -37,7 +37,7 @@ def split(text):
 
 def actual_trees(file_name):
     out = subprocess.run(
-        ['npx', '--no-install', 'tree-sitter', 'test', '-p', grammar, '--file-name', file_name],
+        ['yarn', 'tree-sitter', 'test', '-p', grammar, '--file-name', file_name],
         cwd=REPO, capture_output=True, text=True,
     ).stdout
     trees, name, lines = {}, None, []

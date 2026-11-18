@@ -22,7 +22,7 @@ Cargo.lock linguist-generated
 bindings/node/* linguist-generated
 binding.gyp linguist-generated
 package.json linguist-generated
-package-lock.json linguist-generated
+yarn.lock linguist-generated
 
 # Python bindings
 bindings/python/** linguist-generated
