@@ -24,11 +24,14 @@ jobs:
           node-version: 26
 
       # Node 25+ no longer bundles corepack; it provides the Yarn version
-      # pinned in package.json (packageManager).
+      # pinned in package.json (packageManager). Its shims go first on PATH
+      # because the Windows image ships a global Yarn 1.
       - name: Enable corepack
+        shell: bash
         run: |
           npm install -g corepack
-          corepack enable
+          corepack enable --install-directory "$RUNNER_TEMP/corepack"
+          echo "$RUNNER_TEMP/corepack" >> "$GITHUB_PATH"
 
       - name: Install dependencies
         run: yarn install --immutable
@@ -77,11 +80,14 @@ jobs:
           node-version: 26
 
       # Node 25+ no longer bundles corepack; it provides the Yarn version
-      # pinned in package.json (packageManager).
+      # pinned in package.json (packageManager). Its shims go first on PATH
+      # because the Windows image ships a global Yarn 1.
       - name: Enable corepack
+        shell: bash
         run: |
           npm install -g corepack
-          corepack enable
+          corepack enable --install-directory "$RUNNER_TEMP/corepack"
+          echo "$RUNNER_TEMP/corepack" >> "$GITHUB_PATH"
 
       - uses: dtolnay/rust-toolchain@stable
 
