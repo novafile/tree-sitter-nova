@@ -1,0 +1,64 @@
+# SPDX-License-Identifier: CC0-1.0
+null: null
+t: true
+big: 170141183460469231731687303715884105727
+neg: -42
+f: 1.5
+f2: 1e300
+f3: -0.0
+nan: @float("nan")
+inf: @float("-inf")
+dec: @decimal("12.5")
+ts: @timestamp("2026-11-17T16:00:00.5Z")
+dur: @duration("1h30m")
+bytes: @bytes("AP8H")
+s_num: "123"
+ratio: -22/7
+s_ratio: "1/2"
+s_date: 11/17/2026
+s_true: "true"
+s_space: " padded "
+s_colon: "a: b"
+s_hash: "x #y"
+s_dash: "- item"
+s_empty: ""
+s_dollar: "$HOME"
+s_unicode: grüße 🚀
+s_ctrl: "bell\u0007"
+multi: |
+  line one
+    line two
+multi_strip: |-
+  a
+  b
+multi_blank: |
+  a
+
+  b
+multi_trailing: "a\n\n"
+url: https://example.com/x?y=1
+list: [1, two, null]
+nested:
+  - [1]
+  - []
+tuple1: (1,)
+tuple0: ()
+set: @set[b, a]
+map: @map{1 => one, (1, 2) => pair}
+unit: !active
+var: !failed
+  code: 3
+var_s: !named(x)
+empty_rec: {}
+empty_list: []
+"odd key!": 1
+deep:
+  a:
+    b:
+      - c: 1
+        d:
+          - e: f
+rows:
+  - a: 1
+    b: x, y
+  - a: 2
