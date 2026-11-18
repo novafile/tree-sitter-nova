@@ -54,6 +54,7 @@ jobs:
           mkdir dist
           yarn tree-sitter build --wasm -o dist/tree-sitter-nova.wasm
           (cd schema && yarn tree-sitter build --wasm -o ../dist/tree-sitter-nova_schema.wasm)
+          (cd lines && yarn tree-sitter build --wasm -o ../dist/tree-sitter-nova_lines.wasm)
 
       # The committed sources, including the generated parsers, so packagers
       # can build without the tree-sitter CLI.

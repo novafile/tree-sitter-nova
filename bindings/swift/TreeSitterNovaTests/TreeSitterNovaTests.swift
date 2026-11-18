@@ -16,4 +16,11 @@ final class TreeSitterNovaTests: XCTestCase {
         XCTAssertNoThrow(try parser.setLanguage(language),
                          "Error loading NOVA schema grammar")
     }
+
+    func testCanLoadLinesGrammar() throws {
+        let parser = Parser()
+        let language = Language(language: tree_sitter_nova_lines())
+        XCTAssertNoThrow(try parser.setLanguage(language),
+                         "Error loading NOVA Lines grammar")
+    }
 }

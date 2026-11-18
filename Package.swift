@@ -4,9 +4,10 @@ import Foundation
 import PackageDescription
 
 let dir = Context.packageDirectory
-// Both languages: NOVA text (src/) and the schema language (schema/src/).
-var sources = ["src/parser.c", "schema/src/parser.c"]
-for scanner in ["src/scanner.c", "schema/src/scanner.c"] {
+// Three languages: NOVA text (src/), the schema language (schema/src/) and
+// NOVA Lines (lines/src/, no external scanner).
+var sources = ["src/parser.c", "schema/src/parser.c", "lines/src/parser.c"]
+for scanner in ["src/scanner.c", "schema/src/scanner.c", "lines/src/scanner.c"] {
     if FileManager.default.fileExists(atPath: "\(dir)/\(scanner)") {
         sources.append(scanner)
     }
@@ -29,6 +30,7 @@ let package = Package(
             resources: [
                 .copy("queries"),
                 .copy("schema/queries"),
+                .copy("lines/queries"),
             ],
             publicHeadersPath: "bindings/swift",
             cSettings: [.headerSearchPath("src")]

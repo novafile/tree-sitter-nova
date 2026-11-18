@@ -11,7 +11,7 @@ import "unsafe"
 
 // Get the tree-sitter Language for NOVA text (.nova): data, template, patch
 // and query documents and text streams. The schema language is
-// LanguageNovaSchema.
+// LanguageNovaSchema, NOVA Lines is LanguageNovaLines.
 func Language() unsafe.Pointer {
 	return unsafe.Pointer(C.tree_sitter_nova())
 }

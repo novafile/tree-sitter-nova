@@ -50,9 +50,24 @@ add_custom_command(OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/schema/src/parser.c"
                    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/schema"
                    COMMENT "Generating schema/src/parser.c")
 
-# One library with both languages: tree_sitter_nova() and
-# tree_sitter_nova_schema().
-add_library(tree-sitter-nova src/parser.c src/scanner.c schema/src/parser.c schema/src/scanner.c)
+add_custom_command(OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/lines/src/grammar.json"
+                          "${CMAKE_CURRENT_SOURCE_DIR}/lines/src/node-types.json"
+                   DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/lines/grammar.js"
+                   COMMAND "${TREE_SITTER_CLI}" generate grammar.js --no-parser
+                   WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/lines"
+                   COMMENT "Generating lines/src/grammar.json")
+
+add_custom_command(OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/lines/src/parser.c"
+                   DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/lines/src/grammar.json"
+                   COMMAND "${TREE_SITTER_CLI}" generate src/grammar.json
+                            --abi=${TREE_SITTER_ABI_VERSION}
+                   WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/lines"
+                   COMMENT "Generating lines/src/parser.c")
+
+# One library with all three languages: tree_sitter_nova(),
+# tree_sitter_nova_schema() and tree_sitter_nova_lines().
+add_library(tree-sitter-nova src/parser.c src/scanner.c schema/src/parser.c schema/src/scanner.c
+            lines/src/parser.c)
 target_include_directories(tree-sitter-nova
                            PRIVATE src
                            INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/bindings/c>
@@ -86,8 +101,12 @@ install(FILES ${QUERIES}
 file(GLOB SCHEMA_QUERIES schema/queries/*.scm)
 install(FILES ${SCHEMA_QUERIES}
         DESTINATION "${CMAKE_INSTALL_DATADIR}/tree-sitter/queries/nova_schema")
+file(GLOB LINES_QUERIES lines/queries/*.scm)
+install(FILES ${LINES_QUERIES}
+        DESTINATION "${CMAKE_INSTALL_DATADIR}/tree-sitter/queries/nova_lines")
 
 add_custom_target(ts-test "${TREE_SITTER_CLI}" test
                   COMMAND "${TREE_SITTER_CLI}" test -p schema
+                  COMMAND "${TREE_SITTER_CLI}" test -p lines
                   WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
                   COMMENT "tree-sitter test")

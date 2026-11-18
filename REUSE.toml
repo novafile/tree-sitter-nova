@@ -9,9 +9,9 @@ SPDX-FileCopyrightText = "NOVA contributors"
 SPDX-License-Identifier = "Apache-2.0"
 
 # Corpus tests, highlight tests and the example NOVA documents they embed
-# (both grammars).
+# (all grammars).
 [[annotations]]
-path = ["test/**", "schema/test/**"]
+path = ["test/**", "schema/test/**", "lines/test/**"]
 precedence = "override"
 SPDX-FileCopyrightText = "NOVA contributors"
 SPDX-License-Identifier = "CC0-1.0"

@@ -16,6 +16,9 @@ class Build(build):
         if path.isdir("schema/queries"):
             dest = path.join(self.build_lib, "tree_sitter_nova", "queries", "schema")
             self.copy_tree("schema/queries", dest)
+        if path.isdir("lines/queries"):
+            dest = path.join(self.build_lib, "tree_sitter_nova", "queries", "lines")
+            self.copy_tree("lines/queries", dest)
         super().run()
 
 
@@ -43,10 +46,13 @@ class EggInfo(egg_info):
         super().find_sources()
         self.filelist.recursive_include("queries", "*.scm")
         self.filelist.recursive_include("schema/queries", "*.scm")
+        self.filelist.recursive_include("lines/queries", "*.scm")
         self.filelist.include("src/tree_sitter/*.h")
         self.filelist.include("src/*.c")
         self.filelist.include("schema/src/tree_sitter/*.h")
         self.filelist.include("schema/src/*.c")
+        self.filelist.include("lines/src/tree_sitter/*.h")
+        self.filelist.include("lines/src/*.c")
 
 
 setup(
@@ -56,6 +62,7 @@ setup(
         "tree_sitter_nova": ["*.pyi", "py.typed"],
         "tree_sitter_nova.queries": ["*.scm"],
         "tree_sitter_nova.queries.schema": ["*.scm"],
+        "tree_sitter_nova.queries.lines": ["*.scm"],
     },
     ext_package="tree_sitter_nova",
     ext_modules=[
@@ -67,6 +74,7 @@ setup(
                 "src/scanner.c",
                 "schema/src/parser.c",
                 "schema/src/scanner.c",
+                "lines/src/parser.c",
             ],
             define_macros=[
                 ("PY_SSIZE_T_CLEAN", None),

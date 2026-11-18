@@ -7,6 +7,9 @@ src/tree_sitter/* linguist-generated
 schema/src/*.json linguist-generated
 schema/src/parser.c linguist-generated
 schema/src/tree_sitter/* linguist-generated
+lines/src/*.json linguist-generated
+lines/src/parser.c linguist-generated
+lines/src/tree_sitter/* linguist-generated
 
 # C bindings
 bindings/c/** linguist-generated

@@ -1,0 +1,17 @@
+@nova 0.2
+# <- keyword.directive
+#     ^ string.special
+@columns {id, req{method, status}, ..}
+#         ^ property
+#             ^ property
+#                                  ^ operator
+auth, (GET, 200), {slow_ms: 950}  # trailing comment
+# <- string
+#      ^ string
+#           ^ number
+#                  ^ property
+#                                 ^ comment
+@timestamp("2026-11-17T16:00:00Z"), !error, , true
+# <- type.builtin
+#                                   ^ constructor
+#                                             ^ boolean

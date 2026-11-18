@@ -14,6 +14,7 @@
         "src/scanner.c",
         "schema/src/parser.c",
         "schema/src/scanner.c",
+        "lines/src/parser.c",
       ],
       "conditions": [
         ["OS!='win'", {

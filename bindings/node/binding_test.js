@@ -22,6 +22,18 @@ test("can load the schema grammar", async () => {
   assert.ok(schema.HIGHLIGHTS_QUERY.includes("@type"));
 });
 
+test("can load the NOVA Lines grammar", async () => {
+  const parser = new Parser();
+  const { default: language, lines } = await import("./index.js");
+  assert.strictEqual(language.lines, lines);
+  parser.setLanguage(lines);
+  const tree = parser.parse("@columns {a, b{c}, ..}\n1, (2,), {d: 3}\n");
+  assert.strictEqual(tree.rootNode.type, "stream");
+  assert.ok(!tree.rootNode.hasError);
+  assert.ok(lines.nodeTypeInfo.length > 0);
+  assert.ok(lines.HIGHLIGHTS_QUERY.includes("@keyword.directive"));
+});
+
 test("reports wrong indentation", async () => {
   const parser = new Parser();
   const { default: language } = await import("./index.js");

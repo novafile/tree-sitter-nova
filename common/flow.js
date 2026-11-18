@@ -1,5 +1,5 @@
 /**
- * @file Rules shared by the NOVA grammars (`nova` and `nova_schema`)
+ * @file Rules shared by the NOVA grammars (`nova`, `nova_schema`, `nova_lines`)
  * @author NOVA contributors
  * @license Apache-2.0
  *
@@ -14,6 +14,10 @@
 // @ts-check
 
 export const IDENT = /[A-Za-z_][A-Za-z0-9_-]*/;
+
+// A directive argument: the rest of the line, up to a comment (`#`
+// preceded by whitespace).
+export const ARGUMENT = /[^ \t\r\n#(]([^ \t\r\n]|[ \t]+[^ \t\r\n#])*/;
 
 // Characters that may not begin a flow word (spec §4.4), plus `.`, which is
 // handled separately so that a word never begins with `...`.

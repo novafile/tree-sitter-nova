@@ -23,14 +23,17 @@
     "grammar.js",
     "common/*",
     "schema/grammar.js",
+    "lines/grammar.js",
     "tree-sitter.json",
     "binding.gyp",
     "prebuilds/**",
     "bindings/node/*",
     "queries/*",
     "schema/queries/*",
+    "lines/queries/*",
     "src/**",
     "schema/src/**",
+    "lines/src/**",
     "*.wasm"
   ],
   "dependencies": {

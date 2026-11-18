@@ -3,9 +3,11 @@ HOMEPAGE_URL := https://github.com/novafile/tree-sitter-nova
 VERSION := 0.2.0
 DESCRIPTION := NOVA (Notation for Objects, Values & Agents) grammar for tree-sitter
 
-# repository: the NOVA text grammar (src/) and the schema grammar (schema/src/)
+# repository: the NOVA text grammar (src/), the schema grammar (schema/src/)
+# and the NOVA Lines grammar (lines/src/)
 SRC_DIR := src
 SCHEMA_SRC_DIR := schema/src
+LINES_SRC_DIR := lines/src
 
 TS ?= tree-sitter
 
@@ -22,7 +24,9 @@ PARSER := $(SRC_DIR)/parser.c
 EXTRAS := $(filter-out $(PARSER),$(wildcard $(SRC_DIR)/*.c))
 SCHEMA_PARSER := $(SCHEMA_SRC_DIR)/parser.c
 SCHEMA_EXTRAS := $(filter-out $(SCHEMA_PARSER),$(wildcard $(SCHEMA_SRC_DIR)/*.c))
-OBJS := $(patsubst %.c,%.o,$(PARSER) $(EXTRAS) $(SCHEMA_PARSER) $(SCHEMA_EXTRAS))
+LINES_PARSER := $(LINES_SRC_DIR)/parser.c
+LINES_EXTRAS := $(filter-out $(LINES_PARSER),$(wildcard $(LINES_SRC_DIR)/*.c))
+OBJS := $(patsubst %.c,%.o,$(PARSER) $(EXTRAS) $(SCHEMA_PARSER) $(SCHEMA_EXTRAS) $(LINES_PARSER) $(LINES_EXTRAS))
 
 # flags
 ARFLAGS ?= rcs
@@ -88,10 +92,17 @@ $(SCHEMA_SRC_DIR)/grammar.json: schema/grammar.js
 $(SCHEMA_PARSER): $(SCHEMA_SRC_DIR)/grammar.json
 	cd schema && $(TS) generate src/grammar.json
 
+$(LINES_SRC_DIR)/grammar.json: lines/grammar.js
+	cd lines && $(TS) generate --no-parser grammar.js
+
+$(LINES_PARSER): $(LINES_SRC_DIR)/grammar.json
+	cd lines && $(TS) generate src/grammar.json
+
 install: all
-	install -d '$(DESTDIR)$(DATADIR)'/tree-sitter/queries/nova '$(DESTDIR)$(DATADIR)'/tree-sitter/queries/nova_schema '$(DESTDIR)$(INCLUDEDIR)'/tree_sitter '$(DESTDIR)$(PCLIBDIR)' '$(DESTDIR)$(LIBDIR)'
+	install -d '$(DESTDIR)$(DATADIR)'/tree-sitter/queries/nova '$(DESTDIR)$(DATADIR)'/tree-sitter/queries/nova_schema '$(DESTDIR)$(DATADIR)'/tree-sitter/queries/nova_lines '$(DESTDIR)$(INCLUDEDIR)'/tree_sitter '$(DESTDIR)$(PCLIBDIR)' '$(DESTDIR)$(LIBDIR)'
 	install -m644 bindings/c/tree_sitter/$(LANGUAGE_NAME).h '$(DESTDIR)$(INCLUDEDIR)'/tree_sitter/$(LANGUAGE_NAME).h
 	install -m644 bindings/c/tree_sitter/$(LANGUAGE_NAME)-schema.h '$(DESTDIR)$(INCLUDEDIR)'/tree_sitter/$(LANGUAGE_NAME)-schema.h
+	install -m644 bindings/c/tree_sitter/$(LANGUAGE_NAME)-lines.h '$(DESTDIR)$(INCLUDEDIR)'/tree_sitter/$(LANGUAGE_NAME)-lines.h
 	install -m644 $(LANGUAGE_NAME).pc '$(DESTDIR)$(PCLIBDIR)'/$(LANGUAGE_NAME).pc
 	install -m644 lib$(LANGUAGE_NAME).a '$(DESTDIR)$(LIBDIR)'/lib$(LANGUAGE_NAME).a
 	install -m755 lib$(LANGUAGE_NAME).$(SOEXT) '$(DESTDIR)$(LIBDIR)'/lib$(LANGUAGE_NAME).$(SOEXTVER)
@@ -110,6 +121,9 @@ endif
 ifneq ($(wildcard schema/queries/*.scm),)
 	install -m644 schema/queries/*.scm '$(DESTDIR)$(DATADIR)'/tree-sitter/queries/nova_schema
 endif
+ifneq ($(wildcard lines/queries/*.scm),)
+	install -m644 lines/queries/*.scm '$(DESTDIR)$(DATADIR)'/tree-sitter/queries/nova_lines
+endif
 
 uninstall:
 	$(RM) '$(DESTDIR)$(LIBDIR)'/lib$(LANGUAGE_NAME).a \
@@ -118,8 +132,9 @@ uninstall:
 		'$(DESTDIR)$(LIBDIR)'/lib$(LANGUAGE_NAME).$(SOEXT) \
 		'$(DESTDIR)$(INCLUDEDIR)'/tree_sitter/$(LANGUAGE_NAME).h \
 		'$(DESTDIR)$(INCLUDEDIR)'/tree_sitter/$(LANGUAGE_NAME)-schema.h \
+		'$(DESTDIR)$(INCLUDEDIR)'/tree_sitter/$(LANGUAGE_NAME)-lines.h \
 		'$(DESTDIR)$(PCLIBDIR)'/$(LANGUAGE_NAME).pc
-	$(RM) -r '$(DESTDIR)$(DATADIR)'/tree-sitter/queries/nova '$(DESTDIR)$(DATADIR)'/tree-sitter/queries/nova_schema
+	$(RM) -r '$(DESTDIR)$(DATADIR)'/tree-sitter/queries/nova '$(DESTDIR)$(DATADIR)'/tree-sitter/queries/nova_schema '$(DESTDIR)$(DATADIR)'/tree-sitter/queries/nova_lines
 
 clean:
 	$(RM) $(OBJS) $(LANGUAGE_NAME).pc lib$(LANGUAGE_NAME).a lib$(LANGUAGE_NAME).$(SOEXT) lib$(LANGUAGE_NAME).dll.a
@@ -127,5 +142,6 @@ clean:
 test:
 	$(TS) test
 	$(TS) test -p schema
+	$(TS) test -p lines
 
 .PHONY: all install uninstall clean test

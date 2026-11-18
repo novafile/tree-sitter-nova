@@ -9,11 +9,15 @@ const binding = typeof process.versions.bun === "string" && Bun.isStandaloneExec
   ? require(`../../prebuilds/${process.platform}-${process.arch}/tree-sitter-nova.node`)
   : (await import("node-gyp-build")).default(root);
 
-// The second grammar: the NOVA schema language (`.novs`). Like the default
-// export, it is a language object for `Parser.setLanguage`.
+// The other grammars: the NOVA schema language (`.novs`) and NOVA Lines
+// (`.novl`). Like the default export, each is a language object for
+// `Parser.setLanguage`.
 const schema = { language: binding.schemaLanguage };
 delete binding.schemaLanguage;
 binding.schema = schema;
+const lines = { language: binding.linesLanguage };
+delete binding.linesLanguage;
+binding.lines = lines;
 
 try {
   // Bun only embeds static paths, and `import()` rejects absolute Windows paths like `root`.
@@ -24,6 +28,11 @@ try {
 try {
   const nodeTypes = await import("../../schema/src/node-types.json", { with: { type: "json" } });
   schema.nodeTypeInfo = nodeTypes.default;
+} catch { }
+
+try {
+  const nodeTypes = await import("../../lines/src/node-types.json", { with: { type: "json" } });
+  lines.nodeTypeInfo = nodeTypes.default;
 } catch { }
 
 if (typeof process.versions.bun === "string" && Bun.isStandaloneExecutable) {
@@ -47,6 +56,9 @@ if (typeof process.versions.bun === "string" && Bun.isStandaloneExecutable) {
   try {
     schema.LOCALS_QUERY = (await import("../../schema/queries/locals.scm", { with: { type: "text" } })).default;
   } catch { }
+  try {
+    lines.HIGHLIGHTS_QUERY = (await import("../../lines/queries/highlights.scm", { with: { type: "text" } })).default;
+  } catch { }
 } else {
   const queries = [
     [binding, "HIGHLIGHTS_QUERY", `${root}/queries/highlights.scm`],
@@ -55,6 +67,7 @@ if (typeof process.versions.bun === "string" && Bun.isStandaloneExecutable) {
     [binding, "TAGS_QUERY", `${root}/queries/tags.scm`],
     [schema, "HIGHLIGHTS_QUERY", `${root}/schema/queries/highlights.scm`],
     [schema, "LOCALS_QUERY", `${root}/schema/queries/locals.scm`],
+    [lines, "HIGHLIGHTS_QUERY", `${root}/lines/queries/highlights.scm`],
   ];
 
   for (const [target, prop, path] of queries) {
@@ -72,5 +85,5 @@ if (typeof process.versions.bun === "string" && Bun.isStandaloneExecutable) {
   }
 }
 
-export { schema };
+export { lines, schema };
 export default binding;

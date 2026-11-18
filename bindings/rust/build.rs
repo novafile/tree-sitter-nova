@@ -1,7 +1,12 @@
 fn main() {
-    // Two grammars: `nova` (src/) and `nova_schema` (schema/src/). Each is
-    // compiled with its own include directory for the generated headers.
-    for (lib, src_dir) in [("tree-sitter-nova", "src"), ("tree-sitter-nova-schema", "schema/src")] {
+    // Three grammars: `nova` (src/), `nova_schema` (schema/src/) and
+    // `nova_lines` (lines/src/). Each is compiled with its own include
+    // directory for the generated headers.
+    for (lib, src_dir) in [
+        ("tree-sitter-nova", "src"),
+        ("tree-sitter-nova-schema", "schema/src"),
+        ("tree-sitter-nova-lines", "lines/src"),
+    ] {
         let src_dir = std::path::Path::new(src_dir);
 
         let mut c_config = cc::Build::new();

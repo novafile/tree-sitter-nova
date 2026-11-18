@@ -1,8 +1,9 @@
 //! This crate provides NOVA language support for the [tree-sitter] parsing library.
 //!
-//! It contains two grammars: [`LANGUAGE`] (also [`LANGUAGE_NOVA`]) for NOVA
-//! text — data, template, patch and query documents and text streams — and
-//! [`LANGUAGE_NOVA_SCHEMA`] for the schema language (`.novs` files).
+//! It contains three grammars: [`LANGUAGE`] (also [`LANGUAGE_NOVA`]) for NOVA
+//! text — data, template, patch and query documents and text streams —,
+//! [`LANGUAGE_NOVA_SCHEMA`] for the schema language (`.novs` files) and
+//! [`LANGUAGE_NOVA_LINES`] for NOVA Lines (`.novl` files).
 //!
 //! Typically, you will use one of these constants to add the language to a
 //! tree-sitter [`Parser`], and then use the parser to parse some code:
@@ -31,6 +32,7 @@ use tree_sitter_language::LanguageFn;
 unsafe extern "C" {
     fn tree_sitter_nova() -> *const ();
     fn tree_sitter_nova_schema() -> *const ();
+    fn tree_sitter_nova_lines() -> *const ();
 }
 
 /// The tree-sitter [`LanguageFn`] for the NOVA text grammar (`.nova`).
@@ -42,6 +44,9 @@ pub const LANGUAGE_NOVA: LanguageFn = LANGUAGE;
 
 /// The tree-sitter [`LanguageFn`] for the NOVA schema language (`.novs`).
 pub const LANGUAGE_NOVA_SCHEMA: LanguageFn = unsafe { LanguageFn::from_raw(tree_sitter_nova_schema) };
+
+/// The tree-sitter [`LanguageFn`] for NOVA Lines (`.novl`).
+pub const LANGUAGE_NOVA_LINES: LanguageFn = unsafe { LanguageFn::from_raw(tree_sitter_nova_lines) };
 
 /// The content of the [`node-types.json`] file for the NOVA text grammar.
 ///
@@ -58,6 +63,14 @@ pub const NOVA_SCHEMA_HIGHLIGHTS_QUERY: &str = include_str!("../../schema/querie
 
 /// The local variable query for the schema grammar.
 pub const NOVA_SCHEMA_LOCALS_QUERY: &str = include_str!("../../schema/queries/locals.scm");
+
+/// The content of the [`node-types.json`] file for the NOVA Lines grammar.
+///
+/// [`node-types.json`]: https://tree-sitter.github.io/tree-sitter/using-parsers/6-static-node-types
+pub const NOVA_LINES_NODE_TYPES: &str = include_str!("../../lines/src/node-types.json");
+
+/// The syntax highlighting query for the NOVA Lines grammar.
+pub const NOVA_LINES_HIGHLIGHTS_QUERY: &str = include_str!("../../lines/queries/highlights.scm");
 
 #[cfg(with_highlights_query)]
 /// The syntax highlighting query for this grammar.
@@ -110,6 +123,21 @@ mod tests {
             .unwrap();
         assert!(!tree.root_node().has_error(), "{}", tree.root_node().to_sexp());
         assert_eq!(tree.root_node().kind(), "schema");
+    }
+
+    #[test]
+    fn test_can_load_lines_grammar() {
+        let mut parser = tree_sitter::Parser::new();
+        parser
+            .set_language(&super::LANGUAGE_NOVA_LINES.into())
+            .expect("Error loading NOVA Lines parser");
+        let tree = parser
+            .parse(include_str!("../../test/highlight/lines.novl"), None)
+            .unwrap();
+        assert!(!tree.root_node().has_error(), "{}", tree.root_node().to_sexp());
+        assert_eq!(tree.root_node().kind(), "stream");
+        let language = super::LANGUAGE_NOVA_LINES.into();
+        tree_sitter::Query::new(&language, super::NOVA_LINES_HIGHLIGHTS_QUERY).unwrap();
     }
 
     #[test]

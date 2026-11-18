@@ -52,9 +52,21 @@ type LanguageObject = {
 export declare const schema: LanguageObject;
 
 /**
+ * The tree-sitter language object for NOVA Lines (`.novl`).
+ *
+ * @example
+ * import { lines } from "@novafile/tree-sitter-nova";
+ *
+ * const parser = new Parser();
+ * parser.setLanguage(lines);
+ */
+export declare const lines: LanguageObject;
+
+/**
  * The tree-sitter language object for NOVA text (`.nova`): data, template,
- * patch and query documents and text streams. The schema language is
- * available as its `schema` property and as the named export `schema`.
+ * patch and query documents and text streams. The schema language and
+ * NOVA Lines are available as its `schema` and `lines` properties and as the
+ * named exports `schema` and `lines`.
  *
  * @see {@linkcode https://tree-sitter.github.io/node-tree-sitter/interfaces/Language.html Parser.Language}
  *
@@ -93,6 +105,9 @@ declare const binding: {
 
   /** The NOVA schema language (`.novs`). */
   schema: LanguageObject;
+
+  /** NOVA Lines (`.novl`). */
+  lines: LanguageObject;
 };
 
 export default binding;

@@ -1,0 +1,342 @@
+================================================================================
+Table mode (spec §4.2)
+================================================================================
+
+@nova 0.2
+@schema infrastructure@1.2.0#8c21a0f3d5e6b7c8
+@key id
+@columns {id, image, port, replicas, enabled}
+auth, ghcr.io/example/auth:v2, 8080, 3, true
+api,  ghcr.io/example/api:v5,  3000, 5, true
+# comments and blank lines are allowed
+
+web,  ghcr.io/example/web:v1,  80, , false      # empty cell = absent field (§4.9)
+@end 3 tree:4f1c9a0b
+--------------------------------------------------------------------------------
+
+(stream
+  (directive
+    (directive_name)
+    (argument))
+  (directive
+    (directive_name)
+    (argument))
+  (directive
+    (directive_name)
+    (argument))
+  (directive
+    (directive_name)
+    (columns
+      (column
+        (key))
+      (column
+        (key))
+      (column
+        (key))
+      (column
+        (key))
+      (column
+        (key))))
+  (row
+    (word)
+    (word)
+    (number)
+    (number)
+    (boolean))
+  (row
+    (word)
+    (word)
+    (number)
+    (number)
+    (boolean))
+  (comment)
+  (row
+    (word)
+    (word)
+    (number)
+    (boolean))
+  (comment)
+  (directive
+    (directive_name)
+    (argument)))
+
+================================================================================
+Nested columns and the rest column
+================================================================================
+
+@columns {ts, level, service, req{method, path, status}, user{id, roles}, ..}
+@timestamp("2026-11-17T16:00:00Z"), !error, api, (POST, /orders, 502), (42, [admin]), {error: {kind: upstream, msg: "timeout after 30s"}}
+@timestamp("2026-11-17T16:00:01Z"), !info, auth, (GET, /login, 200), (7, []),
+@timestamp("2026-11-17T16:00:02Z"), !warn, api, (GET, /health, !_), , {slow_ms: 950}
+--------------------------------------------------------------------------------
+
+(stream
+  (directive
+    (directive_name)
+    (columns
+      (column
+        (key))
+      (column
+        (key))
+      (column
+        (key))
+      (nested_column
+        (key)
+        (columns
+          (column
+            (key))
+          (column
+            (key))
+          (column
+            (key))))
+      (nested_column
+        (key)
+        (columns
+          (column
+            (key))
+          (column
+            (key))))
+      (rest_column)))
+  (row
+    (typed_literal
+      (literal_type)
+      (string
+        (string_content)))
+    (variant
+      (tag))
+    (word)
+    (tuple
+      (word)
+      (word)
+      (number))
+    (tuple
+      (number)
+      (flow_list
+        (word)))
+    (flow_record
+      (entry
+        (key)
+        (flow_record
+          (entry
+            (key)
+            (word))
+          (entry
+            (key)
+            (string
+              (string_content)))))))
+  (row
+    (typed_literal
+      (literal_type)
+      (string
+        (string_content)))
+    (variant
+      (tag))
+    (word)
+    (tuple
+      (word)
+      (word)
+      (number))
+    (tuple
+      (number)
+      (flow_list)))
+  (row
+    (typed_literal
+      (literal_type)
+      (string
+        (string_content)))
+    (variant
+      (tag))
+    (word)
+    (tuple
+      (word)
+      (word)
+      (variant
+        (tag)))
+    (flow_record
+      (entry
+        (key)
+        (number)))))
+
+================================================================================
+Value mode
+================================================================================
+
+{ts: @timestamp("2026-11-17T16:00:00Z"), level: !error, service: api, req: {method: POST, path: /orders, status: 502}, user: {id: 42, roles: [admin]}, error: {kind: upstream, msg: "timeout after 30s"}}
+{ts: @timestamp("2026-11-17T16:00:01Z"), level: !info, service: auth, req: {method: GET, path: /login, status: 200}, user: {id: 7, roles: []}}
+--------------------------------------------------------------------------------
+
+(stream
+  (row
+    (flow_record
+      (entry
+        (key)
+        (typed_literal
+          (literal_type)
+          (string
+            (string_content))))
+      (entry
+        (key)
+        (variant
+          (tag)))
+      (entry
+        (key)
+        (word))
+      (entry
+        (key)
+        (flow_record
+          (entry
+            (key)
+            (word))
+          (entry
+            (key)
+            (word))
+          (entry
+            (key)
+            (number))))
+      (entry
+        (key)
+        (flow_record
+          (entry
+            (key)
+            (number))
+          (entry
+            (key)
+            (flow_list
+              (word)))))
+      (entry
+        (key)
+        (flow_record
+          (entry
+            (key)
+            (word))
+          (entry
+            (key)
+            (string
+              (string_content)))))))
+  (row
+    (flow_record
+      (entry
+        (key)
+        (typed_literal
+          (literal_type)
+          (string
+            (string_content))))
+      (entry
+        (key)
+        (variant
+          (tag)))
+      (entry
+        (key)
+        (word))
+      (entry
+        (key)
+        (flow_record
+          (entry
+            (key)
+            (word))
+          (entry
+            (key)
+            (word))
+          (entry
+            (key)
+            (number))))
+      (entry
+        (key)
+        (flow_record
+          (entry
+            (key)
+            (number))
+          (entry
+            (key)
+            (flow_list)))))))
+
+================================================================================
+Positional mode
+================================================================================
+
+@schema logs@1.0.0#8c21a0f3d5e6b7c8
+@mode positional
+(@timestamp("2026-11-17T16:00:00Z"), !error, api, (POST, /orders, 502), (42, [admin]), !upstream("timeout after 30s"))
+(@timestamp("2026-11-17T16:00:01Z"), !info, auth, (GET, /login, 200), (7, []), !_)
+--------------------------------------------------------------------------------
+
+(stream
+  (directive
+    (directive_name)
+    (argument))
+  (directive
+    (directive_name)
+    (argument))
+  (row
+    (tuple
+      (typed_literal
+        (literal_type)
+        (string
+          (string_content)))
+      (variant
+        (tag))
+      (word)
+      (tuple
+        (word)
+        (word)
+        (number))
+      (tuple
+        (number)
+        (flow_list
+          (word)))
+      (variant
+        (tag)
+        (string
+          (string_content)))))
+  (row
+    (tuple
+      (typed_literal
+        (literal_type)
+        (string
+          (string_content)))
+      (variant
+        (tag))
+      (word)
+      (tuple
+        (word)
+        (word)
+        (number))
+      (tuple
+        (number)
+        (flow_list))
+      (variant
+        (tag)))))
+
+================================================================================
+Segments
+================================================================================
+
+@columns {a, b}
+1, 2
+@end 1
+@nova 0.2
+{a: 3}
+--------------------------------------------------------------------------------
+
+(stream
+  (directive
+    (directive_name)
+    (columns
+      (column
+        (key))
+      (column
+        (key))))
+  (row
+    (number)
+    (number))
+  (directive
+    (directive_name)
+    (argument))
+  (directive
+    (directive_name)
+    (argument))
+  (row
+    (flow_record
+      (entry
+        (key)
+        (number)))))

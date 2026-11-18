@@ -19,8 +19,14 @@ NOVA_SCHEMA_HIGHLIGHTS_QUERY: Final[str] | None
 NOVA_SCHEMA_LOCALS_QUERY: Final[str] | None
 """The local variable query for the schema grammar."""
 
+NOVA_LINES_HIGHLIGHTS_QUERY: Final[str] | None
+"""The syntax highlighting query for the NOVA Lines grammar."""
+
 def language() -> CapsuleType:
     """The tree-sitter language function for NOVA text (.nova)."""
 
 def language_nova_schema() -> CapsuleType:
     """The tree-sitter language function for the NOVA schema language (.novs)."""
+
+def language_nova_lines() -> CapsuleType:
+    """The tree-sitter language function for NOVA Lines (.novl)."""

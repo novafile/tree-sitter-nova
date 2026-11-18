@@ -4,6 +4,7 @@ typedef struct TSLanguage TSLanguage;
 
 TSLanguage *tree_sitter_nova(void);
 TSLanguage *tree_sitter_nova_schema(void);
+TSLanguage *tree_sitter_nova_lines(void);
 
 static PyObject* _binding_language(PyObject *Py_UNUSED(self), PyObject *Py_UNUSED(args)) {
     return PyCapsule_New(tree_sitter_nova(), "tree_sitter.Language", NULL);
@@ -11,6 +12,10 @@ static PyObject* _binding_language(PyObject *Py_UNUSED(self), PyObject *Py_UNUSE
 
 static PyObject* _binding_language_nova_schema(PyObject *Py_UNUSED(self), PyObject *Py_UNUSED(args)) {
     return PyCapsule_New(tree_sitter_nova_schema(), "tree_sitter.Language", NULL);
+}
+
+static PyObject* _binding_language_nova_lines(PyObject *Py_UNUSED(self), PyObject *Py_UNUSED(args)) {
+    return PyCapsule_New(tree_sitter_nova_lines(), "tree_sitter.Language", NULL);
 }
 
 static struct PyModuleDef_Slot slots[] = {
@@ -25,6 +30,8 @@ static PyMethodDef methods[] = {
      "Get the tree-sitter language for NOVA text (.nova)."},
     {"language_nova_schema", _binding_language_nova_schema, METH_NOARGS,
      "Get the tree-sitter language for the NOVA schema language (.novs)."},
+    {"language_nova_lines", _binding_language_nova_lines, METH_NOARGS,
+     "Get the tree-sitter language for NOVA Lines (.novl)."},
     {NULL, NULL, 0, NULL}
 };
 

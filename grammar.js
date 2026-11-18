@@ -22,6 +22,7 @@
 // @ts-check
 
 import {
+  ARGUMENT,
   IDENT,
   commaSep1,
   flowRules,
@@ -112,8 +113,7 @@ export default grammar({
       $._newline,
     ),
 
-    // Rest of the line, up to a comment (`#` preceded by whitespace).
-    argument: _ => token(/[^ \t\r\n#(]([^ \t\r\n]|[ \t]+[^ \t\r\n#])*/),
+    argument: _ => token(ARGUMENT),
 
     ...blockRules(DATA),
     ...flowRules(DATA),

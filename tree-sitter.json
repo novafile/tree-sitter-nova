@@ -29,6 +29,21 @@
       "class-name": "TreeSitterNovaSchema",
       "highlights": "schema/queries/highlights.scm",
       "locals": "schema/queries/locals.scm"
+    },
+    {
+      "name": "nova_lines",
+      "camelcase": "NovaLines",
+      "title": "NOVA Lines",
+      "scope": "source.novl",
+      "path": "lines",
+      "file-types": [
+        "novl"
+      ],
+      "injection-regex": "^(novl|nova_lines)$",
+      "class-name": "TreeSitterNovaLines",
+      "highlights": "lines/queries/highlights.scm",
+      "locals": [],
+      "injections": []
     }
   ],
   "metadata": {

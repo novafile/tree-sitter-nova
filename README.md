@@ -5,16 +5,19 @@
 - Specification: [novafile/spec](https://github.com/novafile/spec) (`SPEC.md`)
 - Reference implementation (`nvf`, `nvf-lsp`): [novafile/nova](https://github.com/novafile/nova)
 
-The repository holds two grammars:
+The repository holds three grammars:
 
 | Grammar | Files | Covers | Sources |
 | --- | --- | --- | --- |
 | `nova` | `.nova` | NOVA text: data, template, patch and query documents, query responses, text streams | `grammar.js`, `src/`, `queries/` |
 | `nova_schema` | `.novs` | the schema language (spec §6.1) | `schema/grammar.js`, `schema/src/`, `schema/queries/` |
+| `nova_lines` | `.novl` | NOVA Lines, one record per line (spec §4.13, draft: proposal 0002) | `lines/grammar.js`, `lines/src/`, `lines/queries/` |
 
-Rules both grammars need — flow values, which are also schema defaults —
-live in `common/flow.js`. Each grammar has an external scanner
-(`src/scanner.c`, `schema/src/scanner.c`) for the line structure; the one of
+Rules the grammars share — flow values, which are also schema defaults and
+NOVA Lines cells — live in `common/flow.js`. `nova` and `nova_schema` have
+an external scanner (`src/scanner.c`, `schema/src/scanner.c`) for the line
+structure; `nova_lines` needs none, because a record never spans lines. The
+one of
 `nova` also handles block strings, plain scalars, the key-vs-value decision
 and table row/cell counts, so the tree follows the reference parser rather
 than a regex approximation.
@@ -65,6 +68,24 @@ Queries: `queries/highlights.scm`, `folds.scm`, `indents.scm`, `locals.scm`
 
 Queries: `schema/queries/highlights.scm`, `folds.scm`, `indents.scm` and
 `locals.scm` (definitions and type references).
+
+### `nova_lines`
+
+NOVA Lines is a draft (proposal 0002 in the spec repository) and may still
+change.
+
+| Spec | Construct | Nodes |
+| --- | --- | --- |
+| §4.13 | A stream of lines; blank lines and `#` comments (whole-line or trailing) are ignored | `stream`, `comment` |
+| §4.13 | Directives `@nova`, `@schema`, `@key`, `@mode`, `@end` and `@x-…`, with the rest of the line as the argument | `directive`, `directive_name`, `argument` |
+| §4.13 | `@columns {…}`: names (identifiers or strings), nested columns `name{…}` and the rest column `..` (last only) | `columns`, `column`, `nested_column`, `rest_column` |
+| §4.13 | Record lines in every mode: comma-separated flow-value cells, which may be empty (`80, , false`, a trailing comma is an empty last cell). A value-mode or positional line is a row of one cell | `row` (cells in the `cell` field) |
+
+The parser does not track which directives are in effect, so it checks
+neither a row's cell count nor whether a line fits the mode. A value that
+continues on the next line is an `ERROR` in that line only.
+
+Queries: `lines/queries/highlights.scm`.
 
 ### Errors
 
@@ -119,6 +140,10 @@ worse. Validators (`nvf check`, `nvf-lsp`) report these; the tree does not:
   files to `nova` in the editor.
 - Directive arguments other than `@param`/`@import`/`@let`/`@patch` are kept
   as a single `argument` token (paths in `@scope`/`@get` are not split).
+- NOVA Lines: a directive name is recognized after leading whitespace too,
+  and a record line starting with one followed by `(` (`@nova("x")`) is an
+  `ERROR`; the spec makes only column-1 names followed by a space or the
+  end of the line directives.
 - Schema files: block-form enum variants must be indented exactly two
   spaces, like fields (the reference parser also accepts deeper variant
   lines); an indented first line of a `.novs` file is not reported; a
@@ -130,12 +155,12 @@ worse. Validators (`nvf check`, `nvf-lsp`) report these; the tree does not:
 ## Editor setup
 
 File types: `.nova` → `nova` (data, template, patch and query documents and
-streams), `.novs` → `nova_schema`.
+streams), `.novs` → `nova_schema`, `.novl` → `nova_lines`.
 
 ### Neovim (nvim-treesitter)
 
 ```lua
-vim.filetype.add({ extension = { nova = "nova", novs = "novs" } })
+vim.filetype.add({ extension = { nova = "nova", novs = "novs", novl = "novl" } })
 
 local parsers = require("nvim-treesitter.parsers").get_parser_configs()
 parsers.nova = {
@@ -155,11 +180,21 @@ parsers.nova_schema = {
   },
   filetype = "novs",
 }
+parsers.nova_lines = {
+  install_info = {
+    url = "https://github.com/novafile/tree-sitter-nova",
+    location = "lines",
+    files = { "src/parser.c" },
+    branch = "main",
+  },
+  filetype = "novl",
+}
 ```
 
-Then `:TSInstall nova nova_schema`, and copy (or symlink) `queries/*.scm` to
-`~/.config/nvim/queries/nova/` and `schema/queries/*.scm` to
-`~/.config/nvim/queries/nova_schema/`. For the language server:
+Then `:TSInstall nova nova_schema nova_lines`, and copy (or symlink)
+`queries/*.scm` to `~/.config/nvim/queries/nova/`, `schema/queries/*.scm` to
+`~/.config/nvim/queries/nova_schema/` and `lines/queries/*.scm` to
+`~/.config/nvim/queries/nova_lines/`. For the language server:
 
 ```lua
 vim.lsp.config("novafile_lsp", { cmd = { "nvf-lsp" }, filetypes = { "nova", "novs" }, root_markers = { ".git" } })
@@ -199,11 +234,23 @@ grammar = "nova_schema"
 [[grammar]]
 name = "nova_schema"
 source = { git = "https://github.com/novafile/tree-sitter-nova", rev = "main", subpath = "schema" }
+
+[[language]]
+name = "nova-lines"
+scope = "source.novl"
+file-types = ["novl"]
+comment-token = "#"
+grammar = "nova_lines"
+
+[[grammar]]
+name = "nova_lines"
+source = { git = "https://github.com/novafile/tree-sitter-nova", rev = "main", subpath = "lines" }
 ```
 
 Then `hx --grammar fetch && hx --grammar build`, and copy `queries/*.scm` to
-`~/.config/helix/runtime/queries/nova/` and `schema/queries/*.scm` to
-`~/.config/helix/runtime/queries/nova-schema/`. Install the server with
+`~/.config/helix/runtime/queries/nova/`, `schema/queries/*.scm` to
+`~/.config/helix/runtime/queries/nova-schema/` and `lines/queries/*.scm` to
+`~/.config/helix/runtime/queries/nova-lines/`. Install the server with
 `cargo install --git https://github.com/novafile/nova novafile-lsp`.
 
 ### Zed
@@ -219,6 +266,11 @@ rev = "<commit sha>"
 repository = "https://github.com/novafile/tree-sitter-nova"
 rev = "<commit sha>"
 path = "schema"
+
+[grammars.nova_lines]
+repository = "https://github.com/novafile/tree-sitter-nova"
+rev = "<commit sha>"
+path = "lines"
 ```
 
 with `languages/nova/config.toml`:
@@ -242,7 +294,9 @@ tab_size = 2
 ```
 
 and the query files from `queries/` in `languages/nova/` and from
-`schema/queries/` in `languages/nova-schema/`.
+`schema/queries/` in `languages/nova-schema/`. NOVA Lines works the same
+way, with `grammar = "nova_lines"`, `path_suffixes = ["novl"]` and
+`lines/queries/` in `languages/nova-lines/`.
 
 ## Development
 
@@ -250,32 +304,35 @@ and the query files from `queries/` in `languages/nova/` and from
 yarn install                         # installs tree-sitter-cli (Yarn via corepack)
 yarn tree-sitter generate            # regenerate src/ after editing grammar.js or common/
 (cd schema && yarn tree-sitter generate)   # regenerate schema/src/
+(cd lines && yarn tree-sitter generate)    # regenerate lines/src/
 yarn tree-sitter test                # nova corpus (test/corpus) and all highlight tests (test/highlight)
 yarn tree-sitter test -p schema      # nova_schema corpus (schema/test/corpus)
-yarn tree-sitter parse file.nova file.novs
-yarn tree-sitter fuzz                # incremental reparsing (also: cd schema && yarn tree-sitter fuzz)
+yarn tree-sitter test -p lines       # nova_lines corpus (lines/test/corpus)
+yarn tree-sitter parse file.nova file.novs file.novl
+yarn tree-sitter fuzz                # incremental reparsing (also in schema/ and lines/)
 cargo test                           # Rust binding (yarn test, go test ./bindings/go/, … for the others)
 ```
 
-`scripts/gen_corpus.py` rewrites both corpora from the examples and inline
-cases with empty expectations; `tree-sitter test -u` (and `-p schema -u`)
-fills them in, except for the tests whose tree has errors, which
-`scripts/fill_error_expectations.py [-p schema]` fills from the test
-runner's output. Review the diff before committing.
+`scripts/gen_corpus.py` rewrites the `nova` and `nova_schema` corpora from
+the examples and inline cases with empty expectations; `tree-sitter test -u`
+(and `-p schema -u`) fills them in, except for the tests whose tree has
+errors, which `scripts/fill_error_expectations.py [-p schema|lines]` fills
+from the test runner's output. Review the diff before committing.
 
 Bindings for C, Go, Node, Python, Rust and Swift were generated by
-`tree-sitter init` and extended to expose both languages:
+`tree-sitter init` and extended to expose all three languages, in one
+library:
 
-| Binding | NOVA text | Schema language |
-| --- | --- | --- |
-| C | `tree_sitter_nova()` (`tree-sitter-nova.h`) | `tree_sitter_nova_schema()` (`tree-sitter-nova-schema.h`), same library |
-| Rust | `LANGUAGE` / `LANGUAGE_NOVA` | `LANGUAGE_NOVA_SCHEMA`, `NOVA_SCHEMA_NODE_TYPES`, `NOVA_SCHEMA_HIGHLIGHTS_QUERY` |
-| Node | default export | `schema` (named export, and a property of the default export) |
-| Python | `language()` | `language_nova_schema()`, `NOVA_SCHEMA_HIGHLIGHTS_QUERY` |
-| Go | `Language()` | `LanguageNovaSchema()` |
-| Swift | `tree_sitter_nova()` | `tree_sitter_nova_schema()` |
+| Binding | NOVA text | Schema language | NOVA Lines |
+| --- | --- | --- | --- |
+| C | `tree_sitter_nova()` (`tree-sitter-nova.h`) | `tree_sitter_nova_schema()` (`tree-sitter-nova-schema.h`) | `tree_sitter_nova_lines()` (`tree-sitter-nova-lines.h`) |
+| Rust | `LANGUAGE` / `LANGUAGE_NOVA` | `LANGUAGE_NOVA_SCHEMA`, `NOVA_SCHEMA_NODE_TYPES`, `NOVA_SCHEMA_HIGHLIGHTS_QUERY` | `LANGUAGE_NOVA_LINES`, `NOVA_LINES_NODE_TYPES`, `NOVA_LINES_HIGHLIGHTS_QUERY` |
+| Node | default export | `schema` (named export, and a property of the default export) | `lines` (likewise) |
+| Python | `language()` | `language_nova_schema()`, `NOVA_SCHEMA_HIGHLIGHTS_QUERY` | `language_nova_lines()`, `NOVA_LINES_HIGHLIGHTS_QUERY` |
+| Go | `Language()` | `LanguageNovaSchema()` | `LanguageNovaLines()` |
+| Swift | `tree_sitter_nova()` | `tree_sitter_nova_schema()` | `tree_sitter_nova_lines()` |
 
-The generated parsers in `src/` and `schema/src/` are committed; CI checks
+The generated parsers in `src/`, `schema/src/` and `lines/src/` are committed; CI checks
 that they are up to date.
 
 ## License
