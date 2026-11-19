@@ -832,3 +832,228 @@ record Bag @open:
       (identifier)
       (optional_marker)
       (primitive_type))))
+
+================================================================================
+spec conformance/schema/unions
+================================================================================
+
+# Unions and quoted field names (spec §6.1, §6.3).
+@schema unions@1.0.0
+@root Problem
+
+type Formula = Atom | And | Not | Eq | AtStart
+type Term = string | int
+type Atom = list<Term>
+
+record And:
+  and: Formula[]
+
+record Not:
+  not: Formula
+
+record Eq:
+  "=": (Term, Term)
+
+record AtStart:
+  "at start": Formula
+
+record Problem:
+  goal: Formula
+  types?: map<string, string | string[]>
+  stamp?: timestamp | string
+  level?: u8 @range(1..) | string @len(1..)
+  port: u16 = 80
+  note?: string?
+
+--------------------------------------------------------------------------------
+
+(schema
+  (comment)
+  (directive
+    (directive_name)
+    (schema_ref
+      (identifier)
+      (version)))
+  (directive
+    (directive_name)
+    (type_identifier))
+  (type_definition
+    (type_identifier)
+    (union_type
+      (type_identifier)
+      (type_identifier)
+      (type_identifier)
+      (type_identifier)
+      (type_identifier)))
+  (type_definition
+    (type_identifier)
+    (union_type
+      (primitive_type)
+      (primitive_type)))
+  (type_definition
+    (type_identifier)
+    (list_type
+      (type_identifier)))
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (array_type
+        (type_identifier))))
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (type_identifier)))
+  (record_definition
+    (type_identifier)
+    (field
+      (string
+        (string_content))
+      (tuple_type
+        (type_identifier)
+        (type_identifier))))
+  (record_definition
+    (type_identifier)
+    (field
+      (string
+        (string_content))
+      (type_identifier)))
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (type_identifier))
+    (field
+      (identifier)
+      (optional_marker)
+      (map_type
+        (primitive_type)
+        (union_type
+          (primitive_type)
+          (array_type
+            (primitive_type)))))
+    (field
+      (identifier)
+      (optional_marker)
+      (union_type
+        (primitive_type)
+        (primitive_type)))
+    (field
+      (identifier)
+      (optional_marker)
+      (union_type
+        (attributed_type
+          (primitive_type)
+          (attribute
+            (attribute_name)
+            (range
+              (number))))
+        (primitive_type))
+      (attribute
+        (attribute_name)
+        (range
+          (number))))
+    (field
+      (identifier)
+      (primitive_type)
+      (number))
+    (field
+      (identifier)
+      (optional_marker)
+      (nullable_type
+        (primitive_type)))))
+
+================================================================================
+spec conformance/schema/keyed-unions
+================================================================================
+
+# Keyed lists of union elements (spec §6.2).
+@schema keyed-unions@1.0.0
+@root Inventory
+
+# Batch is an alias to a union, so Job and CronJob are members too.
+type Resource = Service | Batch | string
+type Batch = Job | CronJob
+
+record Service:
+  id: string @key
+  image: string
+
+record Job:
+  id: string @key
+  command: string
+
+# The key field may have another type in another member.
+record CronJob:
+  id: int @key
+  schedule: string
+  command: string
+
+record Inventory:
+  resources: list<Resource>
+
+--------------------------------------------------------------------------------
+
+(schema
+  (comment)
+  (directive
+    (directive_name)
+    (schema_ref
+      (identifier)
+      (version)))
+  (directive
+    (directive_name)
+    (type_identifier))
+  (comment)
+  (type_definition
+    (type_identifier)
+    (union_type
+      (type_identifier)
+      (type_identifier)
+      (primitive_type)))
+  (type_definition
+    (type_identifier)
+    (union_type
+      (type_identifier)
+      (type_identifier)))
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (primitive_type)
+      (attribute
+        (attribute_name)))
+    (field
+      (identifier)
+      (primitive_type)))
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (primitive_type)
+      (attribute
+        (attribute_name)))
+    (field
+      (identifier)
+      (primitive_type)))
+  (comment)
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (primitive_type)
+      (attribute
+        (attribute_name)))
+    (field
+      (identifier)
+      (primitive_type))
+    (field
+      (identifier)
+      (primitive_type)))
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (list_type
+        (type_identifier)))))

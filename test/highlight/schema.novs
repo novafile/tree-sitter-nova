@@ -40,3 +40,10 @@ enum Status = active | failed(string)
 #             ^ constructor
 #                    ^ punctuation.delimiter
 #                      ^ constructor
+record Eq:
+  "at start": u8 @range(1..) | Port?
+# ^ string
+#             ^ type.builtin
+#                ^ attribute
+#                            ^ punctuation.delimiter
+#                              ^ type
