@@ -2047,10 +2047,6 @@
   ],
   "conflicts": [
     [
-      "_union_member",
-      "_line_union_type"
-    ],
-    [
       "_line_type",
       "attributed_type"
     ],
