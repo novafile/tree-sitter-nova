@@ -174,7 +174,7 @@
       "type": "TOKEN",
       "content": {
         "type": "PATTERN",
-        "value": "[^ \\t\\r\\n#(]([^ \\t\\r\\n]|[ \\t]+[^ \\t\\r\\n#])*"
+        "value": "[^ \\t\\r\\n#]([^ \\t\\r\\n]|[ \\t]+[^ \\t\\r\\n#])*"
       }
     },
     "schema_ref": {

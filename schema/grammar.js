@@ -17,7 +17,7 @@
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
-import { ARGUMENT, commaSep, flowRules, lexicalRules, mode } from '../common/flow.js';
+import { commaSep, flowRules, lexicalRules, mode } from '../common/flow.js';
 
 const DATA = mode('data');
 
@@ -102,7 +102,9 @@ export default grammar({
       ),
     ),
 
-    argument: _ => token(ARGUMENT),
+    // The rest of the line, up to a comment. Unlike common ARGUMENT it may
+    // start with `(`: schemas have no `@if(…)`-style directives to exclude.
+    argument: _ => token(/[^ \t\r\n#]([^ \t\r\n]|[ \t]+[^ \t\r\n#])*/),
 
     schema_ref: $ => seq(
       field('name', $.identifier),

@@ -257,6 +257,7 @@ Extension directives
 @schema pddl@0.1.0
 @x-lint case=kebab  # comment
 @x-flag
+@x-paren (a, b)
 @root Domain
 
 --------------------------------------------------------------------------------
@@ -273,6 +274,9 @@ Extension directives
     (comment))
   (directive
     (directive_name))
+  (directive
+    (directive_name)
+    (argument))
   (directive
     (directive_name)
     (type_identifier)))
