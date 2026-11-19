@@ -6,8 +6,9 @@
  * Covers the schema language of the NOVA specification (§6.1): the
  * `@schema name@version`, `@root` and `@nova` directives, `record`, `enum`
  * and `type` definitions, fields, types (including generics, tuples,
- * `T[]` and `T?`), attributes and defaults. Defaults are NOVA flow values,
- * shared with the `nova` grammar (`common/flow.js`).
+ * `T[]`, `T?` and unions `A | B`), quoted field names, attributes and
+ * defaults. Defaults are NOVA flow values, shared with the `nova` grammar
+ * (`common/flow.js`).
  *
  * Line structure (fields and block-form enum variants indented exactly two
  * spaces) is handled by the external scanner in `schema/src/scanner.c`.
@@ -55,6 +56,13 @@ export default grammar({
     $._definition,
   ],
 
+  // On a field, `type` or `@root` line, attributes after a union member
+  // belong to that member if another `|` follows, otherwise to the line.
+  conflicts: $ => [
+    [$._line_type, $.attributed_type],
+    [$._line_union_type, $.attributed_type],
+  ],
+
   rules: {
     schema: $ => repeat(choice(
       $.directive,
@@ -75,7 +83,7 @@ export default grammar({
       // @root T attributes*: any type, e.g. `@root Event[] @len(1..)`
       seq(
         field('name', alias('@root', $.directive_name)),
-        field('type', $._type),
+        field('type', $._line_type),
         repeat(field('attribute', $.attribute)),
         $._newline,
       ),
@@ -113,7 +121,7 @@ export default grammar({
       'type',
       field('name', alias($.identifier, $.type_identifier)),
       '=',
-      field('type', $._type),
+      field('type', $._line_type),
       repeat(field('attribute', $.attribute)),
       $._newline,
     ),
@@ -161,12 +169,12 @@ export default grammar({
       ),
     ),
 
-    // name[?]: type attributes* [= default]
+    // name[?]: type attributes* [= default]; the name may be quoted.
     field: $ => seq(
-      field('name', $.identifier),
+      field('name', choice($.identifier, $.string)),
       optional(field('optional', alias(token.immediate('?'), $.optional_marker))),
       token.immediate(':'),
-      field('type', $._type),
+      field('type', $._line_type),
       repeat(field('attribute', $.attribute)),
       optional(seq('=', field('default', $._flow_value))),
       $._member_newline,
@@ -190,7 +198,26 @@ export default grammar({
     primitive_type: _ => choice(...PRIMITIVE_TYPES),
 
     // A type argument may carry type attributes: list<u16 @range(1..1024)>.
-    _type_argument: $ => choice($._type, $.attributed_type),
+    _type_argument: $ => choice($._type, $.attributed_type, $.union_type),
+
+    // The type of a field, `type` or `@root` line, which is followed by the
+    // line's own attributes.
+    _line_type: $ => choice($._type, alias($._line_union_type, $.union_type)),
+
+    // A | B | …: `|` binds more loosely than `[]`, `?` and type attributes,
+    // which belong to the member they follow.
+    union_type: $ => seq(
+      repeat1(seq($._union_member, '|')),
+      $._union_member,
+    ),
+
+    // As union_type, but attributes after the last member belong to the line.
+    _line_union_type: $ => seq(
+      repeat1(seq($._union_member, '|')),
+      field('member', $._type),
+    ),
+
+    _union_member: $ => field('member', choice($._type, $.attributed_type)),
 
     attributed_type: $ => seq(
       field('type', $._type),

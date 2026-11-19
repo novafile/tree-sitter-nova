@@ -235,6 +235,10 @@
           {
             "type": "type_identifier",
             "named": true
+          },
+          {
+            "type": "union_type",
+            "named": true
           }
         ]
       },
@@ -413,6 +417,10 @@
           {
             "type": "type_identifier",
             "named": true
+          },
+          {
+            "type": "union_type",
+            "named": true
           }
         ]
       }
@@ -493,6 +501,10 @@
           {
             "type": "identifier",
             "named": true
+          },
+          {
+            "type": "string",
+            "named": true
           }
         ]
       },
@@ -540,6 +552,10 @@
           },
           {
             "type": "type_identifier",
+            "named": true
+          },
+          {
+            "type": "union_type",
             "named": true
           }
         ]
@@ -662,6 +678,10 @@
           },
           {
             "type": "type_identifier",
+            "named": true
+          },
+          {
+            "type": "union_type",
             "named": true
           }
         ]
@@ -840,6 +860,10 @@
           {
             "type": "type_identifier",
             "named": true
+          },
+          {
+            "type": "union_type",
+            "named": true
           }
         ]
       },
@@ -881,6 +905,10 @@
           },
           {
             "type": "type_identifier",
+            "named": true
+          },
+          {
+            "type": "union_type",
             "named": true
           }
         ]
@@ -1151,6 +1179,10 @@
           {
             "type": "type_identifier",
             "named": true
+          },
+          {
+            "type": "union_type",
+            "named": true
           }
         ]
       }
@@ -1282,6 +1314,10 @@
           {
             "type": "type_identifier",
             "named": true
+          },
+          {
+            "type": "union_type",
+            "named": true
           }
         ]
       }
@@ -1346,6 +1382,10 @@
           {
             "type": "type_identifier",
             "named": true
+          },
+          {
+            "type": "union_type",
+            "named": true
           }
         ]
       }
@@ -1371,6 +1411,54 @@
         "types": [
           {
             "type": "literal_type",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "union_type",
+    "named": true,
+    "fields": {
+      "member": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "array_type",
+            "named": true
+          },
+          {
+            "type": "attributed_type",
+            "named": true
+          },
+          {
+            "type": "list_type",
+            "named": true
+          },
+          {
+            "type": "map_type",
+            "named": true
+          },
+          {
+            "type": "nullable_type",
+            "named": true
+          },
+          {
+            "type": "primitive_type",
+            "named": true
+          },
+          {
+            "type": "set_type",
+            "named": true
+          },
+          {
+            "type": "tuple_type",
+            "named": true
+          },
+          {
+            "type": "type_identifier",
             "named": true
           }
         ]

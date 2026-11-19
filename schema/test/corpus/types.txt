@@ -184,3 +184,175 @@ record R:
             (range
               (number))))
         (primitive_type)))))
+
+================================================================================
+Unions
+================================================================================
+
+@root Formula | Entry[]
+type Entry = string | string[]
+type Atom = list<string | int>
+enum Phase = pending | failed(string | int) @id(2)
+record R:
+  a: A | B? = null
+  b: (string | int, Atom)
+  c?: map<string, int | Atom>
+
+--------------------------------------------------------------------------------
+
+(schema
+  (directive
+    (directive_name)
+    (union_type
+      (type_identifier)
+      (array_type
+        (type_identifier))))
+  (type_definition
+    (type_identifier)
+    (union_type
+      (primitive_type)
+      (array_type
+        (primitive_type))))
+  (type_definition
+    (type_identifier)
+    (list_type
+      (union_type
+        (primitive_type)
+        (primitive_type))))
+  (enum_definition
+    (type_identifier)
+    (enum_variant
+      (identifier))
+    (enum_variant
+      (identifier)
+      (union_type
+        (primitive_type)
+        (primitive_type))
+      (attribute
+        (attribute_name)
+        (number))))
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (union_type
+        (type_identifier)
+        (nullable_type
+          (type_identifier)))
+      (null))
+    (field
+      (identifier)
+      (tuple_type
+        (union_type
+          (primitive_type)
+          (primitive_type))
+        (type_identifier)))
+    (field
+      (identifier)
+      (optional_marker)
+      (map_type
+        (primitive_type)
+        (union_type
+          (primitive_type)
+          (type_identifier))))))
+
+================================================================================
+Union member attributes
+================================================================================
+
+type N = u8 @range(1..) | string @len(1..)
+record R:
+  a: u8 @range(1..) | string @len(1..) @id(3)
+  b: list<u8 @range(1..) | string @len(1..)>
+
+--------------------------------------------------------------------------------
+
+(schema
+  (type_definition
+    (type_identifier)
+    (union_type
+      (attributed_type
+        (primitive_type)
+        (attribute
+          (attribute_name)
+          (range
+            (number))))
+      (primitive_type))
+    (attribute
+      (attribute_name)
+      (range
+        (number))))
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (union_type
+        (attributed_type
+          (primitive_type)
+          (attribute
+            (attribute_name)
+            (range
+              (number))))
+        (primitive_type))
+      (attribute
+        (attribute_name)
+        (range
+          (number)))
+      (attribute
+        (attribute_name)
+        (number)))
+    (field
+      (identifier)
+      (list_type
+        (union_type
+          (attributed_type
+            (primitive_type)
+            (attribute
+              (attribute_name)
+              (range
+                (number))))
+          (attributed_type
+            (primitive_type)
+            (attribute
+              (attribute_name)
+              (range
+                (number)))))))))
+
+================================================================================
+Quoted field names
+================================================================================
+
+record Eq:
+  "=": (string | int, string | int)
+  ">="?: (Term, Term) @id(2)
+  "at start": Formula
+
+--------------------------------------------------------------------------------
+
+(schema
+  (record_definition
+    (type_identifier)
+    (field
+      (string
+        (string_content))
+      (tuple_type
+        (union_type
+          (primitive_type)
+          (primitive_type))
+        (union_type
+          (primitive_type)
+          (primitive_type))))
+    (field
+      (string
+        (string_content))
+      (optional_marker)
+      (tuple_type
+        (type_identifier)
+        (type_identifier))
+      (attribute
+        (attribute_name)
+        (number)))
+    (field
+      (string
+        (string_content))
+      (type_identifier))))
