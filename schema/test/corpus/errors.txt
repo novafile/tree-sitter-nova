@@ -156,7 +156,7 @@ enum E:
 Error: unknown directive
 ================================================================================
 
-@x-ext foo
+@ext foo
 record R:
   a: int
 
@@ -164,7 +164,7 @@ record R:
 
 (schema
   (ERROR
-    (UNEXPECTED 'x')
+    (UNEXPECTED 'e')
     (identifier)
     (identifier))
   (record_definition

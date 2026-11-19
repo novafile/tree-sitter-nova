@@ -47,3 +47,11 @@ record Eq:
 #                ^ attribute
 #                            ^ punctuation.delimiter
 #                              ^ type
+@x-lint case=kebab
+# <- keyword.directive
+#       ^ string.special
+type Cmp = "<" | string @pattern("[a-z]+")
+#          ^ string
+#                ^ type.builtin
+#                       ^ attribute
+#                                ^ string

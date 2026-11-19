@@ -249,3 +249,34 @@ Root type expressions
     (directive_name)
     (list_type
       (type_identifier))))
+
+================================================================================
+Extension directives
+================================================================================
+
+@schema pddl@0.1.0
+@x-lint case=kebab  # comment
+@x-flag
+@x-paren (a, b)
+@root Domain
+
+--------------------------------------------------------------------------------
+
+(schema
+  (directive
+    (directive_name)
+    (schema_ref
+      (identifier)
+      (version)))
+  (directive
+    (directive_name)
+    (argument)
+    (comment))
+  (directive
+    (directive_name))
+  (directive
+    (directive_name)
+    (argument))
+  (directive
+    (directive_name)
+    (type_identifier)))
