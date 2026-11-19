@@ -59,15 +59,19 @@ Queries: `queries/highlights.scm`, `folds.scm`, `indents.scm`, `locals.scm`
 
 | Spec | Construct | Nodes |
 | --- | --- | --- |
-| §6.1 | `@schema name@MAJOR.MINOR.PATCH` (SemVer with pre-release/build), `@root T attrs` (any type, e.g. `@root Event[] @len(1..)`), `@nova MAJOR.MINOR` | `directive`, `directive_name`, `schema_ref`, `version` |
+| §6.1 | `@schema name@MAJOR.MINOR.PATCH` (SemVer with pre-release/build), `@root T attrs` (any type, e.g. `@root Event[] @len(1..)`), `@nova MAJOR.MINOR`; `@x-…` extension directives with a free argument, e.g. `@x-lint case=kebab` (draft: proposal 0004); any other directive is an error | `directive`, `directive_name`, `schema_ref`, `version`, `argument` |
 | §6.1 | `type Name = T attrs`, `enum Name = a \| b(T)` and `enum Name:` + variant lines, `record Name [@open]:` + field lines (exactly two spaces deeper; a record may be empty) | `type_definition`, `enum_definition`, `enum_variant`, `record_definition` |
 | §6.1 | Fields `name[?]: type attrs* [= default]`; the name may be quoted (`"at start": T`); the default is a NOVA flow value | `field`, `optional_marker`, `string` |
-| §6.1 | Types: built-ins, names, `list<T>`, `set<T>`, `map<K, V>`, tuples `(A, B)` `(A,)` `()`, `T[]`, `T?` (also combined: `int[]?`), unions `A \| B \| …` (members may carry type attributes) | `primitive_type`, `type_identifier`, `list_type`, `set_type`, `map_type`, `tuple_type`, `array_type`, `nullable_type`, `union_type` |
-| §6.1 | Attributes `@range(lo..hi)`, `@len(lo..hi[, unit])`, `@id(n)`, `@key`, `@open`, `@deprecated`, also on type arguments: `list<string @len(1..64)>` | `attribute`, `attribute_name`, `range`, `unit`, `attributed_type` |
+| §6.1 | Types: built-ins, names, `list<T>`, `set<T>`, `map<K, V>`, tuples `(A, B)` `(A,)` `()`, `T[]`, `T?` (also combined: `int[]?`), unions `A \| B \| …` (members may carry type attributes), string literal types `"total-time"` (draft: proposal 0004) | `primitive_type`, `type_identifier`, `list_type`, `set_type`, `map_type`, `tuple_type`, `array_type`, `nullable_type`, `union_type`, `string` |
+| §6.1 | Attributes `@range(lo..hi)`, `@len(lo..hi[, unit])`, `@pattern("p")` (draft: proposal 0004), `@id(n)`, `@key`, `@open`, `@deprecated`, also on type arguments: `list<string @len(1..64)>` | `attribute`, `attribute_name`, `range`, `unit`, `attributed_type` |
 | §6.1 | Comments; wrongly indented lines | `comment`; `ERROR` with `indentation_error` |
 
 Queries: `schema/queries/highlights.scm`, `folds.scm`, `indents.scm` and
 `locals.scm` (definitions and type references).
+
+String patterns, literal types and `@x-…` directives come from a draft
+(proposal 0004 in the spec repository) and may still change. The pattern
+is parsed as a plain string; its I-Regexp syntax is not checked.
 
 ### `nova_lines`
 

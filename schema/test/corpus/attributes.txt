@@ -142,3 +142,59 @@ record R:
             (string_content))
           (flow_list
             (number)))))))
+
+================================================================================
+Patterns
+================================================================================
+
+type Slug = string @len(1..63) @pattern("[a-z0-9]([a-z0-9-]*[a-z0-9])?")
+record R:
+  a?: map<string @pattern("[?][A-Za-z]"), string>
+  b: string @pattern("a\\.b") @id(2)
+  c: int @x-custom
+
+--------------------------------------------------------------------------------
+
+(schema
+  (type_definition
+    (type_identifier)
+    (primitive_type)
+    (attribute
+      (attribute_name)
+      (range
+        (number)
+        (number)))
+    (attribute
+      (attribute_name)
+      (string
+        (string_content))))
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (optional_marker)
+      (map_type
+        (attributed_type
+          (primitive_type)
+          (attribute
+            (attribute_name)
+            (string
+              (string_content))))
+        (primitive_type)))
+    (field
+      (identifier)
+      (primitive_type)
+      (attribute
+        (attribute_name)
+        (string
+          (string_content)
+          (escape_sequence)
+          (string_content)))
+      (attribute
+        (attribute_name)
+        (number)))
+    (field
+      (identifier)
+      (primitive_type)
+      (attribute
+        (attribute_name)))))

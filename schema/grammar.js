@@ -6,8 +6,8 @@
  * Covers the schema language of the NOVA specification (§6.1): the
  * `@schema name@version`, `@root` and `@nova` directives, `record`, `enum`
  * and `type` definitions, fields, types (including generics, tuples,
- * `T[]`, `T?` and unions `A | B`), quoted field names, attributes and
- * defaults. Defaults are NOVA flow values, shared with the `nova` grammar
+ * `T[]`, `T?`, unions `A | B` and string literal types), quoted field names,
+ * attributes, `@x-…` extension directives and defaults. Defaults are NOVA flow values, shared with the `nova` grammar
  * (`common/flow.js`).
  *
  * Line structure (fields and block-form enum variants indented exactly two
@@ -17,7 +17,7 @@
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
-import { commaSep, flowRules, lexicalRules, mode } from '../common/flow.js';
+import { ARGUMENT, commaSep, flowRules, lexicalRules, mode } from '../common/flow.js';
 
 const DATA = mode('data');
 
@@ -93,7 +93,16 @@ export default grammar({
         field('version', $.version),
         $._newline,
       ),
+      // @x-… extension directives (proposal 0004 §0004.7), e.g.
+      // `@x-lint case=kebab`. Other unknown directives stay errors.
+      seq(
+        field('name', alias(token(prec(1, /@x-[A-Za-z0-9_-]*/)), $.directive_name)),
+        optional(field('argument', $.argument)),
+        $._newline,
+      ),
     ),
+
+    argument: _ => token(ARGUMENT),
 
     schema_ref: $ => seq(
       field('name', $.identifier),
@@ -193,6 +202,8 @@ export default grammar({
       $.tuple_type,
       $.array_type,
       $.nullable_type,
+      // A string literal type, "total-time" (proposal 0004 §0004.3).
+      $.string,
     ),
 
     primitive_type: _ => choice(...PRIMITIVE_TYPES),
@@ -264,6 +275,13 @@ export default grammar({
         token.immediate('('),
         field('range', $.range),
         optional(seq(',', field('unit', alias($.identifier, $.unit)))),
+        ')',
+      ),
+      // @pattern("p"): an I-Regexp (proposal 0004 §0004.2)
+      seq(
+        field('name', alias('@pattern', $.attribute_name)),
+        token.immediate('('),
+        field('pattern', $.string),
         ')',
       ),
       // @id(n)

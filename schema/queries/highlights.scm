@@ -14,6 +14,9 @@
 
 (version) @string.special
 
+(directive
+  argument: (argument) @string.special)
+
 ; Types ----------------------------------------------------------------
 ; (Generic captures first: for the same node, later patterns win.)
 

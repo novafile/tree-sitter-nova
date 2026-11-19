@@ -356,3 +356,58 @@ record Eq:
       (string
         (string_content))
       (type_identifier))))
+
+================================================================================
+String literal types
+================================================================================
+
+type Comparator = "<" | "<=" | "=" | ">=" | ">"
+type T = ("=", Term, Term) | "x"?
+record R:
+  a: list<"a" | "b">
+  "k": "v" = "v"
+
+--------------------------------------------------------------------------------
+
+(schema
+  (type_definition
+    (type_identifier)
+    (union_type
+      (string
+        (string_content))
+      (string
+        (string_content))
+      (string
+        (string_content))
+      (string
+        (string_content))
+      (string
+        (string_content))))
+  (type_definition
+    (type_identifier)
+    (union_type
+      (tuple_type
+        (string
+          (string_content))
+        (type_identifier)
+        (type_identifier))
+      (nullable_type
+        (string
+          (string_content)))))
+  (record_definition
+    (type_identifier)
+    (field
+      (identifier)
+      (list_type
+        (union_type
+          (string
+            (string_content))
+          (string
+            (string_content)))))
+    (field
+      (string
+        (string_content))
+      (string
+        (string_content))
+      (string
+        (string_content)))))
