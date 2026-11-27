@@ -24,6 +24,7 @@
 import {
   ARGUMENT,
   IDENT,
+  commaSep,
   commaSep1,
   flowRules,
   lexicalRules,
@@ -71,6 +72,7 @@ export default grammar({
   conflicts: $ => [
     // A template block made only of spread lines can be a record or a list.
     [$._tpl_record_line, $._tpl_list_line],
+    [$._v_prod, $._operand],
   ],
 
   rules: {
@@ -140,6 +142,7 @@ export default grammar({
       alias($._param_directive, $.directive),
       alias($._import_directive, $.directive),
       alias($._let_directive, $.directive),
+      alias($._def_directive, $.directive),
     ),
 
     // @param name[?]: type [= default]
@@ -149,7 +152,7 @@ export default grammar({
       optional(field('optional', alias(token.immediate('?'), $.optional_marker))),
       token.immediate(':'),
       field('type', $.param_type),
-      optional(seq('=', field('default', $._tpl_flow_value))),
+      optional(seq('=', field('default', $._expression))),
       $._newline,
     ),
 
@@ -165,15 +168,43 @@ export default grammar({
       $._newline,
     ),
 
-    // @let name = flow-value   |   @let name: block-value
+    // @let name = expression   |   @let name: block-value
     _let_directive: $ => seq(
       field('name', alias('@let', $.directive_name)),
       field('binding', $.identifier),
       choice(
-        seq('=', field('value', $._tpl_flow_value), $._newline),
+        seq('=', field('value', $._expression), $._newline),
         seq(':', blockValue($, TEMPLATE)),
       ),
     ),
+
+    // @def name(p: T, q: T = default)[: R] = expression   (proposal 0006 §0006.3)
+    // @def name(p: T)[: R]:  + an indented template body
+    _def_directive: $ => seq(
+      field('name', alias('@def', $.directive_name)),
+      field('function', alias($.identifier, $.function)),
+      token.immediate('('),
+      commaSep1(field('parameter', $.def_parameter)),
+      ')',
+      optional(seq(':', field('result', alias($._def_type, $.param_type)))),
+      choice(
+        seq('=', field('value', $._expression), $._newline),
+        // The block form's body is always on the following lines, so an
+        // inline value after `:` is never a body: `): string = …` is a result type.
+        seq(':', $._indent, field('value', TEMPLATE.ref($, '_block')), $._dedent),
+      ),
+    ),
+
+    def_parameter: $ => seq(
+      field('name', $.identifier),
+      token.immediate(':'),
+      field('type', alias($._def_type, $.param_type)),
+      optional(seq('=', field('default', $._expression))),
+    ),
+
+    // A type in schema syntax (§6.1) inside a parameter list: up to `,`,
+    // `)`, `=` or `:` outside one level of `<…>` or `(…)`.
+    _def_type: _ => token(/([^\s#=,()<>:]|<[^<>\n]*>|\([^()\n]*\))+([ \t]+([^\s#=,()<>:]|<[^<>\n]*>|\([^()\n]*\))+)*/),
 
     ...blockRules(TEMPLATE),
     ...flowRules(TEMPLATE),
@@ -189,12 +220,20 @@ export default grammar({
       repeat($._path_segment),
     ),
 
-    // `${path}` inside a quoted or block string.
+    // `${…}` inside a quoted or block string. The content is an expression;
+    // if it begins with an identifier, `$` is implied (proposal 0006):
+    // `${name}`, `${svc.ports[0]}`, `${lower($name)}`, `${$a + 1}`.
     interpolation: $ => seq(
       choice(token.immediate(prec(2, '${')), '${'),
-      field('path', $.path),
+      $._interpolation_expression,
       '}',
     ),
+
+    // ------------------------------------------------------------------
+    // Expressions (template language 0.2, proposal 0006 §0006.2)
+    // ------------------------------------------------------------------
+
+    ...expressionRules(),
 
     _tpl_spread_line: $ => seq('...', field('value', $._tpl_flow_value), $._newline),
 
@@ -209,30 +248,8 @@ export default grammar({
     _tpl_record_for: $ => forBlock($, 'record'),
     _tpl_list_for: $ => forBlock($, 'list'),
 
-    condition: $ => $._condition,
-
-    _condition: $ => choice(
-      $.binary_condition,
-      $.not_condition,
-      $.parenthesized_condition,
-      $.comparison,
-      $._tpl_flow_value,
-    ),
-
-    binary_condition: $ => choice(
-      prec.left(1, seq(field('left', $._condition), field('operator', 'or'), field('right', $._condition))),
-      prec.left(2, seq(field('left', $._condition), field('operator', 'and'), field('right', $._condition))),
-    ),
-
-    not_condition: $ => prec(3, seq('not', field('operand', $._condition))),
-
-    comparison: $ => prec(4, seq(
-      field('left', $._tpl_flow_value),
-      field('operator', choice('==', '!=')),
-      field('right', $._tpl_flow_value),
-    )),
-
-    parenthesized_condition: $ => seq('(', $._condition, ')'),
+    // An `@if` condition: any expression, which must evaluate to a bool.
+    condition: $ => $._expression,
 
     // ------------------------------------------------------------------
     // Tables (§4.9) — shared header
@@ -594,7 +611,127 @@ function forBlock($, kind) {
     optional(seq(field('index', $.identifier), ',')),
     field('variable', $.identifier),
     'in',
-    field('iterable', $._tpl_flow_value),
+    field('iterable', $._expression),
     controlBody($, kind),
+  );
+}
+
+/**
+ * Expression rules (proposal 0006 §0006.2.3), loosest to tightest:
+ * `or` < `and` < `not` < comparison < `+ -` < `*`. Comparisons do not
+ * chain. Each level is its own rule, so the tree needs no precedence
+ * annotations. Three entry points differ only in their leftmost operand:
+ * `_expression` (anywhere an expression is allowed), `_value_expression`
+ * (a value position, which must begin with `$`) and
+ * `_interpolation_expression` (`${…}`, where a leading identifier implies `$`).
+ */
+function expressionRules() {
+  const levels = (p, first) => ({
+    [`${p}_or`]: $ => choice(alias($[`${p}_or_bin`], $.binary_expression), $[`${p}_and`]),
+    [`${p}_or_bin`]: $ => seq(field('left', $[`${p}_or`]), field('operator', 'or'), field('right', $._e_and)),
+    [`${p}_and`]: $ => choice(alias($[`${p}_and_bin`], $.binary_expression), $[`${p}_not`]),
+    [`${p}_and_bin`]: $ => seq(field('left', $[`${p}_and`]), field('operator', 'and'), field('right', $._e_not)),
+    [`${p}_not`]: $ => p === '_e'
+      ? choice(alias($._e_not_un, $.unary_expression), $._e_cmp)
+      : $[`${p}_cmp`],
+    [`${p}_cmp`]: $ => choice(alias($[`${p}_cmp_bin`], $.binary_expression), $[`${p}_sum`]),
+    [`${p}_cmp_bin`]: $ => seq(
+      field('left', $[`${p}_sum`]),
+      field('operator', choice('==', '!=', '<', '<=', '>', '>=')),
+      field('right', $._e_sum),
+    ),
+    [`${p}_sum`]: $ => choice(alias($[`${p}_sum_bin`], $.binary_expression), $[`${p}_prod`]),
+    [`${p}_sum_bin`]: $ => seq(field('left', $[`${p}_sum`]), field('operator', choice('+', '-')), field('right', $._e_prod)),
+    [`${p}_prod`]: $ => choice(alias($[`${p}_prod_bin`], $.binary_expression), first($)),
+    [`${p}_prod_bin`]: $ => seq(field('left', $[`${p}_prod`]), field('operator', '*'), field('right', $._operand)),
+  });
+
+  return {
+    _expression: $ => $._e_or,
+    _value_expression: $ => $._v_or,
+    _interpolation_expression: $ => $._i_or,
+
+    ...levels('_e', $ => $._operand),
+    ...levels('_v', $ => $._dollar_operand),
+    ...levels('_i', $ => choice(
+      $.path,
+      alias($._bare_call, $.call),
+      $._dollar_operand,
+      $.parenthesized_expression,
+    )),
+
+    _e_not_un: $ => seq(field('operator', 'not'), field('operand', $._e_not)),
+
+    _operand: $ => choice(
+      $._dollar_operand,
+      $.parenthesized_expression,
+      $.list_comprehension,
+      $.record_comprehension,
+      $.word,
+      $._tpl_scalar_literal,
+      $._tpl_flow_collection,
+    ),
+
+    // Operands that begin with `$`: a reference, a call or `$( … )`.
+    _dollar_operand: $ => choice(
+      $.template_ref,
+      $.call,
+      alias($._dollar_group, $.parenthesized_expression),
+    ),
+
+    // $name(arg, …), with `(` directly after the name
+    call: $ => seq(
+      '$',
+      field('function', alias($._immediate_identifier, $.function)),
+      token.immediate('('),
+      commaSep(field('argument', $._expression)),
+      ')',
+    ),
+
+    // name(arg, …) at the head of an interpolation: `${lower($x)}`
+    _bare_call: $ => seq(
+      field('function', alias($.identifier, $.function)),
+      token.immediate('('),
+      commaSep(field('argument', $._expression)),
+      ')',
+    ),
+
+    parenthesized_expression: $ => seq('(', $._expression, ')'),
+
+    _dollar_group: $ => seq('$', token.immediate('('), $._expression, ')'),
+
+    // [for i, x in SOURCE if CONDITION: VALUE]
+    list_comprehension: $ => seq(
+      alias(token(prec(1, /\[for[ \t]/)), '[for'),
+      comprehensionHead($),
+      ':',
+      field('value', $._expression),
+      ']',
+    ),
+
+    // {for k, v in SOURCE if CONDITION: KEY: VALUE}
+    record_comprehension: $ => seq(
+      alias(token(prec(1, /\{for[ \t]/)), '{for'),
+      comprehensionHead($),
+      ':',
+      field('key', $._expression),
+      ':',
+      field('value', $._expression),
+      '}',
+    ),
+  };
+}
+
+/**
+ * `[index,] variable in SOURCE [if CONDITION]` of a comprehension.
+ * @param {GrammarSymbols<string>} $
+ */
+function comprehensionHead($) {
+  return seq(
+    optional(seq(field('index', $.identifier), ',')),
+    field('variable', $.identifier),
+    'in',
+    field('iterable', $._expression),
+    optional(seq('if', field('condition', $._expression))),
   );
 }

@@ -406,6 +406,15 @@
       "members": [
         {
           "type": "SYMBOL",
+          "name": "_flow_collection"
+        }
+      ]
+    },
+    "_flow_collection": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
           "name": "flow_list"
         },
         {

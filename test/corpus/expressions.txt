@@ -1,0 +1,253 @@
+================================================================================
+Value expressions and precedence
+================================================================================
+
+@template 0.2
+a: $base + 1 * 2
+b: $(1 + $base)
+c: 1 + $base
+d: $x-1
+e: [$a - 1, $f(x, $y)]
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (directive
+      (directive_name)
+      (argument))
+    (record
+      (entry
+        (key)
+        (binary_expression
+          (template_ref
+            (path
+              (field)))
+          (binary_expression
+            (number)
+            (number))))
+      (entry
+        (key)
+        (parenthesized_expression
+          (binary_expression
+            (number)
+            (template_ref
+              (path
+                (field))))))
+      (entry
+        (key)
+        (plain_scalar))
+      (entry
+        (key)
+        (template_ref
+          (path
+            (field))))
+      (entry
+        (key)
+        (flow_list
+          (binary_expression
+            (template_ref
+              (path
+                (field)))
+            (number))
+          (call
+            (function)
+            (word)
+            (template_ref
+              (path
+                (field)))))))))
+
+================================================================================
+Conditions
+================================================================================
+
+@template 0.2
+@if not $x or ($a and $b >= 2):
+  y: 1
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (directive
+      (directive_name)
+      (argument))
+    (record
+      (if_block
+        (condition
+          (binary_expression
+            (unary_expression
+              (template_ref
+                (path
+                  (field))))
+            (parenthesized_expression
+              (binary_expression
+                (template_ref
+                  (path
+                    (field)))
+                (binary_expression
+                  (template_ref
+                    (path
+                      (field)))
+                  (number))))))
+        (record
+          (entry
+            (key)
+            (number)))))))
+
+================================================================================
+Interpolations with expressions
+================================================================================
+
+@template 0.2
+a: "${lower($name)}-svc"
+b: "--tags=${join($tags, ",")}"
+c: "${svc.ports[0]}"
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (directive
+      (directive_name)
+      (argument))
+    (record
+      (entry
+        (key)
+        (string
+          (interpolation
+            (call
+              (function)
+              (template_ref
+                (path
+                  (field)))))
+          (string_content)))
+      (entry
+        (key)
+        (string
+          (string_content)
+          (interpolation
+            (call
+              (function)
+              (template_ref
+                (path
+                  (field)))
+              (string
+                (string_content))))))
+      (entry
+        (key)
+        (string
+          (interpolation
+            (path
+              (field)
+              (field)
+              (selector
+                (number)))))))))
+
+================================================================================
+Comprehensions
+================================================================================
+
+@template 0.2
+l: $([for i, x in $xs if $x != null: $i])
+r: $({for k, v in $m: $k: $v})
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (directive
+      (directive_name)
+      (argument))
+    (record
+      (entry
+        (key)
+        (parenthesized_expression
+          (list_comprehension
+            (identifier)
+            (identifier)
+            (template_ref
+              (path
+                (field)))
+            (binary_expression
+              (template_ref
+                (path
+                  (field)))
+              (null))
+            (template_ref
+              (path
+                (field))))))
+      (entry
+        (key)
+        (parenthesized_expression
+          (record_comprehension
+            (identifier)
+            (identifier)
+            (template_ref
+              (path
+                (field)))
+            (template_ref
+              (path
+                (field)))
+            (template_ref
+              (path
+                (field)))))))))
+
+================================================================================
+@def in flow and block form
+================================================================================
+
+@template 0.2
+@def image(name: string, tag: string = latest): string = "${registry}/${name}:${tag}"
+@def labels(component: string):
+  app: $component
+x: $image(api)
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (directive
+      (directive_name)
+      (argument))
+    (directive
+      (directive_name)
+      (function)
+      (def_parameter
+        (identifier)
+        (param_type))
+      (def_parameter
+        (identifier)
+        (param_type)
+        (word))
+      (param_type)
+      (string
+        (interpolation
+          (path
+            (field)))
+        (string_content)
+        (interpolation
+          (path
+            (field)))
+        (string_content)
+        (interpolation
+          (path
+            (field)))))
+    (directive
+      (directive_name)
+      (function)
+      (def_parameter
+        (identifier)
+        (param_type))
+      (record
+        (entry
+          (key)
+          (template_ref
+            (path
+              (field))))))
+    (record
+      (entry
+        (key)
+        (call
+          (function)
+          (word))))))

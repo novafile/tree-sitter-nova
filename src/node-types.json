@@ -1,6 +1,6 @@
 [
   {
-    "type": "binary_condition",
+    "type": "binary_expression",
     "named": true,
     "fields": {
       "left": {
@@ -8,7 +8,7 @@
         "required": true,
         "types": [
           {
-            "type": "binary_condition",
+            "type": "binary_expression",
             "named": true
           },
           {
@@ -16,7 +16,7 @@
             "named": true
           },
           {
-            "type": "comparison",
+            "type": "call",
             "named": true
           },
           {
@@ -28,11 +28,11 @@
             "named": true
           },
           {
-            "type": "map",
+            "type": "list_comprehension",
             "named": true
           },
           {
-            "type": "not_condition",
+            "type": "map",
             "named": true
           },
           {
@@ -44,7 +44,15 @@
             "named": true
           },
           {
-            "type": "parenthesized_condition",
+            "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "path",
+            "named": true
+          },
+          {
+            "type": "record_comprehension",
             "named": true
           },
           {
@@ -65,6 +73,10 @@
           },
           {
             "type": "typed_literal",
+            "named": true
+          },
+          {
+            "type": "unary_expression",
             "named": true
           },
           {
@@ -82,6 +94,42 @@
         "required": true,
         "types": [
           {
+            "type": "!=",
+            "named": false
+          },
+          {
+            "type": "*",
+            "named": false
+          },
+          {
+            "type": "+",
+            "named": false
+          },
+          {
+            "type": "-",
+            "named": false
+          },
+          {
+            "type": "<",
+            "named": false
+          },
+          {
+            "type": "<=",
+            "named": false
+          },
+          {
+            "type": "==",
+            "named": false
+          },
+          {
+            "type": ">",
+            "named": false
+          },
+          {
+            "type": ">=",
+            "named": false
+          },
+          {
             "type": "and",
             "named": false
           },
@@ -96,7 +144,7 @@
         "required": true,
         "types": [
           {
-            "type": "binary_condition",
+            "type": "binary_expression",
             "named": true
           },
           {
@@ -104,7 +152,7 @@
             "named": true
           },
           {
-            "type": "comparison",
+            "type": "call",
             "named": true
           },
           {
@@ -116,11 +164,11 @@
             "named": true
           },
           {
-            "type": "map",
+            "type": "list_comprehension",
             "named": true
           },
           {
-            "type": "not_condition",
+            "type": "map",
             "named": true
           },
           {
@@ -132,7 +180,11 @@
             "named": true
           },
           {
-            "type": "parenthesized_condition",
+            "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "record_comprehension",
             "named": true
           },
           {
@@ -153,6 +205,10 @@
           },
           {
             "type": "typed_literal",
+            "named": true
+          },
+          {
+            "type": "unary_expression",
             "named": true
           },
           {
@@ -203,15 +259,121 @@
     "fields": {}
   },
   {
+    "type": "call",
+    "named": true,
+    "fields": {
+      "argument": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
+            "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call",
+            "named": true
+          },
+          {
+            "type": "flow_list",
+            "named": true
+          },
+          {
+            "type": "flow_record",
+            "named": true
+          },
+          {
+            "type": "list_comprehension",
+            "named": true
+          },
+          {
+            "type": "map",
+            "named": true
+          },
+          {
+            "type": "null",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "record_comprehension",
+            "named": true
+          },
+          {
+            "type": "set",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          },
+          {
+            "type": "template_ref",
+            "named": true
+          },
+          {
+            "type": "tuple",
+            "named": true
+          },
+          {
+            "type": "typed_literal",
+            "named": true
+          },
+          {
+            "type": "unary_expression",
+            "named": true
+          },
+          {
+            "type": "variant",
+            "named": true
+          },
+          {
+            "type": "word",
+            "named": true
+          }
+        ]
+      },
+      "function": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "function",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "cell",
     "named": true,
     "fields": {},
     "children": {
       "multiple": false,
-      "required": true,
+      "required": false,
       "types": [
         {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
           "type": "boolean",
+          "named": true
+        },
+        {
+          "type": "call",
           "named": true
         },
         {
@@ -232,6 +394,10 @@
         },
         {
           "type": "number",
+          "named": true
+        },
+        {
+          "type": "parenthesized_expression",
           "named": true
         },
         {
@@ -263,142 +429,6 @@
           "named": true
         }
       ]
-    }
-  },
-  {
-    "type": "comparison",
-    "named": true,
-    "fields": {
-      "left": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "boolean",
-            "named": true
-          },
-          {
-            "type": "flow_list",
-            "named": true
-          },
-          {
-            "type": "flow_record",
-            "named": true
-          },
-          {
-            "type": "map",
-            "named": true
-          },
-          {
-            "type": "null",
-            "named": true
-          },
-          {
-            "type": "number",
-            "named": true
-          },
-          {
-            "type": "set",
-            "named": true
-          },
-          {
-            "type": "string",
-            "named": true
-          },
-          {
-            "type": "template_ref",
-            "named": true
-          },
-          {
-            "type": "tuple",
-            "named": true
-          },
-          {
-            "type": "typed_literal",
-            "named": true
-          },
-          {
-            "type": "variant",
-            "named": true
-          },
-          {
-            "type": "word",
-            "named": true
-          }
-        ]
-      },
-      "operator": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "!=",
-            "named": false
-          },
-          {
-            "type": "==",
-            "named": false
-          }
-        ]
-      },
-      "right": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "boolean",
-            "named": true
-          },
-          {
-            "type": "flow_list",
-            "named": true
-          },
-          {
-            "type": "flow_record",
-            "named": true
-          },
-          {
-            "type": "map",
-            "named": true
-          },
-          {
-            "type": "null",
-            "named": true
-          },
-          {
-            "type": "number",
-            "named": true
-          },
-          {
-            "type": "set",
-            "named": true
-          },
-          {
-            "type": "string",
-            "named": true
-          },
-          {
-            "type": "template_ref",
-            "named": true
-          },
-          {
-            "type": "tuple",
-            "named": true
-          },
-          {
-            "type": "typed_literal",
-            "named": true
-          },
-          {
-            "type": "variant",
-            "named": true
-          },
-          {
-            "type": "word",
-            "named": true
-          }
-        ]
-      }
     }
   },
   {
@@ -407,10 +437,10 @@
     "fields": {},
     "children": {
       "multiple": false,
-      "required": true,
+      "required": false,
       "types": [
         {
-          "type": "binary_condition",
+          "type": "binary_expression",
           "named": true
         },
         {
@@ -418,7 +448,7 @@
           "named": true
         },
         {
-          "type": "comparison",
+          "type": "call",
           "named": true
         },
         {
@@ -430,11 +460,11 @@
           "named": true
         },
         {
-          "type": "map",
+          "type": "list_comprehension",
           "named": true
         },
         {
-          "type": "not_condition",
+          "type": "map",
           "named": true
         },
         {
@@ -446,7 +476,11 @@
           "named": true
         },
         {
-          "type": "parenthesized_condition",
+          "type": "parenthesized_expression",
+          "named": true
+        },
+        {
+          "type": "record_comprehension",
           "named": true
         },
         {
@@ -470,6 +504,10 @@
           "named": true
         },
         {
+          "type": "unary_expression",
+          "named": true
+        },
+        {
           "type": "variant",
           "named": true
         },
@@ -478,6 +516,114 @@
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "def_parameter",
+    "named": true,
+    "fields": {
+      "default": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
+            "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call",
+            "named": true
+          },
+          {
+            "type": "flow_list",
+            "named": true
+          },
+          {
+            "type": "flow_record",
+            "named": true
+          },
+          {
+            "type": "list_comprehension",
+            "named": true
+          },
+          {
+            "type": "map",
+            "named": true
+          },
+          {
+            "type": "null",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "record_comprehension",
+            "named": true
+          },
+          {
+            "type": "set",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          },
+          {
+            "type": "template_ref",
+            "named": true
+          },
+          {
+            "type": "tuple",
+            "named": true
+          },
+          {
+            "type": "typed_literal",
+            "named": true
+          },
+          {
+            "type": "unary_expression",
+            "named": true
+          },
+          {
+            "type": "variant",
+            "named": true
+          },
+          {
+            "type": "word",
+            "named": true
+          }
+        ]
+      },
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "type": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "param_type",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -519,7 +665,15 @@
         "required": false,
         "types": [
           {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
             "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call",
             "named": true
           },
           {
@@ -528,6 +682,10 @@
           },
           {
             "type": "flow_record",
+            "named": true
+          },
+          {
+            "type": "list_comprehension",
             "named": true
           },
           {
@@ -540,6 +698,14 @@
           },
           {
             "type": "number",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "record_comprehension",
             "named": true
           },
           {
@@ -563,11 +729,25 @@
             "named": true
           },
           {
+            "type": "unary_expression",
+            "named": true
+          },
+          {
             "type": "variant",
             "named": true
           },
           {
             "type": "word",
+            "named": true
+          }
+        ]
+      },
+      "function": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "function",
             "named": true
           }
         ]
@@ -593,11 +773,25 @@
         ]
       },
       "parameter": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "def_parameter",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "result": {
         "multiple": false,
         "required": false,
         "types": [
           {
-            "type": "identifier",
+            "type": "param_type",
             "named": true
           }
         ]
@@ -627,11 +821,19 @@
         "required": false,
         "types": [
           {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
             "type": "block_string",
             "named": true
           },
           {
             "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call",
             "named": true
           },
           {
@@ -647,6 +849,10 @@
             "named": true
           },
           {
+            "type": "list_comprehension",
+            "named": true
+          },
+          {
             "type": "map",
             "named": true
           },
@@ -659,11 +865,19 @@
             "named": true
           },
           {
+            "type": "parenthesized_expression",
+            "named": true
+          },
+          {
             "type": "plain_scalar",
             "named": true
           },
           {
             "type": "record",
+            "named": true
+          },
+          {
+            "type": "record_comprehension",
             "named": true
           },
           {
@@ -687,6 +901,10 @@
             "named": true
           },
           {
+            "type": "unary_expression",
+            "named": true
+          },
+          {
             "type": "variant",
             "named": true
           },
@@ -704,10 +922,18 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
           "type": "boolean",
+          "named": true
+        },
+        {
+          "type": "call",
           "named": true
         },
         {
@@ -736,6 +962,10 @@
         },
         {
           "type": "number",
+          "named": true
+        },
+        {
+          "type": "parenthesized_expression",
           "named": true
         },
         {
@@ -844,11 +1074,19 @@
         "required": true,
         "types": [
           {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
             "type": "block_string",
             "named": true
           },
           {
             "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call",
             "named": true
           },
           {
@@ -873,6 +1111,10 @@
           },
           {
             "type": "number",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
             "named": true
           },
           {
@@ -928,7 +1170,15 @@
       "required": false,
       "types": [
         {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
           "type": "boolean",
+          "named": true
+        },
+        {
+          "type": "call",
           "named": true
         },
         {
@@ -949,6 +1199,10 @@
         },
         {
           "type": "number",
+          "named": true
+        },
+        {
+          "type": "parenthesized_expression",
           "named": true
         },
         {
@@ -1038,7 +1292,15 @@
         "required": true,
         "types": [
           {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
             "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call",
             "named": true
           },
           {
@@ -1047,6 +1309,10 @@
           },
           {
             "type": "flow_record",
+            "named": true
+          },
+          {
+            "type": "list_comprehension",
             "named": true
           },
           {
@@ -1059,6 +1325,14 @@
           },
           {
             "type": "number",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "record_comprehension",
             "named": true
           },
           {
@@ -1079,6 +1353,10 @@
           },
           {
             "type": "typed_literal",
+            "named": true
+          },
+          {
+            "type": "unary_expression",
             "named": true
           },
           {
@@ -1146,17 +1424,32 @@
   {
     "type": "interpolation",
     "named": true,
-    "fields": {
-      "path": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "path",
-            "named": true
-          }
-        ]
-      }
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "call",
+          "named": true
+        },
+        {
+          "type": "parenthesized_expression",
+          "named": true
+        },
+        {
+          "type": "path",
+          "named": true
+        },
+        {
+          "type": "template_ref",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -1168,11 +1461,19 @@
         "required": true,
         "types": [
           {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
             "type": "block_string",
             "named": true
           },
           {
             "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call",
             "named": true
           },
           {
@@ -1197,6 +1498,10 @@
           },
           {
             "type": "number",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
             "named": true
           },
           {
@@ -1263,6 +1568,278 @@
     }
   },
   {
+    "type": "list_comprehension",
+    "named": true,
+    "fields": {
+      "condition": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
+            "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call",
+            "named": true
+          },
+          {
+            "type": "flow_list",
+            "named": true
+          },
+          {
+            "type": "flow_record",
+            "named": true
+          },
+          {
+            "type": "list_comprehension",
+            "named": true
+          },
+          {
+            "type": "map",
+            "named": true
+          },
+          {
+            "type": "null",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "record_comprehension",
+            "named": true
+          },
+          {
+            "type": "set",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          },
+          {
+            "type": "template_ref",
+            "named": true
+          },
+          {
+            "type": "tuple",
+            "named": true
+          },
+          {
+            "type": "typed_literal",
+            "named": true
+          },
+          {
+            "type": "unary_expression",
+            "named": true
+          },
+          {
+            "type": "variant",
+            "named": true
+          },
+          {
+            "type": "word",
+            "named": true
+          }
+        ]
+      },
+      "index": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "iterable": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
+            "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call",
+            "named": true
+          },
+          {
+            "type": "flow_list",
+            "named": true
+          },
+          {
+            "type": "flow_record",
+            "named": true
+          },
+          {
+            "type": "list_comprehension",
+            "named": true
+          },
+          {
+            "type": "map",
+            "named": true
+          },
+          {
+            "type": "null",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "record_comprehension",
+            "named": true
+          },
+          {
+            "type": "set",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          },
+          {
+            "type": "template_ref",
+            "named": true
+          },
+          {
+            "type": "tuple",
+            "named": true
+          },
+          {
+            "type": "typed_literal",
+            "named": true
+          },
+          {
+            "type": "unary_expression",
+            "named": true
+          },
+          {
+            "type": "variant",
+            "named": true
+          },
+          {
+            "type": "word",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
+            "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call",
+            "named": true
+          },
+          {
+            "type": "flow_list",
+            "named": true
+          },
+          {
+            "type": "flow_record",
+            "named": true
+          },
+          {
+            "type": "list_comprehension",
+            "named": true
+          },
+          {
+            "type": "map",
+            "named": true
+          },
+          {
+            "type": "null",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "record_comprehension",
+            "named": true
+          },
+          {
+            "type": "set",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          },
+          {
+            "type": "template_ref",
+            "named": true
+          },
+          {
+            "type": "tuple",
+            "named": true
+          },
+          {
+            "type": "typed_literal",
+            "named": true
+          },
+          {
+            "type": "unary_expression",
+            "named": true
+          },
+          {
+            "type": "variant",
+            "named": true
+          },
+          {
+            "type": "word",
+            "named": true
+          }
+        ]
+      },
+      "variable": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "map",
     "named": true,
     "fields": {},
@@ -1286,7 +1863,15 @@
         "required": true,
         "types": [
           {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
             "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call",
             "named": true
           },
           {
@@ -1307,6 +1892,10 @@
           },
           {
             "type": "number",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
             "named": true
           },
           {
@@ -1344,7 +1933,15 @@
         "required": true,
         "types": [
           {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
             "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call",
             "named": true
           },
           {
@@ -1365,6 +1962,10 @@
           },
           {
             "type": "number",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
             "named": true
           },
           {
@@ -1400,95 +2001,15 @@
     }
   },
   {
-    "type": "not_condition",
-    "named": true,
-    "fields": {
-      "operand": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "binary_condition",
-            "named": true
-          },
-          {
-            "type": "boolean",
-            "named": true
-          },
-          {
-            "type": "comparison",
-            "named": true
-          },
-          {
-            "type": "flow_list",
-            "named": true
-          },
-          {
-            "type": "flow_record",
-            "named": true
-          },
-          {
-            "type": "map",
-            "named": true
-          },
-          {
-            "type": "not_condition",
-            "named": true
-          },
-          {
-            "type": "null",
-            "named": true
-          },
-          {
-            "type": "number",
-            "named": true
-          },
-          {
-            "type": "parenthesized_condition",
-            "named": true
-          },
-          {
-            "type": "set",
-            "named": true
-          },
-          {
-            "type": "string",
-            "named": true
-          },
-          {
-            "type": "template_ref",
-            "named": true
-          },
-          {
-            "type": "tuple",
-            "named": true
-          },
-          {
-            "type": "typed_literal",
-            "named": true
-          },
-          {
-            "type": "variant",
-            "named": true
-          },
-          {
-            "type": "word",
-            "named": true
-          }
-        ]
-      }
-    }
-  },
-  {
-    "type": "parenthesized_condition",
+    "type": "parenthesized_expression",
     "named": true,
     "fields": {},
     "children": {
       "multiple": false,
-      "required": true,
+      "required": false,
       "types": [
         {
-          "type": "binary_condition",
+          "type": "binary_expression",
           "named": true
         },
         {
@@ -1496,7 +2017,7 @@
           "named": true
         },
         {
-          "type": "comparison",
+          "type": "call",
           "named": true
         },
         {
@@ -1508,11 +2029,11 @@
           "named": true
         },
         {
-          "type": "map",
+          "type": "list_comprehension",
           "named": true
         },
         {
-          "type": "not_condition",
+          "type": "map",
           "named": true
         },
         {
@@ -1524,7 +2045,11 @@
           "named": true
         },
         {
-          "type": "parenthesized_condition",
+          "type": "parenthesized_expression",
+          "named": true
+        },
+        {
+          "type": "record_comprehension",
           "named": true
         },
         {
@@ -1545,6 +2070,10 @@
         },
         {
           "type": "typed_literal",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
           "named": true
         },
         {
@@ -1832,6 +2361,360 @@
     }
   },
   {
+    "type": "record_comprehension",
+    "named": true,
+    "fields": {
+      "condition": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
+            "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call",
+            "named": true
+          },
+          {
+            "type": "flow_list",
+            "named": true
+          },
+          {
+            "type": "flow_record",
+            "named": true
+          },
+          {
+            "type": "list_comprehension",
+            "named": true
+          },
+          {
+            "type": "map",
+            "named": true
+          },
+          {
+            "type": "null",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "record_comprehension",
+            "named": true
+          },
+          {
+            "type": "set",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          },
+          {
+            "type": "template_ref",
+            "named": true
+          },
+          {
+            "type": "tuple",
+            "named": true
+          },
+          {
+            "type": "typed_literal",
+            "named": true
+          },
+          {
+            "type": "unary_expression",
+            "named": true
+          },
+          {
+            "type": "variant",
+            "named": true
+          },
+          {
+            "type": "word",
+            "named": true
+          }
+        ]
+      },
+      "index": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "iterable": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
+            "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call",
+            "named": true
+          },
+          {
+            "type": "flow_list",
+            "named": true
+          },
+          {
+            "type": "flow_record",
+            "named": true
+          },
+          {
+            "type": "list_comprehension",
+            "named": true
+          },
+          {
+            "type": "map",
+            "named": true
+          },
+          {
+            "type": "null",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "record_comprehension",
+            "named": true
+          },
+          {
+            "type": "set",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          },
+          {
+            "type": "template_ref",
+            "named": true
+          },
+          {
+            "type": "tuple",
+            "named": true
+          },
+          {
+            "type": "typed_literal",
+            "named": true
+          },
+          {
+            "type": "unary_expression",
+            "named": true
+          },
+          {
+            "type": "variant",
+            "named": true
+          },
+          {
+            "type": "word",
+            "named": true
+          }
+        ]
+      },
+      "key": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
+            "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call",
+            "named": true
+          },
+          {
+            "type": "flow_list",
+            "named": true
+          },
+          {
+            "type": "flow_record",
+            "named": true
+          },
+          {
+            "type": "list_comprehension",
+            "named": true
+          },
+          {
+            "type": "map",
+            "named": true
+          },
+          {
+            "type": "null",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "record_comprehension",
+            "named": true
+          },
+          {
+            "type": "set",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          },
+          {
+            "type": "template_ref",
+            "named": true
+          },
+          {
+            "type": "tuple",
+            "named": true
+          },
+          {
+            "type": "typed_literal",
+            "named": true
+          },
+          {
+            "type": "unary_expression",
+            "named": true
+          },
+          {
+            "type": "variant",
+            "named": true
+          },
+          {
+            "type": "word",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
+            "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call",
+            "named": true
+          },
+          {
+            "type": "flow_list",
+            "named": true
+          },
+          {
+            "type": "flow_record",
+            "named": true
+          },
+          {
+            "type": "list_comprehension",
+            "named": true
+          },
+          {
+            "type": "map",
+            "named": true
+          },
+          {
+            "type": "null",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "record_comprehension",
+            "named": true
+          },
+          {
+            "type": "set",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          },
+          {
+            "type": "template_ref",
+            "named": true
+          },
+          {
+            "type": "tuple",
+            "named": true
+          },
+          {
+            "type": "typed_literal",
+            "named": true
+          },
+          {
+            "type": "unary_expression",
+            "named": true
+          },
+          {
+            "type": "variant",
+            "named": true
+          },
+          {
+            "type": "word",
+            "named": true
+          }
+        ]
+      },
+      "variable": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "row",
     "named": true,
     "fields": {},
@@ -1939,7 +2822,15 @@
       "required": false,
       "types": [
         {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
           "type": "boolean",
+          "named": true
+        },
+        {
+          "type": "call",
           "named": true
         },
         {
@@ -1960,6 +2851,10 @@
         },
         {
           "type": "number",
+          "named": true
+        },
+        {
+          "type": "parenthesized_expression",
           "named": true
         },
         {
@@ -2002,7 +2897,15 @@
         "required": true,
         "types": [
           {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
             "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call",
             "named": true
           },
           {
@@ -2023,6 +2926,10 @@
           },
           {
             "type": "number",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
             "named": true
           },
           {
@@ -2205,7 +3112,15 @@
       "required": false,
       "types": [
         {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
           "type": "boolean",
+          "named": true
+        },
+        {
+          "type": "call",
           "named": true
         },
         {
@@ -2226,6 +3141,10 @@
         },
         {
           "type": "number",
+          "named": true
+        },
+        {
+          "type": "parenthesized_expression",
           "named": true
         },
         {
@@ -2286,6 +3205,104 @@
     }
   },
   {
+    "type": "unary_expression",
+    "named": true,
+    "fields": {
+      "operand": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
+            "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call",
+            "named": true
+          },
+          {
+            "type": "flow_list",
+            "named": true
+          },
+          {
+            "type": "flow_record",
+            "named": true
+          },
+          {
+            "type": "list_comprehension",
+            "named": true
+          },
+          {
+            "type": "map",
+            "named": true
+          },
+          {
+            "type": "null",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "record_comprehension",
+            "named": true
+          },
+          {
+            "type": "set",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          },
+          {
+            "type": "template_ref",
+            "named": true
+          },
+          {
+            "type": "tuple",
+            "named": true
+          },
+          {
+            "type": "typed_literal",
+            "named": true
+          },
+          {
+            "type": "unary_expression",
+            "named": true
+          },
+          {
+            "type": "variant",
+            "named": true
+          },
+          {
+            "type": "word",
+            "named": true
+          }
+        ]
+      },
+      "operator": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "not",
+            "named": false
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "variant",
     "named": true,
     "fields": {
@@ -2294,7 +3311,15 @@
         "required": false,
         "types": [
           {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
             "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call",
             "named": true
           },
           {
@@ -2319,6 +3344,10 @@
           },
           {
             "type": "number",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
             "named": true
           },
           {
@@ -2400,6 +3429,10 @@
     "named": false
   },
   {
+    "type": "*",
+    "named": false
+  },
+  {
     "type": "+",
     "named": false
   },
@@ -2428,6 +3461,14 @@
     "named": false
   },
   {
+    "type": "<",
+    "named": false
+  },
+  {
+    "type": "<=",
+    "named": false
+  },
+  {
     "type": "=",
     "named": false
   },
@@ -2437,6 +3478,14 @@
   },
   {
     "type": "=>",
+    "named": false
+  },
+  {
+    "type": ">",
+    "named": false
+  },
+  {
+    "type": ">=",
     "named": false
   },
   {
@@ -2465,6 +3514,10 @@
   },
   {
     "type": "[",
+    "named": false
+  },
+  {
+    "type": "[for",
     "named": false
   },
   {
@@ -2518,6 +3571,10 @@
   },
   {
     "type": "filter",
+    "named": true
+  },
+  {
+    "type": "function",
     "named": true
   },
   {
@@ -2590,6 +3647,10 @@
   },
   {
     "type": "{",
+    "named": false
+  },
+  {
+    "type": "{for",
     "named": false
   },
   {

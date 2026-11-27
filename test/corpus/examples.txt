@@ -241,11 +241,11 @@ services:
                     (number))))))
           (if_block
             (condition
-              (binary_condition
+              (binary_expression
                 (template_ref
                   (path
                     (field)))
-                (comparison
+                (binary_expression
                   (template_ref
                     (path
                       (field)))
