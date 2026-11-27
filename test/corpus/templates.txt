@@ -586,6 +586,7 @@ b: 1
       (entry
         (key)
         (ERROR
+          (root)
           (field)
           (field))
         (number)))))

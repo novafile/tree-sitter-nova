@@ -251,13 +251,17 @@ export default grammar({
     // Paths (§7.1) and patch documents (§7.4)
     // ------------------------------------------------------------------
 
-    path: $ => seq(
-      choice(
-        alias($.identifier, $.field),
-        $.string,
-        $.selector,
+    path: $ => choice(
+      seq(
+        choice(
+          alias($.identifier, $.field),
+          $.string,
+          $.selector,
+        ),
+        repeat($._path_segment),
       ),
-      repeat($._path_segment),
+      // The root path (spec §7.1), also written as the empty string.
+      alias('.', $.root),
     ),
 
     _path_segment: $ => choice(
@@ -323,10 +327,11 @@ export default grammar({
         field('new', $._flow_value),
         $._newline,
       ),
-      // = path: value   + path: value
+      // = path: value   + path: value. The root path may be written as the
+      // empty string (spec §7.1): `- ` removes the scope target itself.
       seq(
         field('operator', choice('=', '+')),
-        field('path', $.path),
+        optional(field('path', $.path)),
         ':',
         field('value', $._flow_value),
         $._newline,
@@ -334,7 +339,7 @@ export default grammar({
       // - path[: old]   ? path[: value]
       seq(
         field('operator', choice('-', '?')),
-        field('path', $.path),
+        optional(field('path', $.path)),
         optional(seq(':', field('value', $._flow_value))),
         $._newline,
       ),

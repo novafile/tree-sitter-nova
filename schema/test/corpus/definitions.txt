@@ -16,7 +16,7 @@ Directives
   (directive
     (directive_name)
     (schema_ref
-      (identifier)
+      (schema_name)
       (version)))
   (directive
     (directive_name)
@@ -24,7 +24,7 @@ Directives
   (directive
     (directive_name)
     (schema_ref
-      (identifier)
+      (schema_name)
       (version))))
 
 ================================================================================
@@ -303,7 +303,7 @@ Extension directives
   (directive
     (directive_name)
     (schema_ref
-      (identifier)
+      (schema_name)
       (version)))
   (directive
     (directive_name)
