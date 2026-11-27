@@ -79,6 +79,10 @@
 
 (string_content) @string
 
+; A quoted variant tag in a default (!"at start") is a tag, not string data.
+; For the same node the later pattern wins, so this follows the capture above.
+(tag (string_content) @constructor)
+
 (escape_sequence) @string.escape
 
 (word) @string

@@ -34,12 +34,19 @@ record T @open:
 #               ^ constructor
 #                ^ constructor
 #                      ^ comment
+  op: string = !"at start"
+#              ^ constructor
+#                ^ constructor
 enum Status = active | failed(string)
 # <- keyword.type
 #    ^ type.definition
 #             ^ constructor
 #                    ^ punctuation.delimiter
 #                      ^ constructor
+# A quoted variant name is highlighted like a quoted field name.
+enum Cmp = "<=" | "at start"(Status)
+#          ^ string
+#                 ^ string
 record Eq:
   "at start": u8 @range(1..) | Port?
 # ^ string

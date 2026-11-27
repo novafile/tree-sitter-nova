@@ -2158,6 +2158,25 @@
     }
   },
   {
+    "type": "tag",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "escape_sequence",
+          "named": true
+        },
+        {
+          "type": "string_content",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "template_ref",
     "named": true,
     "fields": {
@@ -2547,10 +2566,6 @@
   },
   {
     "type": "row_count",
-    "named": true
-  },
-  {
-    "type": "tag",
     "named": true
   },
   {

@@ -15,3 +15,5 @@ auth, (GET, 200), {slow_ms: 950}  # trailing comment
 # <- type.builtin
 #                                   ^ constructor
 #                                             ^ boolean
+@timestamp("2026-11-17T16:00:00Z"), !"at start", , true
+#                                     ^ constructor

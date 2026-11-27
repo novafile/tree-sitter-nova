@@ -157,8 +157,9 @@ export default grammar({
       ),
     ),
 
+    // The name may be quoted, like a field name (spec §6.1): "at start"(T).
     enum_variant: $ => seq(
-      field('name', $.identifier),
+      field('name', choice($.identifier, $.string)),
       optional(seq(
         token.immediate('('),
         field('payload', $._type_argument),

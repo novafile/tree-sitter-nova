@@ -161,10 +161,11 @@ export function flowRules(m) {
 
     map_entry: $ => seq(field('key', r($, '_flow_value')), '=>', field('value', r($, '_flow_value'))),
 
-    // !tag  or  !tag(payload)
+    // !tag  or  !tag(payload); the tag is an identifier or a quoted string
+    // (spec §2.11, §4.7), with no whitespace after `!` or before `(`.
     variant: $ => seq(
       '!',
-      field('tag', alias($._immediate_identifier, $.tag)),
+      field('tag', $._variant_tag),
       optional(seq(
         token.immediate('('),
         field('payload', r($, '_flow_value')),
@@ -218,6 +219,19 @@ export const lexicalRules = {
   identifier: _ => IDENT,
 
   _immediate_identifier: _ => token.immediate(IDENT),
+
+  // A variant tag directly after `!`: an identifier, or a quoted string for
+  // tags such as `at start` or `=` (spec §2.11). Both are `tag` nodes.
+  _variant_tag: $ => choice(
+    alias($._immediate_identifier, $.tag),
+    alias($._quoted_tag, $.tag),
+  ),
+
+  _quoted_tag: $ => seq(
+    token.immediate('"'),
+    repeat(choice($.string_content, $.escape_sequence)),
+    token.immediate('"'),
+  ),
 
   _at_name: _ => token(seq('@', IDENT)),
 

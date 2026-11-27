@@ -453,7 +453,7 @@ function blockRules(m) {
     // `key: !tag` followed by an indented block payload.
     _block_variant: $ => seq(
       '!',
-      field('tag', alias($._immediate_identifier, $.tag)),
+      field('tag', $._variant_tag),
       $._indent,
       field('payload', r($, '_block')),
       $._dedent,
@@ -461,7 +461,7 @@ function blockRules(m) {
 
     _dash_block_variant: $ => seq(
       '!',
-      field('tag', alias($._immediate_identifier, $.tag)),
+      field('tag', $._variant_tag),
       $._indent_dash,
       field('payload', r($, '_block')),
       $._dedent,

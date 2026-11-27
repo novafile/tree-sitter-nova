@@ -399,8 +399,17 @@
           "type": "FIELD",
           "name": "name",
           "content": {
-            "type": "SYMBOL",
-            "name": "identifier"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "identifier"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "string"
+              }
+            ]
           }
         },
         {
@@ -1841,13 +1850,8 @@
           "type": "FIELD",
           "name": "tag",
           "content": {
-            "type": "ALIAS",
-            "content": {
-              "type": "SYMBOL",
-              "name": "_immediate_identifier"
-            },
-            "named": true,
-            "value": "tag"
+            "type": "SYMBOL",
+            "name": "_variant_tag"
           }
         },
         {
@@ -2094,6 +2098,64 @@
         "type": "PATTERN",
         "value": "[A-Za-z_][A-Za-z0-9_-]*"
       }
+    },
+    "_variant_tag": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_immediate_identifier"
+          },
+          "named": true,
+          "value": "tag"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_quoted_tag"
+          },
+          "named": true,
+          "value": "tag"
+        }
+      ]
+    },
+    "_quoted_tag": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "IMMEDIATE_TOKEN",
+          "content": {
+            "type": "STRING",
+            "value": "\""
+          }
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "string_content"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "escape_sequence"
+              }
+            ]
+          }
+        },
+        {
+          "type": "IMMEDIATE_TOKEN",
+          "content": {
+            "type": "STRING",
+            "value": "\""
+          }
+        }
+      ]
     },
     "_at_name": {
       "type": "TOKEN",
