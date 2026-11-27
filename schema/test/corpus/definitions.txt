@@ -148,6 +148,43 @@ enum S = a @id(1) | b(u8 @range(1..)) @id(2)
         (number)))))
 
 ================================================================================
+Quoted variant names
+================================================================================
+
+enum Op = and(list<Op>) | "="((int, int)) | "at start"(Op)
+
+enum Cmp:
+  "<"
+  active
+
+--------------------------------------------------------------------------------
+
+(schema
+  (enum_definition
+    (type_identifier)
+    (enum_variant
+      (identifier)
+      (list_type
+        (type_identifier)))
+    (enum_variant
+      (string
+        (string_content))
+      (tuple_type
+        (primitive_type)
+        (primitive_type)))
+    (enum_variant
+      (string
+        (string_content))
+      (type_identifier)))
+  (enum_definition
+    (type_identifier)
+    (enum_variant
+      (string
+        (string_content)))
+    (enum_variant
+      (identifier))))
+
+================================================================================
 Records
 ================================================================================
 

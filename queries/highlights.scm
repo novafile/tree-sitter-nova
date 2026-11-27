@@ -50,6 +50,10 @@
 
 (string_content) @string
 
+; A quoted variant tag (!"at start") is a tag, not string data. For the same
+; node the later pattern wins, so this follows the general capture above.
+(tag (string_content) @constructor)
+
 (block_string) @string
 
 (block_string_indicator) @punctuation.special

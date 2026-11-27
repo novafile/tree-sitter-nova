@@ -106,3 +106,47 @@ Block payload variant in list
           (list
             (item
               (plain_scalar))))))))
+
+================================================================================
+Quoted variant tags
+================================================================================
+
+a: !"at start"([at, depot])
+b: [!"=", !"a\"b"(1)]
+c: !"at start"
+  at: t
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (record
+      (entry
+        (key)
+        (variant
+          (tag
+            (string_content))
+          (flow_list
+            (word)
+            (word))))
+      (entry
+        (key)
+        (flow_list
+          (variant
+            (tag
+              (string_content)))
+          (variant
+            (tag
+              (string_content)
+              (escape_sequence)
+              (string_content))
+            (number))))
+      (entry
+        (key)
+        (variant
+          (tag
+            (string_content))
+          (record
+            (entry
+              (key)
+              (plain_scalar))))))))

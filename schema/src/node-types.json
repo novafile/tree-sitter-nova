@@ -407,6 +407,10 @@
           {
             "type": "identifier",
             "named": true
+          },
+          {
+            "type": "string",
+            "named": true
           }
         ]
       },
@@ -1273,6 +1277,25 @@
     "fields": {}
   },
   {
+    "type": "tag",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "escape_sequence",
+          "named": true
+        },
+        {
+          "type": "string_content",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "tuple",
     "named": true,
     "fields": {},
@@ -1807,10 +1830,6 @@
   {
     "type": "string",
     "named": false
-  },
-  {
-    "type": "tag",
-    "named": true
   },
   {
     "type": "timestamp",

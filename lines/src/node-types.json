@@ -554,6 +554,25 @@
     "fields": {}
   },
   {
+    "type": "tag",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "escape_sequence",
+          "named": true
+        },
+        {
+          "type": "string_content",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "tuple",
     "named": true,
     "fields": {},
@@ -799,10 +818,6 @@
   },
   {
     "type": "rest_column",
-    "named": true
-  },
-  {
-    "type": "tag",
     "named": true
   },
   {
