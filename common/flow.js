@@ -100,6 +100,14 @@ export function flowRules(m) {
     ),
 
     _compound_flow_value: $ => choice(
+      r($, '_flow_collection'),
+      // In templates, a value position that begins with `$` is an expression
+      // (proposal 0006 §0006.2.1): `$x`, `$f(a)`, `$(1 + $x)`, `$a + 1`.
+      ...(m.tpl ? [$._value_expression] : []),
+    ),
+
+    // Flow values that are neither scalars nor template expressions.
+    _flow_collection: $ => choice(
       r($, 'flow_list'),
       r($, 'flow_record'),
       r($, 'tuple'),
@@ -107,7 +115,6 @@ export function flowRules(m) {
       r($, 'map'),
       $.typed_literal,
       r($, 'variant'),
-      ...(m.tpl ? [$.template_ref] : []),
     ),
 
     // In templates, `${path}` interpolates (§9.3); in data documents `$`

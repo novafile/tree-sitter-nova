@@ -306,11 +306,11 @@ items:
         (list
           (if_block
             (condition
-              (binary_condition
+              (binary_expression
                 (template_ref
                   (path
                     (field)))
-                (comparison
+                (binary_expression
                   (template_ref
                     (path
                       (field)))
@@ -323,7 +323,7 @@ items:
                     (plain_scalar)))))
             (else_block
               (condition
-                (comparison
+                (binary_expression
                   (template_ref
                     (path
                       (field)))
@@ -365,7 +365,7 @@ labels:
         (record
           (if_block
             (condition
-              (comparison
+              (binary_expression
                 (template_ref
                   (path
                     (field)))
@@ -378,17 +378,17 @@ labels:
                     (field))))))
           (if_block
             (condition
-              (binary_condition
-                (not_condition
-                  (parenthesized_condition
-                    (binary_condition
+              (binary_expression
+                (unary_expression
+                  (parenthesized_expression
+                    (binary_expression
                       (template_ref
                         (path
                           (field)))
                       (template_ref
                         (path
                           (field))))))
-                (comparison
+                (binary_expression
                   (tuple
                     (number)
                     (number))

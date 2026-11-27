@@ -97,9 +97,35 @@
     "}"
   ] @punctuation.special)
 
-(interpolation
-  path: (path
-    (field) @variable))
+; Paths in interpolations and expressions, `${svc.port}`; patch paths
+; below are captured again as properties (later patterns win).
+(path
+  (field) @variable)
+
+; Template language 0.2 (proposal 0006): calls, @def, operators, comprehensions.
+(call
+  "$" @punctuation.special)
+
+; Also `upper(x)` at the head of an interpolation, which has no `$`.
+(call
+  function: (function) @function.call)
+
+(parenthesized_expression
+  "$" @punctuation.special)
+
+(directive
+  function: (function) @function)
+
+(def_parameter
+  name: (identifier) @variable.parameter)
+
+(binary_expression
+  operator: _ @operator)
+
+[
+  "[for"
+  "{for"
+] @keyword.repeat
 
 "..." @operator
 
@@ -118,6 +144,18 @@
   index: (identifier) @variable)
 
 (for_block
+  variable: (identifier) @variable)
+
+(list_comprehension
+  index: (identifier) @variable)
+
+(list_comprehension
+  variable: (identifier) @variable)
+
+(record_comprehension
+  index: (identifier) @variable)
+
+(record_comprehension
   variable: (identifier) @variable)
 
 [

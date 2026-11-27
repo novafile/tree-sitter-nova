@@ -1,0 +1,27 @@
+@template 0.2
+# <- keyword.directive
+@def label(s: string, n: u16 = 63): string = $slice($lower($s), 0, $n)
+# <- keyword.directive
+#    ^ function
+#          ^ variable.parameter
+#             ^ type
+#                                            ^ punctuation.special
+#                                             ^ function.call
+#                                                    ^ function.call
+@let port = $base + 1
+#                 ^ operator
+items:
+  @if $a and $b >= 2:
+#        ^ keyword.operator
+#               ^ operator
+    - name: "${upper($name)}-svc"
+#              ^ function.call
+#                    ^ punctuation.special
+#                     ^ variable
+      ports: $([for p in $ports if $p > 0: $p * 2])
+#            ^ punctuation.special
+#              ^ keyword.repeat
+#                   ^ variable
+#                     ^ keyword.repeat
+#                               ^ keyword.conditional
+#                                             ^ operator

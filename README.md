@@ -48,8 +48,9 @@ than a regex approximation.
 | §7.3 | Query documents (`@get …`) and responses | `directive` |
 | §7.4 | Patch documents: `path: old -> new`, `= p: v`, `+ p: v`, `- p[: old]`, `? p[: v]`; in the operator forms the path may be empty, meaning the root (`- ` removes the scope target) | `patch_op` |
 | §9.2 | Template documents: the first directive (after an optional `@nova`) is `@template`. Only there are the template constructs below recognized; in a data document `"${x}"` is a plain string, a token starting with `$` is an error, and `@param`/`@let`/`@import` are ordinary directives. | `document` |
-| §9.2 | `@template`, `@param name[?]: type [= default]`, `@import "…" as x`, `@let x = v` / `@let x:` + block | `directive` with `parameter`/`type`/`default`, `source`/`alias`, `binding`/`value` fields |
+| §9.2 | `@template`, `@param name[?]: type [= default]`, `@import "…" as x`, `@let x = expr` / `@let x:` + block, `@def f(p: T, q: T = d)[: R] = expr` / `@def f(p: T)[: R]:` + body (draft: proposal 0006) | `directive` with `parameter`/`type`/`default`, `source`/`alias`, `binding`/`value`, `function`/`result` fields; `def_parameter`, `function` |
 | §9.3 | References `$a.b[0]`, interpolation `${…}` in quoted and block strings, `...` spreads (lines and flow elements) | `template_ref`, `interpolation`, `spread` |
+| 0006 | Template language 0.2 expressions (draft: proposal 0006): in value positions beginning with `$`, in conditions, `@let`, `@def`, defaults, `@for` sources and `${…}` (where a leading identifier implies `$`); `or`, `and`, `not`, `== != < <= > >=` (not chaining), `+ -`, `*`; calls `$f(a, b)`, `$( … )`, `( … )`, comprehensions `[for i, x in s if c: v]` and `{for k, v in s: key: value}` | `binary_expression`, `unary_expression`, `call`, `function`, `parenthesized_expression`, `list_comprehension`, `record_comprehension`, `condition` |
 | §9.3 | `@if` / `@else if` / `@else` / `@for [i,] x in …:` in records and lists | `if_block`, `else_block`, `for_block`, `condition`, `comparison`, `binary_condition`, `not_condition`, `parenthesized_condition` |
 
 Queries: `queries/highlights.scm`, `folds.scm`, `indents.scm`, `locals.scm`
@@ -124,6 +125,12 @@ worse. Validators (`nvf check`, `nvf-lsp`) report these; the tree does not:
   names, `@id` uniqueness, alias cycles, `@key` on optional fields, unknown
   `@len` units, definition names starting with an uppercase letter,
   `@key` on a quoted field name or missing from a member of a keyed union.
+- Templates are parsed as template language 0.2 whatever their `@template`
+  version. A 0.1 interpolation with escaped quotes in a path,
+  `"${svc.\"odd key\"}"`, is an error, as it is in 0.2; the 0.2 spelling
+  `"${svc."odd key"}"` parses. `@def` parameter and result types are one
+  token each, which allows one level of `<…>` or `(…)`.
+- Flow values nested more than about 100 brackets deep are not parsed.
 - On a field, `type` or `@root` line, attributes after the last member of a
   union (`a: u8 @range(1..) | string @len(1..) @id(3)`) belong to the line,
   not to the member: the grammar cannot tell type attributes from field
