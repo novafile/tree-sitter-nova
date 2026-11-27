@@ -147,6 +147,9 @@
 
 (filter) @string.special
 
+; The root path `.` (spec §7.1).
+(path (root) @punctuation.special)
+
 (patch_op
   [
     "="

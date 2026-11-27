@@ -7,7 +7,17 @@
 (directive_name) @keyword.directive
 
 (schema_ref
-  name: (identifier) @module)
+  name: (schema_name) @module)
+
+(fingerprint) @string.special
+
+; @import … as alias, and alias.Name in types
+"as" @keyword
+
+(module) @module
+
+(qualified_type
+  "." @punctuation.delimiter)
 
 (schema_ref
   "@" @punctuation.delimiter)
@@ -57,6 +67,10 @@
   name: (identifier) @constructor)
 
 (optional_marker) @punctuation.special
+
+; Record rules: @one_of(a, b) name fields of the record.
+(attribute
+  field: (field_name) @property)
 
 ; Attributes -----------------------------------------------------------
 

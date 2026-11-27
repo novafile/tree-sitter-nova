@@ -37,7 +37,7 @@ record Infrastructure:
   (directive
     (directive_name)
     (schema_ref
-      (identifier)
+      (schema_name)
       (version)))
   (directive
     (directive_name)
@@ -229,7 +229,7 @@ record Len:
   (directive
     (directive_name)
     (schema_ref
-      (identifier)
+      (schema_name)
       (version)))
   (directive
     (directive_name)
@@ -587,7 +587,7 @@ record Infrastructure:
   (directive
     (directive_name)
     (schema_ref
-      (identifier)
+      (schema_name)
       (version)))
   (directive
     (directive_name)
@@ -717,7 +717,7 @@ record R:
   (directive
     (directive_name)
     (schema_ref
-      (identifier)
+      (schema_name)
       (version)))
   (directive
     (directive_name)
@@ -778,7 +778,7 @@ record Bag @open:
   (directive
     (directive_name)
     (schema_ref
-      (identifier)
+      (schema_name)
       (version)))
   (directive
     (directive_name)
@@ -872,7 +872,7 @@ record Problem:
   (directive
     (directive_name)
     (schema_ref
-      (identifier)
+      (schema_name)
       (version)))
   (directive
     (directive_name)
@@ -1000,7 +1000,7 @@ record Inventory:
   (directive
     (directive_name)
     (schema_ref
-      (identifier)
+      (schema_name)
       (version)))
   (directive
     (directive_name)
@@ -1057,3 +1057,88 @@ record Inventory:
       (identifier)
       (list_type
         (type_identifier)))))
+
+================================================================================
+Imports, qualified types, record rules and classes
+================================================================================
+
+@schema novafile.dev/net@1.0.0
+@import novafile.dev/std@0.2.0#0123abcd as std
+
+record Db @secret @one_of(url, url_file) @together(user, password):
+  url?: std.Url
+  url_file?: string
+  user?: string
+  password?: string
+  ids: list<std.Uuid>
+
+enum Level @personal = low | high
+
+enum Kind @secret:
+  a
+
+--------------------------------------------------------------------------------
+
+(schema
+  (directive
+    (directive_name)
+    (schema_ref
+      (schema_name)
+      (version)))
+  (directive
+    (directive_name)
+    (schema_ref
+      (schema_name)
+      (version)
+      (fingerprint))
+    (module))
+  (record_definition
+    (type_identifier)
+    (attribute
+      (attribute_name))
+    (attribute
+      (attribute_name)
+      (field_name)
+      (field_name))
+    (attribute
+      (attribute_name)
+      (field_name)
+      (field_name))
+    (field
+      (identifier)
+      (optional_marker)
+      (qualified_type
+        (module)
+        (type_identifier)))
+    (field
+      (identifier)
+      (optional_marker)
+      (primitive_type))
+    (field
+      (identifier)
+      (optional_marker)
+      (primitive_type))
+    (field
+      (identifier)
+      (optional_marker)
+      (primitive_type))
+    (field
+      (identifier)
+      (list_type
+        (qualified_type
+          (module)
+          (type_identifier)))))
+  (enum_definition
+    (type_identifier)
+    (attribute
+      (attribute_name))
+    (enum_variant
+      (identifier))
+    (enum_variant
+      (identifier)))
+  (enum_definition
+    (type_identifier)
+    (attribute
+      (attribute_name))
+    (enum_variant
+      (identifier))))

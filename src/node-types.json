@@ -1694,7 +1694,7 @@
       },
       "path": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "path",
@@ -1772,6 +1772,10 @@
         },
         {
           "type": "projection",
+          "named": true
+        },
+        {
+          "type": "root",
           "named": true
         },
         {
@@ -2562,6 +2566,10 @@
   },
   {
     "type": "plain_scalar",
+    "named": true
+  },
+  {
+    "type": "root",
     "named": true
   },
   {

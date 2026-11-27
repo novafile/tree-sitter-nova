@@ -4,7 +4,8 @@
  * @license Apache-2.0
  *
  * Covers the schema language of the NOVA specification (§6.1): the
- * `@schema name@version`, `@root` and `@nova` directives, `record`, `enum`
+ * `@schema name@version`, `@import name@version[#fingerprint] as alias`,
+ * `@root` and `@nova` directives, `record`, `enum`
  * and `type` definitions, fields, types (including generics, tuples,
  * `T[]`, `T?`, unions `A | B` and string literal types), quoted field names,
  * attributes, `@x-…` extension directives and defaults. Defaults are NOVA flow values, shared with the `nova` grammar
@@ -80,6 +81,14 @@ export default grammar({
         field('schema', $.schema_ref),
         $._newline,
       ),
+      // @import name@version[#fingerprint] as alias (proposal 0008)
+      seq(
+        field('name', alias('@import', $.directive_name)),
+        field('schema', $.schema_ref),
+        'as',
+        field('alias', alias($.identifier, $.module)),
+        $._newline,
+      ),
       // @root T attributes*: any type, e.g. `@root Event[] @len(1..)`
       seq(
         field('name', alias('@root', $.directive_name)),
@@ -106,11 +115,21 @@ export default grammar({
     // start with `(`: schemas have no `@if(…)`-style directives to exclude.
     argument: _ => token(/[^ \t\r\n#]([^ \t\r\n]|[ \t]+[^ \t\r\n#])*/),
 
+    // name@version, with a fingerprint in @import lines.
     schema_ref: $ => seq(
-      field('name', $.identifier),
+      field('name', $.schema_name),
       token.immediate('@'),
       field('version', alias($._immediate_version, $.version)),
+      optional(field('fingerprint', $.fingerprint)),
     ),
+
+    // A qualified name rooted in a domain (`novafile.dev/std`) or a local
+    // name (`pddl`, `infra/net`), spec §6.7.
+    schema_name: _ => /[a-z0-9][a-z0-9._-]*(\/[a-z0-9][a-z0-9._-]*)*/,
+
+    // `#` directly after the version. Lexical precedence keeps it from
+    // being read as a comment, which would be the longer match.
+    fingerprint: _ => token.immediate(prec(1, /#[0-9A-Fa-f]+/)),
 
     // SemVer 2.0.0 (§6.7), or MAJOR.MINOR for @nova.
     version: _ => /[0-9]+\.[0-9]+(\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?)?/,
@@ -141,6 +160,8 @@ export default grammar({
     enum_definition: $ => seq(
       'enum',
       field('name', alias($.identifier, $.type_identifier)),
+      // A class, `@secret` or `@personal` (proposal 0009).
+      repeat(field('attribute', $.attribute)),
       choice(
         seq(
           '=',
@@ -199,6 +220,7 @@ export default grammar({
     _type: $ => choice(
       $.primitive_type,
       alias($.identifier, $.type_identifier),
+      $.qualified_type,
       $.list_type,
       $.set_type,
       $.map_type,
@@ -210,6 +232,13 @@ export default grammar({
     ),
 
     primitive_type: _ => choice(...PRIMITIVE_TYPES),
+
+    // alias.Name: a definition of an imported schema (proposal 0008).
+    qualified_type: $ => seq(
+      field('module', alias($.identifier, $.module)),
+      token.immediate('.'),
+      field('name', alias($._immediate_identifier, $.type_identifier)),
+    ),
 
     // A type argument may carry type attributes: list<u16 @range(1..1024)>.
     _type_argument: $ => choice($._type, $.attributed_type, $.union_type),
@@ -294,7 +323,14 @@ export default grammar({
         field('id', $.number),
         ')',
       ),
-      // @key, @open, @deprecated
+      // Record rules (proposal 0010): @together(a, b), @one_of(…), @any_of(…)
+      seq(
+        field('name', alias(choice('@together', '@one_of', '@any_of'), $.attribute_name)),
+        token.immediate('('),
+        commaSep(field('field', alias($.identifier, $.field_name))),
+        ')',
+      ),
+      // @key, @open, @deprecated, and the classes @secret and @personal
       field('name', alias($._at_name, $.attribute_name)),
     ),
 

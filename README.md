@@ -44,9 +44,9 @@ than a regex approximation.
 | §4.8 | Typed literals `@timestamp("…")`, `@duration`, `@decimal`, `@rational`, `@bytes`, `@float` | `typed_literal`, `literal_type` |
 | §4.9 | Tables `key[N]{a,b}:` and top-level `[N]{…}:`, empty cells; exactly `N` rows, each with one cell per column (cells may contain quoted commas and span lines inside brackets) | `table`, `table_header`, `row_count`, `column`, `row`, `cell`; `ERROR` with `table_row_error` |
 | §4.12 | Positional profile (ordinary NOVA text) | — |
-| §7.1 | Paths with fields, selectors (`[0]`, `[id=api]`, `["k"]`, `[*]`, filters), projections | `path`, `field`, `selector`, `wildcard`, `filter`, `projection` |
+| §7.1 | Paths with fields, selectors (`[0]`, `[id=api]`, `["k"]`, `[*]`, filters), projections; the root path `.` | `path`, `field`, `selector`, `wildcard`, `filter`, `projection`, `root` |
 | §7.3 | Query documents (`@get …`) and responses | `directive` |
-| §7.4 | Patch documents: `path: old -> new`, `= p: v`, `+ p: v`, `- p[: old]`, `? p[: v]` | `patch_op` |
+| §7.4 | Patch documents: `path: old -> new`, `= p: v`, `+ p: v`, `- p[: old]`, `? p[: v]`; in the operator forms the path may be empty, meaning the root (`- ` removes the scope target) | `patch_op` |
 | §9.2 | Template documents: the first directive (after an optional `@nova`) is `@template`. Only there are the template constructs below recognized; in a data document `"${x}"` is a plain string, a token starting with `$` is an error, and `@param`/`@let`/`@import` are ordinary directives. | `document` |
 | §9.2 | `@template`, `@param name[?]: type [= default]`, `@import "…" as x`, `@let x = v` / `@let x:` + block | `directive` with `parameter`/`type`/`default`, `source`/`alias`, `binding`/`value` fields |
 | §9.3 | References `$a.b[0]`, interpolation `${…}` in quoted and block strings, `...` spreads (lines and flow elements) | `template_ref`, `interpolation`, `spread` |
@@ -59,11 +59,11 @@ Queries: `queries/highlights.scm`, `folds.scm`, `indents.scm`, `locals.scm`
 
 | Spec | Construct | Nodes |
 | --- | --- | --- |
-| §6.1 | `@schema name@MAJOR.MINOR.PATCH` (SemVer with pre-release/build), `@root T attrs` (any type, e.g. `@root Event[] @len(1..)`), `@nova MAJOR.MINOR`; `@x-…` extension directives with a free argument, e.g. `@x-lint case=kebab` (draft: proposal 0004); any other directive is an error | `directive`, `directive_name`, `schema_ref`, `version`, `argument` |
-| §6.1 | `type Name = T attrs`, `enum Name = a \| b(T)` and `enum Name:` + variant lines, `record Name [@open]:` + field lines (exactly two spaces deeper; a record may be empty) | `type_definition`, `enum_definition`, `enum_variant`, `record_definition` |
+| §6.1, §6.7 | `@schema name@MAJOR.MINOR.PATCH` with a qualified (`novafile.dev/std`) or local schema name and SemVer (with pre-release/build), `@import name@version[#fingerprint] as alias` (draft: proposal 0008), `@root T attrs` (any type, e.g. `@root Event[] @len(1..)`), `@nova MAJOR.MINOR`; `@x-…` extension directives with a free argument, e.g. `@x-lint case=kebab` (draft: proposal 0004); any other directive is an error | `directive`, `directive_name`, `schema_ref`, `schema_name`, `version`, `fingerprint`, `module`, `argument` |
+| §6.1 | `type Name = T attrs`, `enum Name attrs = a \| b(T)` and `enum Name attrs:` + variant lines (variant names may be quoted: `"at start"(T)`), `record Name attrs:` + field lines (exactly two spaces deeper; a record may be empty) | `type_definition`, `enum_definition`, `enum_variant`, `record_definition` |
 | §6.1 | Fields `name[?]: type attrs* [= default]`; the name may be quoted (`"at start": T`); the default is a NOVA flow value | `field`, `optional_marker`, `string` |
-| §6.1 | Types: built-ins, names, `list<T>`, `set<T>`, `map<K, V>`, tuples `(A, B)` `(A,)` `()`, `T[]`, `T?` (also combined: `int[]?`), unions `A \| B \| …` (members may carry type attributes), string literal types `"total-time"` (draft: proposal 0004) | `primitive_type`, `type_identifier`, `list_type`, `set_type`, `map_type`, `tuple_type`, `array_type`, `nullable_type`, `union_type`, `string` |
-| §6.1 | Attributes `@range(lo..hi)`, `@len(lo..hi[, unit])`, `@pattern("p")` (draft: proposal 0004), `@id(n)`, `@key`, `@open`, `@deprecated`, also on type arguments: `list<string @len(1..64)>` | `attribute`, `attribute_name`, `range`, `unit`, `attributed_type` |
+| §6.1 | Types: built-ins, names, `list<T>`, `set<T>`, `map<K, V>`, tuples `(A, B)` `(A,)` `()`, `T[]`, `T?` (also combined: `int[]?`), unions `A \| B \| …` (members may carry type attributes), string literal types `"total-time"` (draft: proposal 0004), imported definitions `std.Uuid` (draft: proposal 0008) | `primitive_type`, `type_identifier`, `qualified_type`, `list_type`, `set_type`, `map_type`, `tuple_type`, `array_type`, `nullable_type`, `union_type`, `string` |
+| §6.1 | Attributes `@range(lo..hi)`, `@len(lo..hi[, unit])`, `@pattern("p")` (draft: proposal 0004), `@id(n)`, `@key`, `@open`, `@deprecated`, classes `@secret` and `@personal` (draft: proposal 0009), record rules `@together(a, b)`, `@one_of(…)`, `@any_of(…)`, also on type arguments: `list<string @len(1..64)>` | `attribute`, `attribute_name`, `field_name`, `range`, `unit`, `attributed_type` |
 | §6.1 | Comments; wrongly indented lines | `comment`; `ERROR` with `indentation_error` |
 
 Queries: `schema/queries/highlights.scm`, `folds.scm`, `indents.scm` and

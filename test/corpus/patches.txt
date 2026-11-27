@@ -110,3 +110,37 @@ m["k"].x: a -> b
         (field))
       (number)
       (number))))
+
+================================================================================
+Root path: empty or `.`
+================================================================================
+
+@patch
+@scope items[0]
+- 
+? : {a: 1}
+= .: 1
+- .
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (directive
+      (directive_name))
+    (directive
+      (directive_name)
+      (argument))
+    (patch_op)
+    (patch_op
+      (flow_record
+        (entry
+          (key)
+          (number))))
+    (patch_op
+      (path
+        (root))
+      (number))
+    (patch_op
+      (path
+        (root)))))

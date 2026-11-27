@@ -1,0 +1,27 @@
+@schema novafile.dev/net@1.0.0
+# <- keyword.directive
+#       ^ module
+#                        ^ string.special
+@import novafile.dev/std@0.2.0#0123abcd as std
+# <- keyword.directive
+#       ^ module
+#                        ^ string.special
+#                             ^ string.special
+#                                       ^ keyword
+#                                          ^ module
+record Db @secret @one_of(url, url_file):
+# <- keyword.type
+#         ^ attribute
+#                 ^ attribute
+#                         ^ property
+#                              ^ property
+  url?: std.Url
+#       ^ module
+#          ^ punctuation.delimiter
+#           ^ type
+  url_file?: string
+enum Level @personal = low | high
+# <- keyword.type
+#    ^ type.definition
+#          ^ attribute
+#                      ^ constructor

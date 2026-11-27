@@ -46,6 +46,10 @@
             "named": true
           },
           {
+            "type": "qualified_type",
+            "named": true
+          },
+          {
             "type": "set_type",
             "named": true
           },
@@ -69,6 +73,16 @@
     "type": "attribute",
     "named": true,
     "fields": {
+      "field": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "field_name",
+            "named": true
+          }
+        ]
+      },
       "id": {
         "multiple": false,
         "required": false,
@@ -160,6 +174,10 @@
             "named": true
           },
           {
+            "type": "qualified_type",
+            "named": true
+          },
+          {
             "type": "set_type",
             "named": true
           },
@@ -188,6 +206,16 @@
     "type": "directive",
     "named": true,
     "fields": {
+      "alias": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "module",
+            "named": true
+          }
+        ]
+      },
       "argument": {
         "multiple": false,
         "required": false,
@@ -250,6 +278,10 @@
           },
           {
             "type": "primitive_type",
+            "named": true
+          },
+          {
+            "type": "qualified_type",
             "named": true
           },
           {
@@ -364,6 +396,16 @@
     "type": "enum_definition",
     "named": true,
     "fields": {
+      "attribute": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "attribute",
+            "named": true
+          }
+        ]
+      },
       "name": {
         "multiple": false,
         "required": true,
@@ -440,6 +482,10 @@
           },
           {
             "type": "primitive_type",
+            "named": true
+          },
+          {
+            "type": "qualified_type",
             "named": true
           },
           {
@@ -583,6 +629,10 @@
             "named": true
           },
           {
+            "type": "qualified_type",
+            "named": true
+          },
+          {
             "type": "set_type",
             "named": true
           },
@@ -710,6 +760,10 @@
           },
           {
             "type": "primitive_type",
+            "named": true
+          },
+          {
+            "type": "qualified_type",
             "named": true
           },
           {
@@ -898,6 +952,10 @@
             "named": true
           },
           {
+            "type": "qualified_type",
+            "named": true
+          },
+          {
             "type": "set_type",
             "named": true
           },
@@ -945,6 +1003,10 @@
           },
           {
             "type": "primitive_type",
+            "named": true
+          },
+          {
+            "type": "qualified_type",
             "named": true
           },
           {
@@ -1005,6 +1067,10 @@
             "named": true
           },
           {
+            "type": "qualified_type",
+            "named": true
+          },
+          {
             "type": "set_type",
             "named": true
           },
@@ -1028,6 +1094,32 @@
     "type": "primitive_type",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "qualified_type",
+    "named": true,
+    "fields": {
+      "module": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "module",
+            "named": true
+          }
+        ]
+      },
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "type_identifier",
+            "named": true
+          }
+        ]
+      }
+    }
   },
   {
     "type": "range",
@@ -1115,12 +1207,22 @@
     "type": "schema_ref",
     "named": true,
     "fields": {
+      "fingerprint": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "fingerprint",
+            "named": true
+          }
+        ]
+      },
       "name": {
         "multiple": false,
         "required": true,
         "types": [
           {
-            "type": "identifier",
+            "type": "schema_name",
             "named": true
           }
         ]
@@ -1226,6 +1328,10 @@
           },
           {
             "type": "primitive_type",
+            "named": true
+          },
+          {
+            "type": "qualified_type",
             "named": true
           },
           {
@@ -1387,6 +1493,10 @@
             "named": true
           },
           {
+            "type": "qualified_type",
+            "named": true
+          },
+          {
             "type": "set_type",
             "named": true
           },
@@ -1456,6 +1566,10 @@
           },
           {
             "type": "primitive_type",
+            "named": true
+          },
+          {
+            "type": "qualified_type",
             "named": true
           },
           {
@@ -1538,6 +1652,10 @@
           },
           {
             "type": "primitive_type",
+            "named": true
+          },
+          {
+            "type": "qualified_type",
             "named": true
           },
           {
@@ -1659,6 +1777,10 @@
     "named": false
   },
   {
+    "type": ".",
+    "named": false
+  },
+  {
     "type": "..",
     "named": false
   },
@@ -1719,6 +1841,10 @@
     "named": true
   },
   {
+    "type": "as",
+    "named": false
+  },
+  {
     "type": "attribute_name",
     "named": true
   },
@@ -1758,6 +1884,14 @@
   {
     "type": "false",
     "named": false
+  },
+  {
+    "type": "field_name",
+    "named": true
+  },
+  {
+    "type": "fingerprint",
+    "named": true
   },
   {
     "type": "float",
@@ -1804,6 +1938,10 @@
     "named": false
   },
   {
+    "type": "module",
+    "named": true
+  },
+  {
     "type": "null",
     "named": false
   },
@@ -1822,6 +1960,10 @@
   {
     "type": "record",
     "named": false
+  },
+  {
+    "type": "schema_name",
+    "named": true
   },
   {
     "type": "set",
